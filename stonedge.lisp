@@ -36,11 +36,25 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (setf *readtable* (copy-readtable nil)))
 
-(asdf-load :split-sequence)
-(asdf-load :com.informatimago.common-lisp)
-(use-package :com.informatimago.common-lisp.graph)
-(use-package :com.informatimago.common-lisp.graph-dot)
-(shadow 'copy) ; from :com.informatimago.common-lisp.graph
+(defpackage :com.informatimago.games.stonedge
+  (:use
+   :common-lisp
+   :split-sequence
+   :com.informatimago.common-lisp.cesarum.graph
+   :com.informatimago.common-lisp.graphviz.graph-dot)
+  (:import-from :com.informatimago.common-lisp.cesarum.array
+                #:copy-array)
+  (:shadow #:copy)
+  (:export
+   #:stonedge
+   #:solve-problem
+   #:*simple*
+   #:*level-36*
+   #:*level-37*
+   #:*level-38*
+   #:*level-39*
+   #:*level-52*))
+(in-package :com.informatimago.games.stonedge)
 
 ;;;-----------------------------------------------------------------------------
 ;;;
@@ -789,7 +803,7 @@ See PARSE-GAME for the description of LEVEL.
     (make-instance 'game
         :stone (copy (game-stone game))
         :cells (loop
-                  :with cells    = (com.informatimago.common-lisp.array:copy-array (game-cells game))
+                  :with cells    = (copy-array (game-cells game))
                   :with pathways = '()
                   :with buttons  = '()
                   :for i :from 0 :below (array-total-size cells)

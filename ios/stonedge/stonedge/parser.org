@@ -1,0 +1,35 @@
+
+
+Level specification is a multiline string with the following syntax:
+
+    level-specification ::= grid { cell-definition } .
+    grid ::= { cell-line } .
+    cell-line ::= { cell-char } .
+    cell-char ::= '.' | ' '    --  empty-cell
+                | 'S'          --  solid-cell starting position
+                | 'O'          --  solid-cell
+                | 'T'          --  target-cell
+                | 'I'          --  ice-cell
+                | 'C'          --  crumble-cell
+                | other-char . --  the character is searched in the list of cell definitions.
+    cell-definition ::= cell-name 'pathway' 'open'|'closed'
+                      | cell-name 'red' { cell-name }
+                      | cell-name 'blue' { cell-name } .
+    cell-name ::= other-char . 
+
+
+The characters are case insensitive.
+Each cell-definition is on its own line.
+
+'pathway' indicates the class of the cell is pathway-cell, and
+the following keyword indicates its initial state.
+
+'red' indicates the class of the cell is red-button-cell;
+'blue' indicates the class of the cell is blue-button-cell; in
+both cases, the rest is the list of pathway cell-names
+connected to the button. This list can be given with or
+without spaces between the cell-name character.
+
+There must be a single start position, and all the non empty cells
+must be at least two steps from the borders.
+

@@ -1,0 +1,651 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2A7C15012B86B5820003DF79 /* stonedgeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7C15002B86B5820003DF79 /* stonedgeApp.swift */; };
+		2A7C15032B86B5820003DF79 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7C15022B86B5820003DF79 /* ContentView.swift */; };
+		2A7C15052B86B5830003DF79 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A7C15042B86B5830003DF79 /* Assets.xcassets */; };
+		2A7C15082B86B5830003DF79 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A7C15072B86B5830003DF79 /* Preview Assets.xcassets */; };
+		2A7C15132B86B5830003DF79 /* stonedgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7C15122B86B5830003DF79 /* stonedgeTests.swift */; };
+		2A7C151D2B86B5830003DF79 /* stonedgeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7C151C2B86B5830003DF79 /* stonedgeUITests.swift */; };
+		2A7C151F2B86B5830003DF79 /* stonedgeUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7C151E2B86B5830003DF79 /* stonedgeUITestsLaunchTests.swift */; };
+		2A7C152C2B86B6270003DF79 /* Stone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7C152B2B86B6270003DF79 /* Stone.swift */; };
+		2A7C152E2B96282A0003DF79 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7C152D2B96282A0003DF79 /* Cell.swift */; };
+		2A9B24D82BA4778500E2EF8F /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A9B24D72BA4778500E2EF8F /* Levels.swift */; };
+		2A9B24DA2BA477B300E2EF8F /* LevelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A9B24D92BA477B300E2EF8F /* LevelTests.swift */; };
+		2AF7FCA32B97A88400FCA910 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF7FCA22B97A88400FCA910 /* Game.swift */; };
+		2AF7FCA52B97A9D900FCA910 /* GameParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF7FCA42B97A9D900FCA910 /* GameParser.swift */; };
+		2AF7FCA92B97BC9300FCA910 /* StonedgeGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF7FCA82B97BC9300FCA910 /* StonedgeGameView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2A7C150F2B86B5830003DF79 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A7C14F52B86B5810003DF79 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2A7C14FC2B86B5810003DF79;
+			remoteInfo = stonedge;
+		};
+		2A7C15192B86B5830003DF79 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A7C14F52B86B5810003DF79 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2A7C14FC2B86B5810003DF79;
+			remoteInfo = stonedge;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		2A7C14FD2B86B5820003DF79 /* stonedge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = stonedge.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A7C15002B86B5820003DF79 /* stonedgeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = stonedgeApp.swift; sourceTree = "<group>"; };
+		2A7C15022B86B5820003DF79 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		2A7C15042B86B5830003DF79 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2A7C15072B86B5830003DF79 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		2A7C15092B86B5830003DF79 /* stonedge.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = stonedge.entitlements; sourceTree = "<group>"; };
+		2A7C150E2B86B5830003DF79 /* stonedgeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = stonedgeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A7C15122B86B5830003DF79 /* stonedgeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = stonedgeTests.swift; sourceTree = "<group>"; };
+		2A7C15182B86B5830003DF79 /* stonedgeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = stonedgeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A7C151C2B86B5830003DF79 /* stonedgeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = stonedgeUITests.swift; sourceTree = "<group>"; };
+		2A7C151E2B86B5830003DF79 /* stonedgeUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = stonedgeUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		2A7C152B2B86B6270003DF79 /* Stone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stone.swift; sourceTree = "<group>"; };
+		2A7C152D2B96282A0003DF79 /* Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
+		2A9B24D72BA4778500E2EF8F /* Levels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Levels.swift; sourceTree = "<group>"; };
+		2A9B24D92BA477B300E2EF8F /* LevelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelTests.swift; sourceTree = "<group>"; };
+		2AF7FCA22B97A88400FCA910 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		2AF7FCA42B97A9D900FCA910 /* GameParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameParser.swift; sourceTree = "<group>"; };
+		2AF7FCA82B97BC9300FCA910 /* StonedgeGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StonedgeGameView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2A7C14FA2B86B5810003DF79 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A7C150B2B86B5830003DF79 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A7C15152B86B5830003DF79 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2A7C14F42B86B5810003DF79 = {
+			isa = PBXGroup;
+			children = (
+				2A7C14FF2B86B5820003DF79 /* stonedge */,
+				2A7C15112B86B5830003DF79 /* stonedgeTests */,
+				2A7C151B2B86B5830003DF79 /* stonedgeUITests */,
+				2A7C14FE2B86B5820003DF79 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2A7C14FE2B86B5820003DF79 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2A7C14FD2B86B5820003DF79 /* stonedge.app */,
+				2A7C150E2B86B5830003DF79 /* stonedgeTests.xctest */,
+				2A7C15182B86B5830003DF79 /* stonedgeUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2A7C14FF2B86B5820003DF79 /* stonedge */ = {
+			isa = PBXGroup;
+			children = (
+				2A7C15002B86B5820003DF79 /* stonedgeApp.swift */,
+				2A7C15022B86B5820003DF79 /* ContentView.swift */,
+				2A7C15042B86B5830003DF79 /* Assets.xcassets */,
+				2A7C15092B86B5830003DF79 /* stonedge.entitlements */,
+				2A7C15062B86B5830003DF79 /* Preview Content */,
+				2A7C152B2B86B6270003DF79 /* Stone.swift */,
+				2A7C152D2B96282A0003DF79 /* Cell.swift */,
+				2AF7FCA22B97A88400FCA910 /* Game.swift */,
+				2AF7FCA42B97A9D900FCA910 /* GameParser.swift */,
+				2AF7FCA82B97BC9300FCA910 /* StonedgeGameView.swift */,
+				2A9B24D72BA4778500E2EF8F /* Levels.swift */,
+			);
+			path = stonedge;
+			sourceTree = "<group>";
+		};
+		2A7C15062B86B5830003DF79 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				2A7C15072B86B5830003DF79 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		2A7C15112B86B5830003DF79 /* stonedgeTests */ = {
+			isa = PBXGroup;
+			children = (
+				2A7C15122B86B5830003DF79 /* stonedgeTests.swift */,
+				2A9B24D92BA477B300E2EF8F /* LevelTests.swift */,
+			);
+			path = stonedgeTests;
+			sourceTree = "<group>";
+		};
+		2A7C151B2B86B5830003DF79 /* stonedgeUITests */ = {
+			isa = PBXGroup;
+			children = (
+				2A7C151C2B86B5830003DF79 /* stonedgeUITests.swift */,
+				2A7C151E2B86B5830003DF79 /* stonedgeUITestsLaunchTests.swift */,
+			);
+			path = stonedgeUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2A7C14FC2B86B5810003DF79 /* stonedge */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A7C15222B86B5830003DF79 /* Build configuration list for PBXNativeTarget "stonedge" */;
+			buildPhases = (
+				2A7C14F92B86B5810003DF79 /* Sources */,
+				2A7C14FA2B86B5810003DF79 /* Frameworks */,
+				2A7C14FB2B86B5810003DF79 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = stonedge;
+			productName = stonedge;
+			productReference = 2A7C14FD2B86B5820003DF79 /* stonedge.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2A7C150D2B86B5830003DF79 /* stonedgeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A7C15252B86B5830003DF79 /* Build configuration list for PBXNativeTarget "stonedgeTests" */;
+			buildPhases = (
+				2A7C150A2B86B5830003DF79 /* Sources */,
+				2A7C150B2B86B5830003DF79 /* Frameworks */,
+				2A7C150C2B86B5830003DF79 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2A7C15102B86B5830003DF79 /* PBXTargetDependency */,
+			);
+			name = stonedgeTests;
+			productName = stonedgeTests;
+			productReference = 2A7C150E2B86B5830003DF79 /* stonedgeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		2A7C15172B86B5830003DF79 /* stonedgeUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A7C15282B86B5830003DF79 /* Build configuration list for PBXNativeTarget "stonedgeUITests" */;
+			buildPhases = (
+				2A7C15142B86B5830003DF79 /* Sources */,
+				2A7C15152B86B5830003DF79 /* Frameworks */,
+				2A7C15162B86B5830003DF79 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2A7C151A2B86B5830003DF79 /* PBXTargetDependency */,
+			);
+			name = stonedgeUITests;
+			productName = stonedgeUITests;
+			productReference = 2A7C15182B86B5830003DF79 /* stonedgeUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2A7C14F52B86B5810003DF79 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				CLASSPREFIX = com.ogamita.games.stonedge;
+				LastSwiftUpdateCheck = 1420;
+				LastUpgradeCheck = 1520;
+				ORGANIZATIONNAME = "Ogamita Ltd";
+				TargetAttributes = {
+					2A7C14FC2B86B5810003DF79 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+					2A7C150D2B86B5830003DF79 = {
+						CreatedOnToolsVersion = 14.2;
+						TestTargetID = 2A7C14FC2B86B5810003DF79;
+					};
+					2A7C15172B86B5830003DF79 = {
+						CreatedOnToolsVersion = 14.2;
+						TestTargetID = 2A7C14FC2B86B5810003DF79;
+					};
+				};
+			};
+			buildConfigurationList = 2A7C14F82B86B5810003DF79 /* Build configuration list for PBXProject "stonedge" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2A7C14F42B86B5810003DF79;
+			productRefGroup = 2A7C14FE2B86B5820003DF79 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2A7C14FC2B86B5810003DF79 /* stonedge */,
+				2A7C150D2B86B5830003DF79 /* stonedgeTests */,
+				2A7C15172B86B5830003DF79 /* stonedgeUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2A7C14FB2B86B5810003DF79 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A7C15082B86B5830003DF79 /* Preview Assets.xcassets in Resources */,
+				2A7C15052B86B5830003DF79 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A7C150C2B86B5830003DF79 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A7C15162B86B5830003DF79 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2A7C14F92B86B5810003DF79 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A7C152C2B86B6270003DF79 /* Stone.swift in Sources */,
+				2AF7FCA32B97A88400FCA910 /* Game.swift in Sources */,
+				2A9B24D82BA4778500E2EF8F /* Levels.swift in Sources */,
+				2A7C152E2B96282A0003DF79 /* Cell.swift in Sources */,
+				2A7C15032B86B5820003DF79 /* ContentView.swift in Sources */,
+				2AF7FCA52B97A9D900FCA910 /* GameParser.swift in Sources */,
+				2A7C15012B86B5820003DF79 /* stonedgeApp.swift in Sources */,
+				2AF7FCA92B97BC9300FCA910 /* StonedgeGameView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A7C150A2B86B5830003DF79 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A9B24DA2BA477B300E2EF8F /* LevelTests.swift in Sources */,
+				2A7C15132B86B5830003DF79 /* stonedgeTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A7C15142B86B5830003DF79 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A7C151F2B86B5830003DF79 /* stonedgeUITestsLaunchTests.swift in Sources */,
+				2A7C151D2B86B5830003DF79 /* stonedgeUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2A7C15102B86B5830003DF79 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2A7C14FC2B86B5810003DF79 /* stonedge */;
+			targetProxy = 2A7C150F2B86B5830003DF79 /* PBXContainerItemProxy */;
+		};
+		2A7C151A2B86B5830003DF79 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2A7C14FC2B86B5810003DF79 /* stonedge */;
+			targetProxy = 2A7C15192B86B5830003DF79 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		2A7C15202B86B5830003DF79 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.7;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		2A7C15212B86B5830003DF79 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.7;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		2A7C15232B86B5830003DF79 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = stonedge/stonedge.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"stonedge/Preview Content\"";
+				DEVELOPMENT_TEAM = EKM4K54R7P;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Stonedge;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.board-games";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ogamita.games.stonedge;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2A7C15242B86B5830003DF79 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = stonedge/stonedge.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"stonedge/Preview Content\"";
+				DEVELOPMENT_TEAM = EKM4K54R7P;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Stonedge;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.board-games";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ogamita.games.stonedge;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		2A7C15262B86B5830003DF79 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = EKM4K54R7P;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ogamita.games.stonedgeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/stonedge.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/stonedge";
+			};
+			name = Debug;
+		};
+		2A7C15272B86B5830003DF79 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = EKM4K54R7P;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ogamita.games.stonedgeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/stonedge.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/stonedge";
+			};
+			name = Release;
+		};
+		2A7C15292B86B5830003DF79 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = EKM4K54R7P;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ogamita.games.stonedgeUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = stonedge;
+			};
+			name = Debug;
+		};
+		2A7C152A2B86B5830003DF79 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = EKM4K54R7P;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ogamita.games.stonedgeUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = stonedge;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2A7C14F82B86B5810003DF79 /* Build configuration list for PBXProject "stonedge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A7C15202B86B5830003DF79 /* Debug */,
+				2A7C15212B86B5830003DF79 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A7C15222B86B5830003DF79 /* Build configuration list for PBXNativeTarget "stonedge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A7C15232B86B5830003DF79 /* Debug */,
+				2A7C15242B86B5830003DF79 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A7C15252B86B5830003DF79 /* Build configuration list for PBXNativeTarget "stonedgeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A7C15262B86B5830003DF79 /* Debug */,
+				2A7C15272B86B5830003DF79 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A7C15282B86B5830003DF79 /* Build configuration list for PBXNativeTarget "stonedgeUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A7C15292B86B5830003DF79 /* Debug */,
+				2A7C152A2B86B5830003DF79 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2A7C14F52B86B5810003DF79 /* Project object */;
+}

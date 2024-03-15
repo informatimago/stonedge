@@ -33,14 +33,14 @@ protocol CellInterface {
 }
 
 
-class Cell : CellInterface {
+open class Cell : CellInterface {
     
     // This is an abstract cell. Cells are square, and all of the same size.
     
     var x: Int = 0
     var y: Int = 0
     
-    init(x: Int, y: Int) {
+    public init(x: Int, y: Int) {
         self.x = x
         self.y = y
     }
@@ -59,11 +59,11 @@ class Cell : CellInterface {
     
 }
 
-class SolidCell : Cell {
+open class SolidCell : Cell {
     // The stone may remain securely on a solid cell.
 }
 
-class TargetCell : Cell {
+open class TargetCell : Cell {
     // Once the stone is in vertical position on a target cell, the game is won.
 
     override func stoneMovedOverCell(stone: Stone){
@@ -81,7 +81,7 @@ class TargetCell : Cell {
 
 }
 
-class EmptyCell : Cell {
+open class EmptyCell : Cell {
   // When the stone is over an empty cell, the game is lost.
     
     override func stoneMovedOverCell(stone: Stone){
@@ -94,7 +94,7 @@ class EmptyCell : Cell {
     
 }
 
-class PathwayCell : Cell {
+open class PathwayCell : Cell {
     // When a pathway cell is :open, it supports a stone;
     // when it's :closed the stone falls down and the game is lost.
     
@@ -104,8 +104,8 @@ class PathwayCell : Cell {
     
     var state = State.closed // A pathway cell may be :open or :closed.
     
-    init(x: Int, y: Int, state: State = State.closed) {
-        super.init(x:x y:y)
+    public init(x: Int, y: Int, state: State = State.closed) {
+        super.init(x:x, y:y)
         self.state = state
     }
     
@@ -128,11 +128,17 @@ class PathwayCell : Cell {
 }
 
 
-class ButtonCell : Cell {
+open class ButtonCell : Cell {
     // This is an abstract button cell.
     // Button cells may switch the state of pathway-cells.
     
     var switches: [PathwayCell] = [] // A list of cells that may be switched when the stone is over the button cell.
+    public init(x: Int, y: Int, commandedCell: PathwayCell?) {
+        super.init(x:x, y:y)
+        if let commandedCell {
+            switches.append(commandedCell)
+        }
+    }
     
     func switchPathwayCells(){
         for cell in switches {
@@ -142,7 +148,7 @@ class ButtonCell : Cell {
 }
 
 
-class RedButtonCell : ButtonCell {
+open class RedButtonCell : ButtonCell {
     // A red button cell switches its pathway cells
     // as soon as the stone is over it."
     
@@ -153,7 +159,7 @@ class RedButtonCell : ButtonCell {
 }
 
 
-class BlueButtonCell : ButtonCell {
+open class BlueButtonCell : ButtonCell {
     // A blue button cell switches its pathway cells
     // only when the stone is over it in vertical position.
     
@@ -166,7 +172,7 @@ class BlueButtonCell : ButtonCell {
 }
 
 
-class CrumbleCell : Cell {
+open class CrumbleCell : Cell {
     // When a crumble cell is :open, it supports a stone;
     // when it's :closed the stone falls down and the game is lost.
     
@@ -195,7 +201,7 @@ class CrumbleCell : Cell {
 }
 
 
-class IceCell : Cell {
+open class IceCell : Cell {
     // An ice cell supports an horizontal stone, but
     // when the stone is over it in vertical position, it breaks, the stone falls down, and the game is lost.
     

@@ -20,14 +20,36 @@ struct Definition {
     var state : PathwayCell.State // for pathway
 }
 
+let emptyName = "."
+let emptyName2 = " "
+let startName = "S"
+let solidName = "O"
+let targetName = "T"
+let iceName = "I"
+let crumbleName = "C"
+
 
 func parseGame(specification: String) -> Game? {
-    let lines = specification.uppercased().split(separator: "\n").map(String.init)
+    var lines = specification.split(separator: "\n").map(String.init)
     
+    let titleIndex = lines.firstIndex(where: { line in !line.isEmpty && !line.allSatisfy({ $0 == "." })})
+    let firstGridIndex = lines.firstIndex(where: { line in
+        // Check if the line is not empty and all characters in the line are dots.
+        return !line.isEmpty && line.allSatisfy({ $0 == "." })
+    })
+    
+    var title = ""
+    var description : [String] = []
+
+    if titleIndex != nil && (firstGridIndex == nil || (titleIndex! < firstGridIndex!)) {
+        title = lines[titleIndex!]
+        description = Array(lines[(titleIndex! + 1)..<(firstGridIndex ?? lines.count)])
+    }
+
+    lines = lines.map{ $0.uppercased() }
     // Find the index of the first definition line
     let firstDefIndex = lines.firstIndex { $0.contains("PATHWAY") || $0.contains("RED") || $0.contains("BLUE") } ?? lines.endIndex
-    
-    let gridLines = Array(lines[..<firstDefIndex])
+    let gridLines = Array(lines[(firstGridIndex ?? firstDefIndex)..<firstDefIndex])
     let cellDefLines = Array(lines[firstDefIndex...])
     
     let height = gridLines.count
@@ -65,7 +87,7 @@ func parseGame(specification: String) -> Game? {
         }
         
         let definition : Definition = Definition(name:name, link:link, connected:connected, state:state)
-        print("Definition = \(definition)")
+        print("\(definition)")
         
         definitions[definition.name]=definition
     }
@@ -75,14 +97,15 @@ func parseGame(specification: String) -> Game? {
         grid.append([])
         for (x, char) in line.enumerated() {
             let cell = createCell(from: String(char), x: x, y: y, definitions:definitions)
+            print("[\(y)][\(x)] \(String(char)) = \(cell)")
             namedCells[String(char)]=cell
             grid[y].append(cell)
-            if String(char) == "O" {
+            if String(char) == startName {
                 stone = Stone(x:x, y:y, orientation: vertical)
             }
         }
         for x in grid[y].count..<width {
-            grid[y][x] = EmptyCell(x:x, y:y)
+            grid[y].append(EmptyCell(x:x, y:y))
         }
     }
     
@@ -103,8 +126,13 @@ func parseGame(specification: String) -> Game? {
                 if (cell.x == x) && (cell.y == y) {
                     if let definition = definitions[cellName] {
                         switch definition.link {
-                        case .red, .blue:
+                        case .red:
                             let button = cell as! RedButtonCell
+                            button.switches = definition.connected.map{ name in
+                                namedCells[name] as! PathwayCell
+                            }
+                        case .blue:
+                            let button = cell as! BlueButtonCell
                             button.switches = definition.connected.map{ name in
                                 namedCells[name] as! PathwayCell
                             }
@@ -118,7 +146,10 @@ func parseGame(specification: String) -> Game? {
     }
     
     if let stone = stone {
-        return Game(stone: stone, cells: grid)
+        let game = Game(stone: stone, cells: grid)
+        game.title = title
+        game.description = description
+        return game
     }
     return nil
 }
@@ -136,15 +167,15 @@ func createCell(from cellName: String, x: Int, y: Int, definitions: [String: Def
         }
     }
     switch cellName {
-    case " ", ".":
+    case emptyName, emptyName2:
         return EmptyCell(x: x, y: y)
-    case "S", "O":
+    case startName, solidName:
         return SolidCell(x: x, y: y)
-    case "T":
+    case targetName:
         return TargetCell(x: x, y: y)
-    case "I":
+    case iceName:
         return IceCell(x: x, y: y)
-    case "C":
+    case crumbleName:
         return CrumbleCell(x: x, y: y)
     default:
         return SolidCell(x: x, y: y)

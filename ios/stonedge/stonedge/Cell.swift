@@ -217,7 +217,7 @@ open class PathwayCell : Cell {
         case closed, open
     }
     
-    var state = State.closed // A pathway cell may be :open or :closed.
+    public var state = State.closed // A pathway cell may be :open or :closed.
     
     public init(x: Int, y: Int, state: State = State.closed) {
         super.init(x:x, y:y)
@@ -251,7 +251,7 @@ open class ButtonCell : Cell {
     // This is an abstract button cell.
     // Button cells may switch the state of pathway-cells.
     
-    var switches: [PathwayCell] = [] // A list of cells that may be switched when the stone is over the button cell.
+    public var switches: [PathwayCell] = [] // A list of cells that may be switched when the stone is over the button cell.
     public init(x: Int, y: Int, commandedCell: PathwayCell? = nil) {
         super.init(x:x, y:y)
         if let commandedCell {

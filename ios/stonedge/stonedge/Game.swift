@@ -7,8 +7,10 @@
 
 import Foundation
 
-open class Game {
+open class Game { 
     
+    var title : String = ""
+    var description : [String] = []
     var stone = Stone(x:0, y:0, orientation: vertical)
     var cells: [[Cell]] = []
     

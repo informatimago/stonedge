@@ -10,12 +10,12 @@ import Foundation
 
 public class User {
     
-    var currentLevelIndex : Int = 0
-    var maxCompletedLevel : Int = 0
+    public var currentLevelIndex : Int = 0
+    public var maxCompletedLevel : Int = 0
 
     public init()
     {
-        
+        loadUser()
     }
 
     let currentLevelKey = "currentLevel"
@@ -27,17 +27,19 @@ public class User {
     
     func loadInteger(for key: String) -> Int {
         return UserDefaults.standard.integer(forKey: key)
-
+   
     }
     
-    public func loadUser(){
+    public func loadUser() -> User {
         currentLevelIndex = loadInteger(for: currentLevelKey)
         maxCompletedLevel = loadInteger(for: maxCompletedLevelKey)
+        return self
     }
     
-    public func saveUser(){
+    public func saveUser() -> User {
         saveInteger(value:currentLevelIndex, for:currentLevelKey)
         saveInteger(value:maxCompletedLevel, for:maxCompletedLevelKey)
+        return self
     }
     
     // [<<] [<] [play] [>] [>>]

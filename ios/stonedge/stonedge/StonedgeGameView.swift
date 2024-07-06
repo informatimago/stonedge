@@ -67,35 +67,53 @@ struct BoardView: View {
 
 struct StonedgeGameView: View {
     
-//    let game : Game;
+    @Binding var gameView: Bool
+    var levelIndex : Int
     
-//    init(game: Game){
-//        self.game = game
-//    }
-//    
+    //    let game : Game;
+    
+    //    init(game: Game){
+    //        self.game = game
+    //    }
+    //
     var body: some View {
-        GeometryReader { geometry in
+        VStack(spacing: 10) {
+            HStack(spacing: 20){
+                Text("  ")
+                Button("Back") {
+                    gameView = false;
+                }
+                Spacer()
+            }
+            .padding(.horizontal)
+            .background(Color(UIColor.systemBackground))
             
             ZStack {
-                // Background Gradient
-                LinearGradient(gradient: Gradient(colors: [.blue, .white]), startPoint: .top, endPoint: .bottom)
-                    .edgesIgnoringSafeArea(.all)
+                GeometryReader { geometry in
+                    LinearGradient(gradient: Gradient(colors: [.blue, .white]), startPoint: .top, endPoint: .bottom)
+                        //.edgesIgnoringSafeArea(.all)
+                        .scaleEffect(x: 1, y: -1)
+                        .rotationEffect(.degrees(180), anchor: .center)
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                }
                 
                 BoardView()
-                // Text("• stonedge •")
+                    .scaleEffect(x: 0.5, y: -0.5) // Flip the y-axis
+                    .scaledToFit()
+                    .rotationEffect(.degrees(180), anchor: .center)
+                
             }
-            .scaleEffect(x: 1, y: -1) // Flip the y-axis
-            .scaledToFit()
-            .rotationEffect(.degrees(180), anchor: .center) // Rotate 45 degrees around the center
-            .frame(width: geometry.size.width, height: geometry.size.height) // Set frame to GeometryReader's size
-
-      }
-
+        }
+        //                .background(
+        //                    LinearGradient(gradient: Gradient(colors: [.blue, .white]), startPoint: .top, endPoint: .bottom)
+        //                        //.edgesIgnoringSafeArea(.all)
+        //                        .scaleEffect(x: 1, y: -1) // Flip the y-axis
+        //                )
     }
-    
 }
 
 
 #Preview {
-    StonedgeGameView()
+    StonedgeGameView(gameView: .constant(true),
+                     levelIndex:0)
 }

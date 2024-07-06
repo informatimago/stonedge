@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A00D2022BA868DF00BBFDF7 /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A00D2012BA868DF00BBFDF7 /* UserView.swift */; };
 		2A7C15012B86B5820003DF79 /* stonedgeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7C15002B86B5820003DF79 /* stonedgeApp.swift */; };
 		2A7C15032B86B5820003DF79 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7C15022B86B5820003DF79 /* ContentView.swift */; };
 		2A7C15052B86B5830003DF79 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A7C15042B86B5830003DF79 /* Assets.xcassets */; };
@@ -42,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2A00D2012BA868DF00BBFDF7 /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
 		2A7C14FD2B86B5820003DF79 /* stonedge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = stonedge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A7C15002B86B5820003DF79 /* stonedgeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = stonedgeApp.swift; sourceTree = "<group>"; };
 		2A7C15022B86B5820003DF79 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 				2AF7FCA82B97BC9300FCA910 /* StonedgeGameView.swift */,
 				2A9B24D72BA4778500E2EF8F /* Levels.swift */,
 				2AB2C2A12BA7A1F40016E36F /* User.swift */,
+				2A00D2012BA868DF00BBFDF7 /* UserView.swift */,
 			);
 			path = stonedge;
 			sourceTree = "<group>";
@@ -292,6 +295,7 @@
 				2A7C15032B86B5820003DF79 /* ContentView.swift in Sources */,
 				2AB2C2A22BA7A1F40016E36F /* User.swift in Sources */,
 				2AF7FCA52B97A9D900FCA910 /* GameParser.swift in Sources */,
+				2A00D2022BA868DF00BBFDF7 /* UserView.swift in Sources */,
 				2A7C15012B86B5820003DF79 /* stonedgeApp.swift in Sources */,
 				2AF7FCA92B97BC9300FCA910 /* StonedgeGameView.swift in Sources */,
 			);

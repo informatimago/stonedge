@@ -3,6 +3,7 @@
 //  stonedge
 //
 //  Created by Pascal Bourguignon on 05/03/2024.
+//  Copyright © 2024 Ogamita Ltd. All rights reserved.
 //
 
 import SwiftUI
@@ -10,72 +11,56 @@ import Foundation
 
 
 
-func testBoard() -> [[Cell]] {
-    let rows = 4
-    let cols = 4
-    var cells = Array(repeating: Array<Cell>(repeating: EmptyCell(x:0, y:0), count: cols), count: rows)
-    for row in 0..<rows {
-        for col in 0..<cols {
-            cells[row][col] = EmptyCell(x: col, y: row)
-        }
-    }
-    cells[0][0] = SolidCell(x:0, y:0)
-    cells[0][1] = TargetCell(x:0, y:1)
-    cells[0][2] = PathwayCell(x:0, y:2, state:.open)
-    cells[0][3] = PathwayCell(x:0, y:3, state:.closed)
-    cells[1][2] = RedButtonCell(x:1, y:2, commandedCell:cells[0][2] as? PathwayCell)
-    cells[1][3] = BlueButtonCell(x:1, y:3, commandedCell:cells[0][3] as? PathwayCell)
-    cells[2][2] = SolidCell(x:2, y:2)
-    cells[2][3] = SolidCell(x:2, y:3)
-    cells[3][2] = CrumbleCell(x:3, y:2)
-    cells[3][3] = IceCell(x:3, y:3)
-    return cells
-}
-
-
-struct BoardView: View {
-    var cells: [[Cell]] = testBoard()
-    let d: CGFloat = 50*2 // Side of the cell square
-    let h: CGFloat = 10*2 // Height of the cell slab
-    let alpha: CGFloat = CGFloat.pi / 6 // Projection angle
-    let cornerRadius: CGFloat = 6*2
-    
-    // Function to sort cells in reverse order of x+y
-    func sortedCells() -> [Cell] {
-        let flattenedCells = cells.flatMap { $0 }
-        return flattenedCells.sorted { ($0.x + $0.y) > ($1.x + $1.y) }
-    }
-    
-    var body: some View {
-        GeometryReader { geometry in
-            ForEach(sortedCells()) { cell in
-                cell.view(with: geometry, d: d, h: h, alpha: alpha, cornerRadius: cornerRadius)
-            }.offset(y: geometry.size.height*0.4)
-//
-//            let cells : [Cell] = sortedCells()
-//            ForEach(0..<cells.count, id: \.self) { index in
-//                let cell = cells[index]
-//                cell.view(with: geometry, d: d, h: h, alpha: alpha, cornerRadius:cornerRadius)
-//            }
-        }
-
-    }
-
-}
-
-
-
 struct StonedgeGameView: View {
-    
+    @Binding var levelIndex: Int
+    @Binding var game: Game
     @Binding var gameView: Bool
-    var levelIndex : Int
-    
+
+    @State private var startPoint: CGPoint? = nil
+    @State private var endPoint: CGPoint? = nil
+
     //    let game : Game;
-    
+
     //    init(game: Game){
     //        self.game = game
     //    }
     //
+
+
+    func detectSwipeDirection(from start: CGPoint, to end: CGPoint) {
+        let cosAlpha = cos(alpha)
+        let sinAlpha = sin(alpha)
+        let dx = (end.x - start.x) / cosAlpha
+        let dy = (end.y - start.y) / sinAlpha
+
+        // alpha
+
+        if abs(dx) > abs(dy) {
+            // Horizontal swipe
+            if dx > 0 {
+                // Right swipe
+                print("Swipe detected: NW -> SE")
+                game.move(direction: .right)
+            } else {
+                // Left swipe
+                print("Swipe detected: SE -> NW")
+                game.move(direction: .left)
+            }
+        } else {
+            // Vertical swipe
+            if dy > 0 {
+                // Down swipe
+                print("Swipe detected: NE -> SW")
+                game.move(direction: .front)
+            } else {
+                // Up swipe
+                print("Swipe detected: SW -> NE")
+                game.move(direction: .back)
+            }
+        }
+    }
+
+
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 20){
@@ -85,35 +70,46 @@ struct StonedgeGameView: View {
                 }
                 Spacer()
             }
-            .padding(.horizontal)
-            .background(Color(UIColor.systemBackground))
-            
-            ZStack {
-                GeometryReader { geometry in
-                    LinearGradient(gradient: Gradient(colors: [.blue, .white]), startPoint: .top, endPoint: .bottom)
-                        //.edgesIgnoringSafeArea(.all)
-                        .scaleEffect(x: 1, y: -1)
-                        .rotationEffect(.degrees(180), anchor: .center)
-                        .frame(width: geometry.size.width, height: geometry.size.height)
+              .padding(.horizontal)
+              .background(Color(UIColor.systemBackground))
+
+            Spacer()
+
+            GeometryReader { geometry in
+                ZStack {
+                    BoardView(cells: $game.cells)
+                    StoneView(stone: $game.stone)
                 }
-                
-                BoardView()
-                    .scaleEffect(x: 0.5, y: -0.5) // Flip the y-axis
-                    .scaledToFit()
-                    .rotationEffect(.degrees(180), anchor: .center)
-                
+                  .rotationEffect(.degrees(180), anchor: .center)
+                  .offset(y: geometry.size.height*0.4)
+                  .scaleEffect(x: 0.4, y: 0.4)
+                  .gesture(
+                    DragGesture()
+                      .onChanged { value in
+                          // Capture the start point
+                          if startPoint == nil {
+                              startPoint = value.startLocation
+                          }
+                          // Update the end point as the drag progresses
+                          endPoint = value.location
+                      }
+                      .onEnded { _ in
+                          // Calculate the direction when the drag ends
+                          if let start = startPoint, let end = endPoint {
+                              detectSwipeDirection(from: start, to: end)
+                          }
+                          // Reset points
+                          startPoint = nil
+                          endPoint = nil
+                      }
+                  )
             }
         }
-        //                .background(
-        //                    LinearGradient(gradient: Gradient(colors: [.blue, .white]), startPoint: .top, endPoint: .bottom)
-        //                        //.edgesIgnoringSafeArea(.all)
-        //                        .scaleEffect(x: 1, y: -1) // Flip the y-axis
-        //                )
     }
 }
 
 
-#Preview {
-    StonedgeGameView(gameView: .constant(true),
-                     levelIndex:0)
-}
+// #Preview {
+//     StonedgeGameView(gameView: .constant(true),
+//                      levelIndex:0)
+// }

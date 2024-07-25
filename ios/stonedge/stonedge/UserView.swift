@@ -9,26 +9,26 @@
 import SwiftUI
 
 struct UserView: View {
-    
+
     @Binding var gameView:Bool
     @Binding var levelIndex:Int
     var maxLevelIndex:Int
     var currentLevelTitle:String
     var currentLevelDescription:String
-    
+
     var body: some View {
         VStack(spacing: 20) {
             // Title
             Text("Stonedge")
                 .font(.largeTitle)
                 .padding()
-            
+
             // Level Name
             Text(currentLevelTitle)
                 .font(.title)
 
             Text(currentLevelDescription)
-            
+
             // Button Stack
             VStack(spacing: 10) {
                 Button("Play") {
@@ -58,12 +58,18 @@ struct UserView: View {
                     levelIndex = 0
                 }
             }
-            
+
             Spacer()
         }
     }
 }
 
-//#Preview {
-//    UserView()
-//}
+#Preview {
+    @State var gameView: Bool = false;
+    @State var levelIndex: Int = 1;
+    return UserView(gameView: $gameView,
+                    levelIndex: $levelIndex,
+                    maxLevelIndex: 1,
+                    currentLevelTitle: "Simple",
+                    currentLevelDescription: "A simple test level")
+}

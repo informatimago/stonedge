@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct stonedgeApp: App {
+struct StonedgeApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

@@ -31,13 +31,13 @@ let crumbleName = "C"
 
 func parseGame(specification: String) -> Game? {
     var lines = specification.split(separator: "\n").map(String.init)
-    
+
     let titleIndex = lines.firstIndex(where: { line in !line.isEmpty && !line.allSatisfy({ $0 == "." })})
     let firstGridIndex = lines.firstIndex(where: { line in
         // Check if the line is not empty and all characters in the line are dots.
         return !line.isEmpty && line.allSatisfy({ $0 == "." })
     })
-    
+
     var title = ""
     var description : [String] = []
 
@@ -51,16 +51,16 @@ func parseGame(specification: String) -> Game? {
     let firstDefIndex = lines.firstIndex { $0.contains("PATHWAY") || $0.contains("RED") || $0.contains("BLUE") } ?? lines.endIndex
     let gridLines = Array(lines[(firstGridIndex ?? firstDefIndex)..<firstDefIndex])
     let cellDefLines = Array(lines[firstDefIndex...])
-    
+
     let height = gridLines.count
     let width = gridLines.map { $0.count }.max() ?? 0
-    
+
     var grid : [[Cell]] = []
     var stone : Stone? = nil
-    
+
     var definitions: [String: Definition] = [:]
     var namedCells: [String: Cell] = [:]
-    
+
     // Process cell definitions
     for line in cellDefLines {
         let components = line.split(separator: " ").map(String.init)
@@ -85,13 +85,13 @@ func parseGame(specification: String) -> Game? {
             print("Error: Unknown directive \(components[1])")
             break
         }
-        
+
         let definition : Definition = Definition(name:name, link:link, connected:connected, state:state)
         print("\(definition)")
-        
+
         definitions[definition.name]=definition
     }
-    
+
     // Fill the grid and track coordinates
     for (y, line) in gridLines.enumerated() {
         grid.append([])
@@ -108,10 +108,10 @@ func parseGame(specification: String) -> Game? {
             grid[y].append(EmptyCell(x:x, y:y))
         }
     }
-    
+
     for (y, line) in gridLines.enumerated() {
         for (x, char) in line.enumerated() {
-            
+
             if (x < 2) || (y < 2) || (width - 2 < x) || (height - 2 < y) {
                 if grid[y][x] is EmptyCell {
                     // ok
@@ -120,7 +120,7 @@ func parseGame(specification: String) -> Game? {
                     return nil
                 }
             }
-            
+
             let cellName = String(char)
             if let cell = namedCells[cellName] {
                 if (cell.x == x) && (cell.y == y) {
@@ -144,7 +144,7 @@ func parseGame(specification: String) -> Game? {
             }
         }
     }
-    
+
     if let stone = stone {
         let game = Game(stone: stone, cells: grid)
         game.title = title
@@ -181,4 +181,3 @@ func createCell(from cellName: String, x: Int, y: Int, definitions: [String: Def
         return SolidCell(x: x, y: y)
     }
 }
-

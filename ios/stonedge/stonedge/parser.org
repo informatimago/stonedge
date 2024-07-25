@@ -15,7 +15,7 @@ Level specification is a multiline string with the following syntax:
     cell-definition ::= cell-name 'pathway' 'open'|'closed'
                       | cell-name 'red' { cell-name }
                       | cell-name 'blue' { cell-name } .
-    cell-name ::= other-char . 
+    cell-name ::= other-char .
 
 
 The characters are case insensitive.
@@ -32,4 +32,3 @@ without spaces between the cell-name character.
 
 There must be a single start position, and all the non empty cells
 must be at least two steps from the borders.
-

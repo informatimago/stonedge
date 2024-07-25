@@ -1,11 +1,4 @@
-//
-//  Stone.swift
-//  stonedge
-//
-//  Created by Pascal Bourguignon on 21/02/2024.
-//
-
-import Foundation
+import SwiftUI
 
 //
 //              ^
@@ -42,7 +35,7 @@ public func lateralp(direction: [Int]) -> Bool {
 
 public func frontp(direction: [Int]) -> Bool {
     (direction[1] != 0)
-    
+
 }
 
 
@@ -59,17 +52,17 @@ public let rotations: [[[Int]]] = [
     [[0, 0, 1],
      [0, 1, 0],
      [-1, 0, 0]],
-    
+
     // left
     [[0, 0, -1],
      [0, 1, 0],
      [1, 0, 0]],
-    
+
     // front
     [[1, 0, 0],
      [0, 0, 1],
      [0, -1, 0]],
-    
+
     // back
     [[1, 0, 0],
      [0, 0, -1],
@@ -99,10 +92,10 @@ public func negate(vector: [Int]) -> [Int] {
 open class Stone {
     // A stone is made of two cubes of size equal to the cells.
     // To move, it rotates 1/4 turn on one of its edges that is in contact with the cells.
-    
+
     var x: Int = 0 // Ordinate of the first cube of the stone.
     var y: Int = 0 // Coordinate of the first cube of the stone.
-    
+
     var orientation: [Int] = [0, 0, 1]
     // A unit vector indicating the direction of the stone.
     // The coordinate of the other cube of the stone is given by adding this vector to
@@ -115,32 +108,32 @@ open class Stone {
         self.y=y
         self.orientation = orientation
     }
-    
+
     public func normalize(for direction: Direction) {
         switch direction {
         case .left:
-            if (self.orientation[0]>0) {
+            if (self.orientation[0]>0) { // lateralp
                 self.x += 1
                 self.orientation = negate(vector: self.orientation)
             }
         case .right:
-            if (self.orientation[0]<0) {
+            if (self.orientation[0]<0) { // lateralp
                 self.x -= 1
                 self.orientation = negate(vector: self.orientation)
             }
         case .front:
-            if (self.orientation[1]>0) {
+            if (self.orientation[1]>0) { // frontp
                 self.y += 1
                 self.orientation = negate(vector: self.orientation)
             }
         case .back:
-            if (self.orientation[1]<0) {
+            if (self.orientation[1]<0) { // frontp
                 self.y -= 1
                 self.orientation = negate(vector: self.orientation)
             }
         }
     }
-    
+
     public func move(in direction: Direction) {
         normalize(for: direction)
         switch direction {
@@ -155,9 +148,9 @@ open class Stone {
         }
         self.orientation = rotate(matrix: rotations[direction.rawValue], vector: self.orientation)
     }
-    
-    public func coverage() -> (Orientation, Int, Int, Int, Int) {
-        // Returns:   direction; left; back; right; front
+
+    public func coverage() -> (Orientation, Int, Int, Int, Int, Int, Int) {
+        // Returns:   direction, x0, y0, z0, x1, y1, z1
         var orientation = Orientation.front
         if (verticalp(direction: self.orientation)) {
             orientation = Orientation.vertical
@@ -165,14 +158,14 @@ open class Stone {
             orientation = Orientation.lateral
         }
         if (orientation == Orientation.vertical){
-            return (orientation, self.x, self.y, self.x, self.y)
+            return (orientation, self.x, self.y, 0, self.x, self.y, 1)
         }else{
-            var x0 = self.x
-            var x1 = x0 + self.orientation[0]
-            var y0 = self.y
-            var y1 = y0 + self.orientation[1]
-            return (orientation, min(x0,x1), min(y0,y1), max(x0,x1), max(y0,y1))
+            let x0 = self.x
+            let x1 = x0 + self.orientation[0]
+            let y0 = self.y
+            let y1 = y0 + self.orientation[1]
+            return (orientation, min(x0,x1), min(y0,y1), 0, max(x0,x1), max(y0,y1), 0)
         }
     }
-}
 
+}

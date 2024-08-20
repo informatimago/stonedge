@@ -45,20 +45,20 @@ struct StonedgeGameView: View {
         let swipeAngle = atan2(dy, dx) * 180 / .pi
     print("dx=\(dx) dy=\(dy) swipeAngle=\(swipeAngle)")
         if (swipeAngle < 90) {
-            print("Swipe detected: SW -> NE .front")
-            game.move(direction: .front)
-        }
-        else if (swipeAngle < 180) {
             print("Swipe detected: SE -> NW .right")
             game.move(direction: .right)
         }
-        else if (swipeAngle < 270) {
+        else if (swipeAngle < 180) {
             print("Swipe detected: NE -> SW .back")
             game.move(direction: .back)
         }
-        else {
+        else if (swipeAngle < 270) {
             print("Swipe detected: NW -> SE .left")
             game.move(direction: .left)
+        }
+        else {
+            print("Swipe detected: SW -> NE .front")
+            game.move(direction: .front)
         }
     }
 
@@ -122,7 +122,7 @@ struct StonedgeGameView: View {
                   .rotationEffect(.degrees(180), anchor: .center)
                   .scaleEffect(scaleFactor)
                   .offset(x: -(frameSize.width / 2 - centerX) * scaleFactor,
-                        y: -(frameSize.height / 2 - centerY) * scaleFactor)
+                          y: -(frameSize.height / 2 - centerY) * scaleFactor)
                   .gesture(
                     DragGesture()
                       .onChanged { value in
@@ -176,6 +176,31 @@ struct StonedgeGameView: View {
                                                 gameView = false
                                             }))
               }
+
+            Spacer()
+
+            VStack(spacing: 10){
+                Button("↑") {
+                    game.move(direction: .right)
+                }
+                HStack(spacing: 10){
+                    Spacer()
+                    Button("←") {
+                        game.move(direction: .back)
+                    }
+                    Spacer()
+                    Text(" ")
+                    Spacer()
+                    Button("→") {
+                        game.move(direction: .front)
+                    }
+                    Spacer()
+                }
+                Button("↓") {
+                    game.move(direction: .left)
+                }
+            }
+              .background(Color(UIColor.systemBackground))
 
         }
     }

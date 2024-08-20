@@ -10,20 +10,18 @@ import SwiftUI
 
 struct ContentView: View {
 
+    @State var user: User
     @State var game: Game
     @State private var gameView = false
     @State private var levelIndex = 0
-    var user = User().loadUser()
 
     init()
     {
-        let ll = (user.maxCompletedLevel + 1) % levels.count
+        let newUser = User().loadUser()
+        let ll = (newUser.maxCompletedLevel + 1) % levels.count
+        user = newUser
+        game = newUser.game
         levelIndex = ll
-        if let parsedGame = parseGame(specification: levels[ll]) {
-            game = parsedGame
-        }else{
-            fatalError("Cannot parse game specification \(ll)")
-        }
     }
 
     var body: some View {
@@ -36,11 +34,12 @@ struct ContentView: View {
 
                 if gameView {
                     StonedgeGameView(levelIndex: $levelIndex,
-                                     game: $game,
+                                     game: game,
                                      gameView: $gameView)
                 }
                 else {
-                    UserView(gameView: $gameView,
+                    UserView(user: $user,
+                             gameView: $gameView,
                              levelIndex: $levelIndex,
                              maxLevelIndex: user.maxCompletedLevel,
                              currentLevelTitle: game.title,
@@ -48,6 +47,9 @@ struct ContentView: View {
                 }
             }
               .padding()
+              .frame(maxWidth: .infinity, maxHeight: .infinity)
+              .ignoresSafeArea(edges: .all) // Ensures the view covers the entire screen
+
         }
     }
 }

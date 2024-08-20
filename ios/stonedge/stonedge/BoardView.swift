@@ -19,14 +19,14 @@ func testBoard() -> [[Cell]] {
         }
     }
     cells[0][0] = SolidCell(x:0, y:0)
-    cells[0][1] = TargetCell(x:0, y:1)
-    cells[0][2] = PathwayCell(x:0, y:2, state:.open)
-    cells[0][3] = PathwayCell(x:0, y:3, state:.closed)
-    cells[1][2] = RedButtonCell(x:1, y:2, commandedCell:cells[0][2] as? PathwayCell)
-    cells[1][3] = BlueButtonCell(x:1, y:3, commandedCell:cells[0][3] as? PathwayCell)
+    cells[1][0] = TargetCell(x:0, y:1)
+    cells[2][0] = PathwayCell(x:0, y:2, state:.open)
+    cells[3][0] = PathwayCell(x:0, y:3, state:.closed)
+    cells[2][1] = RedButtonCell(x:1, y:2, commandedCell:cells[0][2] as? PathwayCell)
+    cells[3][1] = BlueButtonCell(x:1, y:3, commandedCell:cells[0][3] as? PathwayCell)
     cells[2][2] = SolidCell(x:2, y:2)
-    cells[2][3] = SolidCell(x:2, y:3)
-    cells[3][2] = CrumbleCell(x:3, y:2)
+    cells[3][2] = SolidCell(x:2, y:3)
+    cells[2][3] = CrumbleCell(x:3, y:2)
     cells[3][3] = IceCell(x:3, y:3)
     return cells
 }
@@ -35,13 +35,79 @@ func testBoard() -> [[Cell]] {
 struct BoardView: View {
     @Binding var cells: [[Cell]]
 
+
+    static func computeBoundsFor(cell:Cell, in geometry: GeometryProxy) -> CGRect
+    {
+        // compute a bounding rectangle for the Cell, given the display parametrs (d, h cosAlpha, sinAlpha and its coordinates cell.x, cell.y)
+        let x = cell.x
+        let y = cell.y
+        let cosAlpha = cos(alpha)
+        let sinAlpha = sin(alpha)
+
+        let O = CGPoint(x: 0, y: 0)
+        let F = CGPoint(x: d * cosAlpha, y: d * sinAlpha)
+        let C = CGPoint(x: 0, y: h + 2 * d * sinAlpha)
+        let E = CGPoint(x: -d * cosAlpha, y: d * sinAlpha)
+
+        // Compute cell origin
+        let Oxy = CGPoint(x: (CGFloat(x - y) * d * cosAlpha) + geometry.size.width / 2,
+                          y: (CGFloat(x + y) * d * sinAlpha) + geometry.size.height / 2)
+
+        let bottom = Oxy.y
+        let left = Oxy.x + E.x
+        let top = Oxy.y + C.y
+        let right = Oxy.x + F.x
+
+        return CGRect(x: left, y: top, width: right - left, height: bottom - top)
+    }
+
+    static func computeBoundsFor(cells:[[Cell]], in geometry: GeometryProxy) -> CGRect
+    {
+        // for each cell in cells, if the cell is not EmptyCell,
+        // then computeBoundsFor(cell:cell, in:geometry)
+        // and take the union of the result rectangles.
+        var bounds = CGRect(x:0, y:0, width:0, height:0)
+        for row in cells {
+            for cell in row {
+                if !(cell is EmptyCell) {
+                    bounds = bounds.union(computeBoundsFor(cell: cell, in:geometry))
+                }
+            }
+        }
+        return bounds
+    }
+
+    static func computeScaleFor(cells:[[Cell]], in geometry: GeometryProxy) -> (CGFloat, CGFloat, CGFloat)
+    {
+
+        // let rows = cells.count
+        // let cols = cells[0].count
+        // let cosAlpha = cos(alpha)
+        // let sinAlpha = sin(alpha)
+        // let width  = d * cosAlpha * (CGFloat(cols) + CGFloat(rows))
+        // let height = d * sinAlpha * (CGFloat(cols) + CGFloat(rows))
+        //
+        // let hscale = (geometry.size.width  - 2*inset) / width
+        // let vscale = (geometry.size.height - 2*inset) / height
+        //
+        // print("computeScaleFor(cols=\(cols), rows = \(rows)) -> size = \(width)x\(height) in \(geometry.size.width  - 2*inset)x\(geometry.size.height - 2*inset) -> scale = \(hscale)x\(vscale)")
+        // return min(hscale,vscale)
+
+        let bounds = computeBoundsFor(cells:cells, in:geometry)
+        let hscale = (geometry.size.width  - 2*inset) / bounds.size.width
+        let vscale = (geometry.size.height - 2*inset) / bounds.size.height
+        let center_x = bounds.origin.x + bounds.size.width / 2
+        let center_y = bounds.origin.y + bounds.size.height / 2
+        return (min(hscale,vscale),
+                center_x, center_y)
+    }
+
     // Function to sort cells in reverse order of x+y
     func sortedCells() -> [Cell]
     {
         let flattenedCells = cells.flatMap { $0 }
         return flattenedCells.sorted { ($0.x + $0.y) > ($1.x + $1.y) }
     }
-
 
     func drawSquare(at point: CGPoint) -> some View
     {
@@ -69,7 +135,7 @@ struct BoardView: View {
         // Compute cell origin
         let Oxy = CGPoint(x: (CGFloat(x - y) * d * cosAlpha) + geometry.size.width / 2,
                           y: (CGFloat(x + y) * d * sinAlpha) + geometry.size.height / 2)
-        print( "cell  Oxy(\(x),\(y)) = ", Oxy)
+        // print( "cell  Oxy(\(x),\(y)) = ", Oxy)
 
         // view the cell slab
 
@@ -124,33 +190,37 @@ struct BoardView: View {
     }
 
 
-    public func computeViewForCell(cell: EmptyCell, with geometry: GeometryProxy, d: CGFloat, h: CGFloat, alpha: CGFloat, cornerRadius: CGFloat) -> AnyView
-    {
-        return AnyView(EmptyView())
-    }
-
     public func computeViewForCell(cell: Cell, with geometry: GeometryProxy, d: CGFloat, h: CGFloat, alpha: CGFloat, cornerRadius: CGFloat) -> AnyView
     {
-        let (path, ticks) = cellPaths(cell: cell, with: geometry, d: d, h: h, alpha: alpha, cornerRadius:cornerRadius)
-        let x = cell.x
-        let y = cell.y
-        let cosAlpha = cos(alpha)
-        let sinAlpha = sin(alpha)
-        let Oxy = CGPoint(x: (CGFloat(x - y) * d * cosAlpha) + geometry.size.width / 2,
-                          y: (CGFloat(x + y) * d * sinAlpha) + geometry.size.height / 2)
-        return AnyView(ZStack {
-                           AnyView(
-                             path
-                               .fill(cell.cellColor())
-                               .overlay(path.stroke(Color.black, lineWidth: 2))
-                               .overlay(ticks.stroke(Color.black, lineWidth: 1))
-                           )
-                           Text("\(cell.x),\(cell.y)")
-                             .rotationEffect(.degrees(180), anchor: .center)
-                             .position(x: Oxy.x, y: Oxy.y)
-                             .offset(y:0.75*d)
-                       }
-        )
+
+        if cell is EmptyCell
+        {
+            return AnyView(EmptyView())
+        }
+
+        if let color = cell.cellColor() {
+            let (path, ticks) = cellPaths(cell: cell, with: geometry, d: d, h: h, alpha: alpha, cornerRadius:cornerRadius)
+            let x = cell.x
+            let y = cell.y
+            let cosAlpha = cos(alpha)
+            let sinAlpha = sin(alpha)
+            let Oxy = CGPoint(x: (CGFloat(x - y) * d * cosAlpha) + geometry.size.width / 2,
+                              y: (CGFloat(x + y) * d * sinAlpha) + geometry.size.height / 2)
+            return AnyView(ZStack {
+                               AnyView(
+                                 path
+                                   .fill(color)
+                                   .overlay(path.stroke(Color.black, lineWidth: 2))
+                                   .overlay(ticks.stroke(Color.black, lineWidth: 1))
+                               )
+                               Text("\(cell.x),\(cell.y)")
+                                 .rotationEffect(.degrees(180), anchor: .center)
+                                 .position(x: Oxy.x, y: Oxy.y)
+                                 .offset(y:0.75*d)
+                           })
+        }else{
+            return AnyView(EmptyView())
+        }
     }
 
     var body: some View {
@@ -179,6 +249,13 @@ struct BoardView: View {
 
 #Preview {
     @State var cells = testBoard()
-    return BoardView(cells: $cells)
-        .scaleEffect(x:0.5, y:0.5)
+    @State var step = 0
+    return GeometryReader { geometry in
+        let frameSize = geometry.size
+        let (scaleFactor, centerX, centerY) = BoardView.computeScaleFor(cells:cells, in:geometry)
+        BoardView(cells: $cells)
+                .scaleEffect(scaleFactor)
+                .offset(x: (frameSize.width / 2 - centerX) * scaleFactor,
+                        y: (frameSize.height / 2 - centerY) * scaleFactor)
+    }
 }

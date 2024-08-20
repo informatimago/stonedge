@@ -8,11 +8,6 @@
 import Foundation
 import SwiftUI
 
-public func signalGameWon(){
-}
-public func signalGameLost(){
-}
-
 
 public enum GameStatus {
     case playing, win, lose
@@ -31,12 +26,12 @@ public protocol CellInterface {
     func gameStatus(stone: Stone) -> GameStatus
     // Returns nil :win or :lose depending on what would happen if the stone was on the cell.
 
-    func cellColor() -> Color;
+    func cellColor() -> Color?;
 
 }
 
 
-open class Cell : CellInterface, Identifiable {
+open class Cell : CellInterface, ObservableObject, Identifiable {
 
     // This is an abstract cell. Cells are square, and all of the same size.
 
@@ -48,16 +43,18 @@ open class Cell : CellInterface, Identifiable {
         self.y = y
     }
 
-    open func cellColor() -> Color {
+    open func cellColor() -> Color? {
         return Color.white
     }
 
     open func stoneMovedOverCell(stone: Stone){
         // Nothing
+        print("### stone moved over cell \(String(describing: type(of: self))) \(x),\(y)")
     }
 
     open func stoneLeavesCell(stone: Stone){
         // Nothing
+        print("### stone   leaves   cell \(String(describing: type(of: self))) \(x),\(y)")
     }
 
     open func gameStatus(stone: Stone) -> GameStatus {
@@ -69,7 +66,7 @@ open class Cell : CellInterface, Identifiable {
 open class SolidCell : Cell {
     // The stone may remain securely on a solid cell.
 
-    public override func cellColor() -> Color {
+    public override func cellColor() -> Color? {
         return Color.green
     }
 
@@ -78,11 +75,12 @@ open class SolidCell : Cell {
 open class TargetCell : Cell {
     // Once the stone is in vertical position on a target cell, the game is won.
 
-    public override func cellColor() -> Color {
+    public override func cellColor() -> Color? {
         return Color.white
     }
 
     public override func stoneMovedOverCell(stone: Stone){
+        super.stoneMovedOverCell(stone: stone)
         if (verticalp(direction: stone.orientation)) {
             signalGameWon()
         }
@@ -100,9 +98,13 @@ open class TargetCell : Cell {
 open class EmptyCell : Cell {
   // When the stone is over an empty cell, the game is lost.
 
+    public override func cellColor() -> Color? {
+        return nil
+    }
 
     public override func stoneMovedOverCell(stone: Stone){
-        signalGameLost()
+        super.stoneMovedOverCell(stone: stone)
+        signalGameLost(why: "moved over an empty cell")
     }
 
     public override func gameStatus(stone: Stone) -> GameStatus {
@@ -119,20 +121,25 @@ open class PathwayCell : Cell {
         case closed, open
     }
 
-    public var state = State.closed // A pathway cell may be :open or :closed.
+    @Published var state = State.closed // A pathway cell may be :open or :closed.
 
     public init(x: Int, y: Int, state: State = State.closed) {
         super.init(x:x, y:y)
         self.state = state
     }
 
-    public override func cellColor() -> Color {
-        return Color.yellow
+    public override func cellColor() -> Color? {
+        if state == State.open {
+            return Color.green
+        } else {
+            return Color.yellow
+        }
     }
 
     public override func stoneMovedOverCell(stone: Stone) {
+        super.stoneMovedOverCell(stone: stone)
         if (state == State.closed){
-            signalGameLost()
+            signalGameLost(why: "moved over a closed pathway cell")
         }
     }
 
@@ -154,6 +161,7 @@ open class ButtonCell : Cell {
     // Button cells may switch the state of pathway-cells.
 
     public var switches: [PathwayCell] = [] // A list of cells that may be switched when the stone is over the button cell.
+
     public init(x: Int, y: Int, commandedCell: PathwayCell? = nil) {
         super.init(x:x, y:y)
         if let commandedCell {
@@ -173,11 +181,12 @@ open class RedButtonCell : ButtonCell {
     // A red button cell switches its pathway cells
     // as soon as the stone is over it."
 
-    public override func cellColor() -> Color {
+    public override func cellColor() -> Color? {
         return Color.red
     }
 
     public override func stoneMovedOverCell(stone: Stone){
+        super.stoneMovedOverCell(stone: stone)
         switchPathwayCells()
     }
 
@@ -188,7 +197,7 @@ open class BlueButtonCell : ButtonCell {
     // A blue button cell switches its pathway cells
     // only when the stone is over it in vertical position.
 
-    public override func cellColor() -> Color {
+    public override func cellColor() -> Color? {
         return Color.blue
     }
 
@@ -208,15 +217,21 @@ open class CrumbleCell : Cell {
     enum State {
         case open, closed
     }
-    var state = State.open // A crumble cell goes from :open to :closed the first time it's walked over, and stays :closed thereafter.
 
-    public override func cellColor() -> Color {
-        return Color.orange
+    @Published var state = State.open // A crumble cell goes from :open to :closed the first time it's walked over, and stays :closed thereafter.
+
+    public override func cellColor() -> Color? {
+        if state == State.open {
+            return Color.orange
+        }else{
+            return nil
+        }
     }
 
     public override func stoneMovedOverCell(stone: Stone) {
+        super.stoneMovedOverCell(stone: stone)
         if (state == State.closed){
-            signalGameLost()
+            signalGameLost(why: "moved over a crumbled cell")
         }
     }
 
@@ -228,6 +243,7 @@ open class CrumbleCell : Cell {
     }
 
     public override func stoneLeavesCell(stone: Stone) {
+        super.stoneLeavesCell(stone: stone)
         self.state = State.closed
     }
 
@@ -238,13 +254,14 @@ open class IceCell : Cell {
     // An ice cell supports an horizontal stone, but
     // when the stone is over it in vertical position, it breaks, the stone falls down, and the game is lost.
 
-    public override func cellColor() -> Color {
+    public override func cellColor() -> Color? {
         return Color.cyan
     }
 
     public override func stoneMovedOverCell(stone: Stone) {
+        super.stoneMovedOverCell(stone: stone)
         if (verticalp(direction: stone.orientation)){
-            signalGameLost()
+            signalGameLost(why: "moved vertically over an ice cell")
         }
     }
 

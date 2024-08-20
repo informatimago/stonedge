@@ -1,8 +1,9 @@
 import SwiftUI
 
 struct StoneView: View {
-    @Binding var stone: Stone
-    
+
+    @ObservedObject var stone: Stone
+
     private var stoneWidth: CGFloat {
         // Adjusts the stone width based on its orientation
         if lateralp(direction: stone.orientation) || frontp(direction: stone.orientation) {
@@ -11,7 +12,7 @@ struct StoneView: View {
             return squareSize
         }
     }
-    
+
     private var stoneHeight: CGFloat {
         // Adjusts the stone height based on its orientation
         if verticalp(direction: stone.orientation) {
@@ -100,7 +101,7 @@ struct StoneView: View {
 
         var pathF = path1
         var pathB = path2
-        
+
         switch(orientation){
         case .vertical:
             pathF = path1
@@ -112,7 +113,7 @@ struct StoneView: View {
             pathF = path2
             pathB = path1
         }
-        
+
         let ticks = Path()
         //         let n = 4
         //         let e = d/16
@@ -180,7 +181,7 @@ struct StoneView: View {
                              }
                                .overlay(ticks.stroke(Color.black, lineWidth: 1))
                            )
-                           
+
                            Text("\(x),\(y)")
                              .foregroundColor(.red)
                              .rotationEffect(.degrees(180), anchor: .center)
@@ -199,13 +200,14 @@ struct StoneView: View {
 
         }
     }
+
 }
 
 
 
 struct StoneView_Previews: PreviewProvider {
    static var previews: some View {
-       @State var stone = Stone(x: 3,y: 3, orientation: [1,0,0])
-       StoneView(stone: $stone)
+       @StateObject var stone = Stone(x: 3,y: 3, orientation: [1,0,0])
+       StoneView(stone: stone)
    }
 }

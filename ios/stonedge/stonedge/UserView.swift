@@ -10,11 +10,12 @@ import SwiftUI
 
 struct UserView: View {
 
-    @Binding var gameView:Bool
-    @Binding var levelIndex:Int
-    var maxLevelIndex:Int
-    var currentLevelTitle:String
-    var currentLevelDescription:String
+    @Binding var user: User
+    @Binding var gameView: Bool
+    @Binding var levelIndex: Int
+    var maxLevelIndex: Int
+    var currentLevelTitle: String
+    var currentLevelDescription: String
 
     var body: some View {
         VStack(spacing: 20) {
@@ -34,28 +35,23 @@ struct UserView: View {
                 Button("Play") {
                     // Action for Play button
                     print("Play tapped")
+                    user.resetGame()
                     gameView = true
                 }
                 Button("Next Level") {
                     // Action for Next button
                     print("Next tapped")
-                    levelIndex += 1
-                    if levelIndex > maxLevelIndex {
-                        levelIndex = maxLevelIndex
-                    }
+                    user.nextLevel()
                 }
                 Button("Previous Level") {
                     // Action for Previous button
                     print("Previous tapped")
-                    levelIndex -= 1
-                    if levelIndex<0 {
-                        levelIndex = 0
-                    }
+                    user.previousLevel()
                 }
-                Button("Reset Game") {
+                Button("Restart Game") {
                     // Action for Reset button
                     print("Reset tapped")
-                    levelIndex = 0
+                    user.restartGame()
                 }
             }
 
@@ -65,9 +61,11 @@ struct UserView: View {
 }
 
 #Preview {
+    @State var user: User = User()
     @State var gameView: Bool = false;
     @State var levelIndex: Int = 1;
-    return UserView(gameView: $gameView,
+    return UserView(user: $user,
+                    gameView: $gameView,
                     levelIndex: $levelIndex,
                     maxLevelIndex: 1,
                     currentLevelTitle: "Simple",

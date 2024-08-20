@@ -11,52 +11,54 @@ import Foundation
 
 
 
+
 struct StonedgeGameView: View {
     @Binding var levelIndex: Int
-    @Binding var game: Game
+    @ObservedObject var game: Game
     @Binding var gameView: Bool
+
 
     @State private var startPoint: CGPoint? = nil
     @State private var endPoint: CGPoint? = nil
 
-    //    let game : Game;
+    @State private var showWonAlert = false
+    @State private var showLostAlert = false
+    @State private var whyLost : String?
 
-    //    init(game: Game){
-    //        self.game = game
-    //    }
-    //
+    func won()
+    {
+        showWonAlert = true
+    }
 
+    func lost(why:String)
+    {
+        whyLost = why
+        showLostAlert = true
+    }
 
     func detectSwipeDirection(from start: CGPoint, to end: CGPoint) {
+        currentGame = self
         let cosAlpha = cos(alpha)
         let sinAlpha = sin(alpha)
         let dx = (end.x - start.x) / cosAlpha
         let dy = (end.y - start.y) / sinAlpha
-
-        // alpha
-
-        if abs(dx) > abs(dy) {
-            // Horizontal swipe
-            if dx > 0 {
-                // Right swipe
-                print("Swipe detected: NW -> SE")
-                game.move(direction: .right)
-            } else {
-                // Left swipe
-                print("Swipe detected: SE -> NW")
-                game.move(direction: .left)
-            }
-        } else {
-            // Vertical swipe
-            if dy > 0 {
-                // Down swipe
-                print("Swipe detected: NE -> SW")
-                game.move(direction: .front)
-            } else {
-                // Up swipe
-                print("Swipe detected: SW -> NE")
-                game.move(direction: .back)
-            }
+        let swipeAngle = atan2(dy, dx) * 180 / .pi
+    print("dx=\(dx) dy=\(dy) swipeAngle=\(swipeAngle)")
+        if (swipeAngle < 90) {
+            print("Swipe detected: SW -> NE .front")
+            game.move(direction: .front)
+        }
+        else if (swipeAngle < 180) {
+            print("Swipe detected: SE -> NW .right")
+            game.move(direction: .right)
+        }
+        else if (swipeAngle < 270) {
+            print("Swipe detected: NE -> SW .back")
+            game.move(direction: .back)
+        }
+        else {
+            print("Swipe detected: NW -> SE .left")
+            game.move(direction: .left)
         }
     }
 
@@ -76,24 +78,67 @@ struct StonedgeGameView: View {
             Spacer()
 
             GeometryReader { geometry in
+                let frameSize = geometry.size
+
+                // Example: Assuming you have a method like this
+                let (scaleFactor, centerX, centerY) = BoardView.computeScaleFor(cells:game.cells, in:geometry)
+
                 ZStack {
                     BoardView(cells: $game.cells)
-                    StoneView(stone: $game.stone)
-                }
+                    StoneView(stone: game.stone)
+
+                    KeyEventHandlingView { keyCommand in
+                        currentGame = self
+                        if let input = keyCommand.input {
+                            switch input {
+                            case UIKeyCommand.inputEscape, "Q", "q":
+                                print("Escape key pressed")
+                                gameView = false;
+
+                            case UIKeyCommand.inputUpArrow, "A", "a":
+                                print("Up arrow key pressed")
+                                game.move(direction: .right)
+
+                            case UIKeyCommand.inputDownArrow, "X", "x":
+                                print("Down arrow key pressed")
+                                game.move(direction: .left)
+
+                            case UIKeyCommand.inputLeftArrow, "Z", "z":
+                                print("Left arrow key pressed")
+                                game.move(direction: .back)
+
+                            case UIKeyCommand.inputRightArrow, "S", "s":
+                                print("Right arrow key pressed")
+                                game.move(direction: .front)
+
+                            default:
+                                print("Key pressed: \(input)")
+                                break
+                            }
+                        }
+                    }
+
+                } // ZStack
                   .rotationEffect(.degrees(180), anchor: .center)
-                  .offset(y: geometry.size.height*0.4)
-                  .scaleEffect(x: 0.4, y: 0.4)
+                  .scaleEffect(scaleFactor)
+                  .offset(x: -(frameSize.width / 2 - centerX) * scaleFactor,
+                        y: -(frameSize.height / 2 - centerY) * scaleFactor)
                   .gesture(
                     DragGesture()
                       .onChanged { value in
                           // Capture the start point
                           if startPoint == nil {
                               startPoint = value.startLocation
+                              print(".onChanged startPoint=\(startPoint)")
+                          }else{
+                              print(".onChanged endPoint=\(endPoint)")
+
                           }
                           // Update the end point as the drag progresses
                           endPoint = value.location
                       }
                       .onEnded { _ in
+                          print(".onEnded \(endPoint)")
                           // Calculate the direction when the drag ends
                           if let start = startPoint, let end = endPoint {
                               detectSwipeDirection(from: start, to: end)
@@ -103,8 +148,65 @@ struct StonedgeGameView: View {
                           endPoint = nil
                       }
                   )
+
             }
+
+              .alert(isPresented: $showWonAlert) {
+                  Alert(
+                    title: Text("Victory"),
+                    message: Text("You passed this level."),
+                    dismissButton: .default(Text("Next"),
+                                            action: {
+                                                gameView = false
+                                            }))
+
+              }
+              .alert(isPresented: $showLostAlert) {
+                  var message : String
+                  if let reason = whyLost {
+                      message = "You failed this level" + ": " + reason + "."
+                  }else {
+                      message = "You failed this level."
+                  }
+                  return Alert(
+                    title: Text("Failure"),
+                    message: Text(message),
+                    dismissButton: .default(Text("Try again"),
+                                            action: {
+                                                gameView = false
+                                            }))
+              }
+
         }
+    }
+
+
+    // public func box()
+    // {
+    //     // Returns the CGRect needed to draw the board and stone.
+    //     var gameBox : CGRect = StoneView.boxFor(stone: game.stone)
+    //     for(var y=0; y<game.cells.count; y+=1) {
+    //         for(var x=0; x<game.cells[y].count; x+=1) {
+    //             gameBox.union(BoardView.boxFor(cell: game.cells[y][x]))
+    //         }
+    //     }
+    //     return gameBox
+    // }
+
+
+}
+
+var currentGame : StonedgeGameView?
+
+public func signalGameWon(){
+    if let game = currentGame {
+        game.won();
+    }
+}
+
+public func signalGameLost(why: String){
+    if let game = currentGame {
+        game.lost(why: why);
     }
 }
 

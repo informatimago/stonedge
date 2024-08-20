@@ -15,3 +15,4 @@ let alpha: CGFloat = CGFloat.pi / 6 // Projection angle
 let cellCornerRadius: CGFloat = 6*2
 let squareSize: CGFloat = 40.0 // Assuming each square on the board has a fixed size, e.g., 40x40 points.
 
+let inset: CGFloat = 10 // on each side.

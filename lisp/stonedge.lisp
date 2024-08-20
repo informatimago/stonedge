@@ -275,19 +275,19 @@ DIRECTION: (member :left :right :front :back)
      +---+
     /   /|
    +---+ |
-   |   | |
-   |   | +
+   |   |/|
+   |---| +
    |   |/
    +---+  ~A,~A
 \"" x y))
 
         ((lateralp direction)
          (apply (function format) stream "\"
-     +------+
-    /      /|
-   +------+ +
-   |      |/
-   +------+ ~A,~A
+     +-------+
+    /   /   /|
+   +-------+ +
+   |   |   |/
+   +-------+ ~A,~A
 \""
                 (if (minusp (aref direction 0))
                     (list x y)
@@ -297,8 +297,8 @@ DIRECTION: (member :left :right :front :back)
          (apply (function format) stream "\"
        +---+
       /   /|
-     /   / +
-    /   / /
+     /---/ +
+    /   /|/
    +---+ /
    |   |/
    +---+ ~A,~A
@@ -918,7 +918,7 @@ See PARSE-GAME for the description of LEVEL.
               (coerce
                (loop
                   :for move    :in '(:right :left :front :back)
-                  :for reverse :in '(:left :right :back :front)
+                 ;; :for reverse :in '(:left :right :back :front)
                   :collect (let ((child (copy game)))
                              (move child move)
                              (explore child (cons move path))))
@@ -961,6 +961,21 @@ printing the number of states and the win states."
 "
     (a :red     1)
     (1 :pathway :closed)))
+
+(defparameter *level-0-moves*
+  '("
+...............
+...............
+..SOOOOOOOOOO..
+..OOOOOOOOOOO..
+..OOOOOOOOOOO..
+..OOOOOOOOOOO..
+..OOOOOOOOOOO..
+..OOOOOOOOOOO..
+..OOOOOOOOOOT..
+...............
+...............
+"))
 
 (defparameter *level-36*
   '("

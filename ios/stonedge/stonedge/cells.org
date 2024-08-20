@@ -1,0 +1,11 @@
+| Class          | Color     |
+|----------------+-----------|
+| SolidCell      | green     |
+| TargetCell     | white     |
+| EmptyCell      | invisible |
+| PathwayCell    | yellow    |
+| RedButtonCell  | red       |
+| BlueButtonCell | blue      |
+| CrumbleCell    | orange    |
+| IceCell        | cyan      |
+|                |           |

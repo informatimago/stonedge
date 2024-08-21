@@ -11,16 +11,20 @@ import SwiftUI
 struct ContentView: View {
 
     @State var user: User
-    @State var game: Game
     @State private var gameView = false
     @State private var levelIndex = 0
+
+    func newGame()
+    {
+        user.newGame()
+        levelIndex = (user.maxCompletedLevel + 1) % levels.count
+    }
 
     init()
     {
         let newUser = User().loadUser()
         let ll = (newUser.maxCompletedLevel + 1) % levels.count
         user = newUser
-        game = newUser.game
         levelIndex = ll
     }
 
@@ -34,7 +38,7 @@ struct ContentView: View {
 
                 if gameView {
                     StonedgeGameView(levelIndex: $levelIndex,
-                                     game: game,
+                                     user: $user,
                                      gameView: $gameView)
                 }
                 else {
@@ -42,8 +46,8 @@ struct ContentView: View {
                              gameView: $gameView,
                              levelIndex: $levelIndex,
                              maxLevelIndex: user.maxCompletedLevel,
-                             currentLevelTitle: game.title,
-                             currentLevelDescription: game.description.joined(separator: "\n"))
+                             currentLevelTitle: user.game.title,
+                             currentLevelDescription: user.game.description.joined(separator: "\n"))
                 }
             }
               .padding()

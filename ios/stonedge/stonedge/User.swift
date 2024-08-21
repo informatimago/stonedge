@@ -14,6 +14,16 @@ public class User : Identifiable, ObservableObject {
     @Published var currentLevelIndex : Int = 0
     @Published var maxCompletedLevel : Int = 0
 
+    public func newGame() -> Game
+    {
+        if let parsedGame = parseGame(specification: levels[currentLevelIndex]) {
+            game = parsedGame
+        }else{
+            fatalError("Cannot parse game specification \(currentLevelIndex)")
+        }
+        return game
+    }
+
     public init()
     {
         if let parsedGame = parseGame(specification: levels[0]) {
@@ -35,6 +45,7 @@ public class User : Identifiable, ObservableObject {
     {
         currentLevelIndex = 0
         saveUser()
+        newGame()
     }
 
     public func nextLevel()
@@ -47,6 +58,7 @@ public class User : Identifiable, ObservableObject {
             currentLevelIndex = levels.count - 1
         }
         saveUser()
+        newGame()
     }
 
     public func previousLevel()
@@ -56,15 +68,12 @@ public class User : Identifiable, ObservableObject {
             currentLevelIndex = 0
         }
         saveUser()
+        newGame()
     }
 
     public func resetGame()
     {
-        if let parsedGame = parseGame(specification: levels[currentLevelIndex]) {
-            game = parsedGame
-        }else{
-            fatalError("Cannot parse game specification \(currentLevelIndex)")
-        }
+        newGame()
     }
 
     let currentLevelKey = "currentLevel"

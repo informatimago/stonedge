@@ -14,26 +14,28 @@ import Foundation
 
 struct StonedgeGameView: View {
     @Binding var levelIndex: Int
-    @ObservedObject var game: Game
+    @Binding var user: User
     @Binding var gameView: Bool
 
 
     @State private var startPoint: CGPoint? = nil
     @State private var endPoint: CGPoint? = nil
 
-    @State private var showWonAlert = false
-    @State private var showLostAlert = false
+    @State private var gameIsWon = false
     @State private var whyLost : String?
+    @State private var showAlert = false
 
     func won()
     {
-        showWonAlert = true
+        gameIsWon = true
+        showAlert = true
     }
 
     func lost(why:String)
     {
+        gameIsWon = false
         whyLost = why
-        showLostAlert = true
+        showAlert = true
     }
 
     func detectSwipeDirection(from start: CGPoint, to end: CGPoint) {
@@ -46,19 +48,19 @@ struct StonedgeGameView: View {
     print("dx=\(dx) dy=\(dy) swipeAngle=\(swipeAngle)")
         if (swipeAngle < 90) {
             print("Swipe detected: SE -> NW .right")
-            game.move(direction: .right)
+            user.game.move(direction: .right)
         }
         else if (swipeAngle < 180) {
             print("Swipe detected: NE -> SW .back")
-            game.move(direction: .back)
+            user.game.move(direction: .back)
         }
         else if (swipeAngle < 270) {
             print("Swipe detected: NW -> SE .left")
-            game.move(direction: .left)
+            user.game.move(direction: .left)
         }
         else {
             print("Swipe detected: SW -> NE .front")
-            game.move(direction: .front)
+            user.game.move(direction: .front)
         }
     }
 
@@ -81,11 +83,11 @@ struct StonedgeGameView: View {
                 let frameSize = geometry.size
 
                 // Example: Assuming you have a method like this
-                let (scaleFactor, centerX, centerY) = BoardView.computeScaleFor(cells:game.cells, in:geometry)
+                let (scaleFactor, centerX, centerY) = BoardView.computeScaleFor(cells:user.game.cells, in:geometry)
 
                 ZStack {
-                    BoardView(cells: $game.cells)
-                    StoneView(stone: game.stone)
+                    BoardView(cells: $user.game.cells)
+                    StoneView(stone: user.game.stone)
 
                     KeyEventHandlingView { keyCommand in
                         currentGame = self
@@ -97,19 +99,19 @@ struct StonedgeGameView: View {
 
                             case UIKeyCommand.inputUpArrow, "A", "a":
                                 print("Up arrow key pressed")
-                                game.move(direction: .right)
+                                user.game.move(direction: .right)
 
                             case UIKeyCommand.inputDownArrow, "X", "x":
                                 print("Down arrow key pressed")
-                                game.move(direction: .left)
+                                user.game.move(direction: .left)
 
                             case UIKeyCommand.inputLeftArrow, "Z", "z":
                                 print("Left arrow key pressed")
-                                game.move(direction: .back)
+                                user.game.move(direction: .back)
 
                             case UIKeyCommand.inputRightArrow, "S", "s":
                                 print("Right arrow key pressed")
-                                game.move(direction: .front)
+                                user.game.move(direction: .front)
 
                             default:
                                 print("Key pressed: \(input)")
@@ -151,53 +153,56 @@ struct StonedgeGameView: View {
 
             }
 
-              .alert(isPresented: $showWonAlert) {
-                  Alert(
-                    title: Text("Victory"),
-                    message: Text("You passed this level."),
-                    dismissButton: .default(Text("Next"),
-                                            action: {
-                                                gameView = false
-                                            }))
-
-              }
-              .alert(isPresented: $showLostAlert) {
-                  var message : String
-                  if let reason = whyLost {
-                      message = "You failed this level" + ": " + reason + "."
-                  }else {
-                      message = "You failed this level."
+              .alert(isPresented: $showAlert) {
+                  if gameIsWon {
+                      return Alert(
+                        title: Text("Victory"),
+                        message: Text("You passed this level."),
+                        dismissButton: .default(Text("Next"),
+                                                action: {
+                                                    user.won()
+                                                    gameView = true
+                                                }))
                   }
-                  return Alert(
-                    title: Text("Failure"),
-                    message: Text(message),
-                    dismissButton: .default(Text("Try again"),
-                                            action: {
-                                                gameView = false
-                                            }))
+                  else {
+                      var message : String
+                      if let reason = whyLost {
+                          message = "You failed this level" + ": " + reason + "."
+                      }else {
+                          message = "You failed this level."
+                      }
+                      return Alert(
+                        title: Text("Failure"),
+                        message: Text(message),
+                        dismissButton: .default(Text("Try again"),
+                                                action: {
+                                                    user.newGame()
+                                                    gameView = true
+                                                }))
+                  }
               }
 
             Spacer()
 
             VStack(spacing: 10){
                 Button("↑") {
-                    game.move(direction: .right)
+                    user.game.move(direction: .right)
                 }
                 HStack(spacing: 10){
                     Spacer()
                     Button("←") {
-                        game.move(direction: .back)
+                        user.game.move(direction: .back)
                     }
                     Spacer()
                     Text(" ")
                     Spacer()
                     Button("→") {
-                        game.move(direction: .front)
+                        user.game.move(direction: .front)
                     }
                     Spacer()
                 }
                 Button("↓") {
-                    game.move(direction: .left)
+                    user.game.move(direction: .left)
                 }
             }
               .background(Color(UIColor.systemBackground))
@@ -224,6 +229,7 @@ struct StonedgeGameView: View {
 var currentGame : StonedgeGameView?
 
 public func signalGameWon(){
+    print("signalGameWon: currentGame = \(currentGame)")
     if let game = currentGame {
         game.won();
     }

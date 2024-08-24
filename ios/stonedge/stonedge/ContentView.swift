@@ -52,7 +52,7 @@ struct ContentView: View {
             }
               .padding()
               .frame(maxWidth: .infinity, maxHeight: .infinity)
-              .ignoresSafeArea(edges: .all) // Ensures the view covers the entire screen
+              .ignoresSafeArea(edges: .horizontal)
 
         }
     }

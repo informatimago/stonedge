@@ -186,22 +186,26 @@ struct StonedgeGameView: View {
 
             VStack(spacing: 10){
                 Button("↑") {
+                    currentGame = self
                     user.game.move(direction: .right)
                 }
                 HStack(spacing: 10){
                     Spacer()
                     Button("←") {
+                        currentGame = self
                         user.game.move(direction: .back)
                     }
                     Spacer()
                     Text(" ")
                     Spacer()
                     Button("→") {
+                        currentGame = self
                         user.game.move(direction: .front)
                     }
                     Spacer()
                 }
                 Button("↓") {
+                    currentGame = self
                     user.game.move(direction: .left)
                 }
             }

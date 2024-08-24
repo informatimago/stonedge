@@ -117,6 +117,15 @@ struct BoardView: View {
             .foregroundColor(Color.black)
     }
 
+
+    // PathWayCells are open or closed. Closed pathway cells should show they're closed by drawing a sign
+    // ButtonCells should draw a button (cylinder) above the cell.
+
+    // Note: red can be activated vertically or horizontally
+    //       blue can only be activated vertically
+    //       both are always switching on->off or off->on
+    //       We could have one-shot button cells (yellow?) that would switch only once.
+
     public func cellPaths(cell: Cell, with geometry: GeometryProxy, d: CGFloat, h: CGFloat, alpha: CGFloat, cornerRadius: CGFloat) -> (Path, Path)
     {
         let x = cell.x

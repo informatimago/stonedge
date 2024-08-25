@@ -222,8 +222,10 @@ open class CrumbleCell : Cell {
 
     public override func cellColor() -> Color? {
         if state == State.open {
+            print("CrumbleCell at \(x),\(y) is still solid.")
             return Color.orange
         }else{
+            print("CrumbleCell at \(x),\(y) has crumbled.")
             return nil
         }
     }
@@ -245,6 +247,7 @@ open class CrumbleCell : Cell {
     public override func stoneLeavesCell(stone: Stone) {
         super.stoneLeavesCell(stone: stone)
         self.state = State.closed
+        print("CrumbleCell at \(x),\(y) is crumbling.")
     }
 
 }

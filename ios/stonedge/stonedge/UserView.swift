@@ -10,25 +10,37 @@ import SwiftUI
 
 struct UserView: View {
 
-    @Binding var user: User
+    @ObservedObject var user: User
     @Binding var gameView: Bool
     @Binding var levelIndex: Int
-    var maxLevelIndex: Int
-    var currentLevelTitle: String
-    var currentLevelDescription: String
+
+    func maxLeveIndex() -> Int
+    {
+        return user.maxCompletedLevel
+    }
+
+    func currentLevelTitle() -> String
+    {
+        return user.game.title
+    }
+
+    func currentLevelDescription() -> String
+    {
+        return user.game.description.joined(separator: "\n")
+    }
 
     var body: some View {
         VStack(spacing: 20) {
             // Title
-            Text("Stonedge")
+            Text("stonedge")
                 .font(.largeTitle)
                 .padding()
 
             // Level Name
-            Text(currentLevelTitle)
+            Text(currentLevelTitle())
                 .font(.title)
 
-            Text(currentLevelDescription)
+            Text(currentLevelDescription())
 
             // Button Stack
             VStack(spacing: 10) {
@@ -61,13 +73,10 @@ struct UserView: View {
 }
 
 #Preview {
-    @State var user: User = User()
+    @StateObject var user: User = User()
     @State var gameView: Bool = false;
     @State var levelIndex: Int = 1;
-    return UserView(user: $user,
+    return UserView(user: user,
                     gameView: $gameView,
-                    levelIndex: $levelIndex,
-                    maxLevelIndex: 1,
-                    currentLevelTitle: "Simple",
-                    currentLevelDescription: "A simple test level")
+                    levelIndex: $levelIndex)
 }

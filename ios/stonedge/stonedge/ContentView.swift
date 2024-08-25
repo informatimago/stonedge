@@ -42,12 +42,9 @@ struct ContentView: View {
                                      gameView: $gameView)
                 }
                 else {
-                    UserView(user: $user,
+                    UserView(user: user,
                              gameView: $gameView,
-                             levelIndex: $levelIndex,
-                             maxLevelIndex: user.maxCompletedLevel,
-                             currentLevelTitle: user.game.title,
-                             currentLevelDescription: user.game.description.joined(separator: "\n"))
+                             levelIndex: $levelIndex)
                 }
             }
               .padding()

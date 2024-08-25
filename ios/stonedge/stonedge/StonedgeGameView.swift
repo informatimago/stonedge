@@ -86,7 +86,7 @@ struct StonedgeGameView: View {
                 let (scaleFactor, centerX, centerY) = BoardView.computeScaleFor(cells:user.game.cells, in:geometry)
 
                 ZStack {
-                    BoardView(cells: $user.game.cells)
+                    BoardView(game: user.game)
                     StoneView(stone: user.game.stone)
 
                     KeyEventHandlingView { keyCommand in
@@ -182,6 +182,8 @@ struct StonedgeGameView: View {
                   }
               }
 
+            Spacer()
+            Text(user.game.description.joined(separator: "\n"))
             Spacer()
 
             VStack(spacing: 10){

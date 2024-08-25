@@ -9,7 +9,7 @@
 import SwiftUI
 
 
-func testBoard() -> [[Cell]] {
+func testGame() -> Game {
     let rows = 4
     let cols = 4
     var cells = Array(repeating: Array<Cell>(repeating: EmptyCell(x:0, y:0), count: cols), count: rows)
@@ -28,13 +28,16 @@ func testBoard() -> [[Cell]] {
     cells[3][2] = SolidCell(x:2, y:3)
     cells[2][3] = CrumbleCell(x:3, y:2)
     cells[3][3] = IceCell(x:3, y:3)
-    return cells
+    let game = Game(stone: Stone(x:0, y:0, orientation: vertical),
+                    cells: cells)
+    game.title = "Test Game"
+    game.description = ["A small test game"]
+    return game
 }
 
 
 struct BoardView: View {
-    @Binding var cells: [[Cell]]
-
+    @ObservedObject var game : Game
 
     static func computeBoundsFor(cell:Cell, in geometry: GeometryProxy) -> CGRect
     {
@@ -103,7 +106,7 @@ struct BoardView: View {
     }
 
     // Function to sort cells in reverse order of x+y
-    func sortedCells() -> [Cell]
+    func sortedCells(cells:[[Cell]]) -> [Cell]
     {
         let flattenedCells = cells.flatMap { $0 }
         return flattenedCells.sorted { ($0.x + $0.y) > ($1.x + $1.y) }
@@ -191,7 +194,6 @@ struct BoardView: View {
                 //                }
             }
 
-
         }
 
 
@@ -235,7 +237,7 @@ struct BoardView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack{
-                ForEach(sortedCells()) { cell in
+                ForEach(sortedCells(cells: game.cells)) { cell in
                     computeViewForCell(cell: cell, with: geometry, d: d, h: h, alpha: alpha, cornerRadius: cellCornerRadius)
                 }
 
@@ -257,12 +259,12 @@ struct BoardView: View {
 
 
 #Preview {
-    @State var cells = testBoard()
+    @State var game = testGame()
     @State var step = 0
     return GeometryReader { geometry in
         let frameSize = geometry.size
-        let (scaleFactor, centerX, centerY) = BoardView.computeScaleFor(cells:cells, in:geometry)
-        BoardView(cells: $cells)
+        let (scaleFactor, centerX, centerY) = BoardView.computeScaleFor(cells:game.cells, in:geometry)
+        BoardView(game: game)
                 .scaleEffect(scaleFactor)
                 .offset(x: (frameSize.width / 2 - centerX) * scaleFactor,
                         y: (frameSize.height / 2 - centerY) * scaleFactor)

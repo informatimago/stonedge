@@ -8,7 +8,8 @@
 import Foundation
 
 
-// Assuming Cell and its subclasses are defined as before, with constructors accepting x and y parameters
+// Assuming Cell and its subclasses are defined as before, with
+// constructors accepting x and y parameters
 
 enum LinkType {
     case red, blue, pathway
@@ -43,13 +44,29 @@ func parseGame(specification: String) -> Game? {
 
     if titleIndex != nil && (firstGridIndex == nil || (titleIndex! < firstGridIndex!)) {
         title = lines[titleIndex!]
-        description = Array(lines[(titleIndex! + 1)..<(firstGridIndex ?? lines.count)])
+        let descLines = lines[(titleIndex! + 1) ..< (firstGridIndex ?? lines.count)]
+        description = descLines.map { line in
+            if line.isEmpty {
+                return line
+            } else if (line.first == "|") {
+                if let start = line.firstIndex(where: { ch in (ch != " ") && (ch != "|") }) {
+                    return String(line[start...])
+                } else {
+                    return "CANNOT OCCUR"
+                }
+            } else {
+                return line
+            }
+        }
     }
 
     lines = lines.map{ $0.uppercased() }
     // Find the index of the first definition line
-    let firstDefIndex = lines.firstIndex { $0.contains("PATHWAY") || $0.contains("RED") || $0.contains("BLUE") } ?? lines.endIndex
-    let gridLines = Array(lines[(firstGridIndex ?? firstDefIndex)..<firstDefIndex])
+    let firstDefIndex = lines.firstIndex { ($0.first != "|") && ( $0.contains("PATHWAY") || $0.contains("RED") || $0.contains("BLUE")) } ?? lines.endIndex
+
+    let gridLines = (firstGridIndex != nil)
+    ? Array(lines[(firstGridIndex ?? firstDefIndex)..<firstDefIndex])
+      : Array()
     let cellDefLines = Array(lines[firstDefIndex...])
 
     let height = gridLines.count

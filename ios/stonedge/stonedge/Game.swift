@@ -50,6 +50,7 @@ open class Game : ObservableObject {
         }
         step += 1
         print("step = \(step)")
+        self.objectWillChange.send()
     }
 
 }

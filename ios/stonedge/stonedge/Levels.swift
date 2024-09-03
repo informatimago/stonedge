@@ -62,9 +62,33 @@ let levels = [
     ..........
     """,
 
+  """
+    Tutorial 4
+    | Yellow cells are open or closed pathways:
+    | They can be switched open or close by activating button cells.
+    | Red button cells can be activated by the stone horizontal or vertical.
+    | Blue button cells can only be activated by the stone in vertical position.
+
+    ..........
+    ..........
+    ..OOROOO..
+    ..SOOO1O..
+    ..OOOO2O..
+    ..OOOO3T..
+    ..OOBOOO..
+    ..........
+    ..........
+
+    R RED 1 2
+    B BLUE 3
+    1 PATHWAY CLOSED
+    2 PATHWAY OPEN
+    3 PATHWAY CLOSED
+    """,
+
 
   """
-    Level 36
+    Test Level 1 (original 36)
 
     ...............
     ...............
@@ -80,7 +104,7 @@ let levels = [
     1 PATHWAY CLOSED
     """,
   """
-    Level 37
+    Test Level 2 (original 37)
 
     ...........
     ...........
@@ -102,8 +126,9 @@ let levels = [
     4 PATHWAY OPEN
     5 PATHWAY OPEN
     """,
+
   """
-    Level 38
+    Test Level 3 (original 38)
 
     .................
     .................
@@ -115,7 +140,7 @@ let levels = [
     .................
     """,
   """
-    Level 39
+    Test Level 4 (original 39)
 
     ..............
     ..............
@@ -139,7 +164,7 @@ let levels = [
     """,
 
   """
-    Level 52
+    Test Level 5 (original 52)
 
     .........
     ...RO....

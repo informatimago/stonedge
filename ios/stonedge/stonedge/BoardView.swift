@@ -129,12 +129,21 @@ struct BoardView: View {
     //       both are always switching on->off or off->on
     //       We could have one-shot button cells (yellow?) that would switch only once.
 
-    public func cellPaths(cell: Cell, with geometry: GeometryProxy, d: CGFloat, h: CGFloat, alpha: CGFloat, cornerRadius: CGFloat) -> (Path, Path)
+    public func cellPaths(cell: Cell, with geometry: GeometryProxy, d: CGFloat, h: CGFloat, alpha: CGFloat, cornerRadius: CGFloat) -> (Path, Path, Path?, Path?, Path?)
     {
         let x = cell.x
         let y = cell.y
         let cosAlpha = cos(alpha)
         let sinAlpha = sin(alpha)
+
+        var optBarrier : Path? = nil // white
+        var optBarrierStrip : Path? = nil // red
+        var optButton : Path? = nil
+
+        //       C
+        // D  d     b  B
+        // E           F
+        //       O
 
         // Compute relative points
         let O = CGPoint(x: 0, y: 0)
@@ -194,10 +203,37 @@ struct BoardView: View {
                 //                }
             }
 
+            if cell is PathwayCell {
+                let pathway : PathwayCell = cell as! PathwayCell
+                if pathway.isClosed() {
+                    // are open or closed. Closed pathway cells should show they're closed by drawing a sign
+
+                    var radius = 0.45*d
+                    var Cxy = CGPoint(x: Oxy.x, y: Oxy.y + h + 0.75*d)
+
+                    var redCircle = Path()
+                    redCircle.addEllipse(in: CGRect(x: Cxy.x - radius, y: Cxy.y - radius,
+                                                width: 2*radius, height: 2*radius))
+                    redCircle.closeSubpath()
+
+                    var whiteBar = Path()
+                    whiteBar.addRect(CGRect(x: Cxy.x - 0.75 * radius, y: Cxy.y - 0.2 * radius,
+                                            width: 1.5 * radius, height: 0.4 * radius))
+                    whiteBar.closeSubpath()
+
+                    optBarrier = redCircle
+                    optBarrierStrip = whiteBar
+                }
+            }
+
+            if cell is ButtonCell {
+                // should draw a button (cylinder) above the cell.
+            }
+
         }
 
 
-        return (path,ticks)
+        return (path, ticks, optBarrier, optBarrierStrip, optButton)
     }
 
 
@@ -210,7 +246,7 @@ struct BoardView: View {
         }
 
         if let color = cell.cellColor() {
-            let (path, ticks) = cellPaths(cell: cell, with: geometry, d: d, h: h, alpha: alpha, cornerRadius:cornerRadius)
+            let (path, ticks, optBarrier, optBarrierThing, optButton) = cellPaths(cell: cell, with: geometry, d: d, h: h, alpha: alpha, cornerRadius:cornerRadius)
             let x = cell.x
             let y = cell.y
             let cosAlpha = cos(alpha)
@@ -218,16 +254,20 @@ struct BoardView: View {
             let Oxy = CGPoint(x: (CGFloat(x - y) * d * cosAlpha) + geometry.size.width / 2,
                               y: (CGFloat(x + y) * d * sinAlpha) + geometry.size.height / 2)
             return AnyView(ZStack {
-                               AnyView(
-                                 path
-                                   .fill(color)
-                                   .overlay(path.stroke(Color.black, lineWidth: 2))
-                                   .overlay(ticks.stroke(Color.black, lineWidth: 1))
-                               )
-                               Text("\(cell.x),\(cell.y)")
-                                 .rotationEffect(.degrees(180), anchor: .center)
-                                 .position(x: Oxy.x, y: Oxy.y)
-                                 .offset(y:0.75*d)
+                               path
+                                 .fill(color)
+                                 .overlay(path.stroke(Color.black, lineWidth: 2))
+                                 .overlay(ticks.stroke(Color.black, lineWidth: 1))
+                               if let barrier = optBarrier {
+                                   barrier.fill(Color.red)
+                               }
+                               if let barrierThing = optBarrierThing {
+                                   barrierThing.fill(Color.white)
+                               }
+                               // Text("\(cell.x),\(cell.y)")
+                               //   .rotationEffect(.degrees(180), anchor: .center)
+                               //   .position(x: Oxy.x, y: Oxy.y)
+                               //   .offset(y:0.75*d)
                            })
         }else{
             return AnyView(EmptyView())

@@ -123,6 +123,11 @@ open class PathwayCell : Cell {
 
     @Published var state = State.closed // A pathway cell may be :open or :closed.
 
+    public func isClosed() -> Bool
+    {
+        return state == State.closed
+    }
+
     public init(x: Int, y: Int, state: State = State.closed) {
         super.init(x:x, y:y)
         self.state = state

@@ -154,6 +154,8 @@ func parseGame(specification: String) -> Game? {
                                 namedCells[name] as! PathwayCell
                             }
                         case .pathway:
+                            let pathway = cell as! PathwayCell
+                            pathway.state = definition.state
                             break
                         }
                     }

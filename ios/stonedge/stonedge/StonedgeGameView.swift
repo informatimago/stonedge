@@ -73,9 +73,14 @@ struct StonedgeGameView: View {
                     gameView = false;
                 }
                 Spacer()
+                Button("Reset") {
+                    lost(why: "You reset the game.")
+                    gameView = true;
+                }
+                Text("  ")
             }
-              .padding(.horizontal)
-              .background(Color(UIColor.systemBackground))
+            .padding(.horizontal)
+            .background(Color(UIColor.systemBackground))
 
             Spacer()
 
@@ -184,6 +189,7 @@ struct StonedgeGameView: View {
 
             Spacer()
             Text(user.game.description.joined(separator: "\n"))
+                .foregroundColor(Color.black)
             Spacer()
 
             VStack(spacing: 10){

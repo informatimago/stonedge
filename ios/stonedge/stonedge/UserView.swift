@@ -29,6 +29,15 @@ struct UserView: View {
         return user.game.description.joined(separator: "\n")
     }
 
+    @State private var showAlert = false
+    private let aboutText = "Author: Pascal J. Bourguignon\n"
+      + "\n"
+      + "Inspired by the old Playtomo Stonedge Game on Blackberry.\n"
+      + "\n"
+      + "mailto:info@ogamita.com\n"
+      + "\n"
+      + "Copyright © 2024 Ogamita Ltd. All rights reserved."
+
     var body: some View {
         VStack(spacing: 20) {
             // Title
@@ -45,33 +54,41 @@ struct UserView: View {
             // Button Stack
             VStack(spacing: 10) {
                 Button("Play") {
-                    // Action for Play button
-                    print("Play tapped")
                     user.resetGame()
                     gameView = true
                 }
                 Button("Next Level") {
-                    // Action for Next button
-                    print("Next tapped")
                     user.nextLevel()
                 }
+                Button("Best Reached Level") {
+                    user.lastAvailableLevel()
+                }
                 Button("Previous Level") {
-                    // Action for Previous button
-                    print("Previous tapped")
                     user.previousLevel()
                 }
                 Button("Restart Game") {
-                    // Action for Reset button
-                    print("Reset tapped")
                     user.restartGame()
+                }
+                Button("About Stonedge…") {
+                    showAlert = true
                 }
             }
 
             Spacer()
         }
+          .alert(isPresented: $showAlert) {
+              return Alert(
+                title: Text("About Stonedge"),
+                message: Text(aboutText),
+                dismissButton: .default(Text("OK"),
+                                        action: {
+                                            showAlert = false
+                                        }))
+          }
     }
 }
 
+#if swift(>=5.9)
 #Preview {
     @StateObject var user: User = User()
     @State var gameView: Bool = false;
@@ -80,3 +97,4 @@ struct UserView: View {
                     gameView: $gameView,
                     levelIndex: $levelIndex)
 }
+#endif

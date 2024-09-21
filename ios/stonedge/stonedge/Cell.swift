@@ -134,11 +134,12 @@ open class PathwayCell : Cell {
     }
 
     public override func cellColor() -> Color? {
-        if state == State.open {
-            return Color.green
-        } else {
-            return Color.yellow
-        }
+        return Color.yellow
+        // if state == State.open {
+        //     return Color.green
+        // } else {
+        //     return Color.yellow
+        // }
     }
 
     public override func stoneMovedOverCell(stone: Stone) {

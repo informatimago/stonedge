@@ -47,7 +47,6 @@ struct BoardView: View {
         let cosAlpha = cos(alpha)
         let sinAlpha = sin(alpha)
 
-        let O = CGPoint(x: 0, y: 0)
         let F = CGPoint(x: d * cosAlpha, y: d * sinAlpha)
         let C = CGPoint(x: 0, y: h + 2 * d * sinAlpha)
         let E = CGPoint(x: -d * cosAlpha, y: d * sinAlpha)
@@ -208,8 +207,8 @@ struct BoardView: View {
                 if pathway.isClosed() {
                     // are open or closed. Closed pathway cells should show they're closed by drawing a sign
 
-                    var radius = 0.45*d
-                    var Cxy = CGPoint(x: Oxy.x, y: Oxy.y + h + 0.75*d)
+                    let radius = 0.45*d
+                    let Cxy = CGPoint(x: Oxy.x, y: Oxy.y + h + 0.75*d)
 
                     var redCircle = Path()
                     redCircle.addEllipse(in: CGRect(x: Cxy.x - radius, y: Cxy.y - radius,
@@ -251,8 +250,6 @@ struct BoardView: View {
             let y = cell.y
             let cosAlpha = cos(alpha)
             let sinAlpha = sin(alpha)
-            let Oxy = CGPoint(x: (CGFloat(x - y) * d * cosAlpha) + geometry.size.width / 2,
-                              y: (CGFloat(x + y) * d * sinAlpha) + geometry.size.height / 2)
             return AnyView(ZStack {
                                path
                                  .fill(color)
@@ -297,7 +294,7 @@ struct BoardView: View {
 
 }
 
-
+#if swift(>=5.9)
 #Preview {
     @State var game = testGame()
     @State var step = 0
@@ -310,3 +307,4 @@ struct BoardView: View {
                         y: (frameSize.height / 2 - centerY) * scaleFactor)
     }
 }
+#endif

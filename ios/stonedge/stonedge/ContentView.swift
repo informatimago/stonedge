@@ -14,10 +14,11 @@ struct ContentView: View {
     @State private var gameView = false
     @State private var levelIndex = 0
 
-    func newGame()
+    func newGame() -> Game
     {
-        user.newGame()
+        let newGame = user.newGame()
         levelIndex = (user.maxCompletedLevel + 1) % levels.count
+        return newGame
     }
 
     init()
@@ -55,8 +56,10 @@ struct ContentView: View {
     }
 }
 
+#if swift(>=5.9)
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
     }
 }
+#endif

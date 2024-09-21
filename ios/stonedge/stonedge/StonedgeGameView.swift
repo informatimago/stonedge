@@ -136,16 +136,16 @@ struct StonedgeGameView: View {
                           // Capture the start point
                           if startPoint == nil {
                               startPoint = value.startLocation
-                              print(".onChanged startPoint=\(startPoint)")
+                              print(".onChanged startPoint=\(String(describing: startPoint))")
                           }else{
-                              print(".onChanged endPoint=\(endPoint)")
+                              print(".onChanged endPoint=\(String(describing: endPoint))")
 
                           }
                           // Update the end point as the drag progresses
                           endPoint = value.location
                       }
                       .onEnded { _ in
-                          print(".onEnded \(endPoint)")
+                          print(".onEnded \(String(describing: endPoint))")
                           // Calculate the direction when the drag ends
                           if let start = startPoint, let end = endPoint {
                               detectSwipeDirection(from: start, to: end)
@@ -241,7 +241,7 @@ struct StonedgeGameView: View {
 var currentGame : StonedgeGameView?
 
 public func signalGameWon(){
-    print("signalGameWon: currentGame = \(currentGame)")
+    print("signalGameWon: currentGame = \(String(describing: currentGame))")
     if let game = currentGame {
         game.won();
     }

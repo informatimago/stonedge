@@ -61,6 +61,16 @@ public class User : Identifiable, ObservableObject {
         newGame()
     }
 
+    public func lastAvailableLevel()
+    {
+        currentLevelIndex = maxCompletedLevel+1
+        if (currentLevelIndex > levels.count - 1) {
+            currentLevelIndex = levels.count - 1
+        }
+        saveUser()
+        newGame()
+    }
+
     public func previousLevel()
     {
         currentLevelIndex = currentLevelIndex - 1

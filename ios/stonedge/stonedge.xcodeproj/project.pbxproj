@@ -33,6 +33,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		2A2B7A862C9EB4EB00B050D2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A7C14F52B86B5810003DF79 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2A2B7A742C9EB4EA00B050D2;
+			remoteInfo = Stonedge;
+		};
+		2A2B7A902C9EB4EB00B050D2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A7C14F52B86B5810003DF79 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2A2B7A742C9EB4EA00B050D2;
+			remoteInfo = Stonedge;
+		};
 		2A7C150F2B86B5830003DF79 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2A7C14F52B86B5810003DF79 /* Project object */;
@@ -53,6 +67,9 @@
 		2A00D2012BA868DF00BBFDF7 /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserView.swift; sourceTree = "<group>"; };
 		2A04B1CE2C79E493001DC64F /* stonedge-splash.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "stonedge-splash.jpg"; sourceTree = "<group>"; };
 		2A04B1D42C79E8C4001DC64F /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		2A2B7A752C9EB4EA00B050D2 /* Stonedge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stonedge.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A2B7A852C9EB4EB00B050D2 /* StonedgeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StonedgeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A2B7A8F2C9EB4EB00B050D2 /* StonedgeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StonedgeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A42137B2C3FF2A900D14173 /* StoneView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoneView.swift; sourceTree = "<group>"; };
 		2A42137D2C43043600D14173 /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
 		2A42137F2C43054200D14173 /* ViewGlobals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewGlobals.swift; sourceTree = "<group>"; };
@@ -80,6 +97,27 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2A2B7A722C9EB4EA00B050D2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A2B7A822C9EB4EB00B050D2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A2B7A8C2C9EB4EB00B050D2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2A7C14FA2B86B5810003DF79 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -120,6 +158,9 @@
 				2A7C14FD2B86B5820003DF79 /* stonedge.app */,
 				2A7C150E2B86B5830003DF79 /* stonedgeTests.xctest */,
 				2A7C15182B86B5830003DF79 /* stonedgeUITests.xctest */,
+				2A2B7A752C9EB4EA00B050D2 /* Stonedge.app */,
+				2A2B7A852C9EB4EB00B050D2 /* StonedgeTests.xctest */,
+				2A2B7A8F2C9EB4EB00B050D2 /* StonedgeUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -180,6 +221,59 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2A2B7A742C9EB4EA00B050D2 /* Stonedge */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A2B7A9D2C9EB4EB00B050D2 /* Build configuration list for PBXNativeTarget "Stonedge" */;
+			buildPhases = (
+				2A2B7A712C9EB4EA00B050D2 /* Sources */,
+				2A2B7A722C9EB4EA00B050D2 /* Frameworks */,
+				2A2B7A732C9EB4EA00B050D2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Stonedge;
+			productName = Stonedge;
+			productReference = 2A2B7A752C9EB4EA00B050D2 /* Stonedge.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2A2B7A842C9EB4EB00B050D2 /* StonedgeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A2B7A9E2C9EB4EB00B050D2 /* Build configuration list for PBXNativeTarget "StonedgeTests" */;
+			buildPhases = (
+				2A2B7A812C9EB4EB00B050D2 /* Sources */,
+				2A2B7A822C9EB4EB00B050D2 /* Frameworks */,
+				2A2B7A832C9EB4EB00B050D2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2A2B7A872C9EB4EB00B050D2 /* PBXTargetDependency */,
+			);
+			name = StonedgeTests;
+			productName = StonedgeTests;
+			productReference = 2A2B7A852C9EB4EB00B050D2 /* StonedgeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		2A2B7A8E2C9EB4EB00B050D2 /* StonedgeUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A2B7A9F2C9EB4EB00B050D2 /* Build configuration list for PBXNativeTarget "StonedgeUITests" */;
+			buildPhases = (
+				2A2B7A8B2C9EB4EB00B050D2 /* Sources */,
+				2A2B7A8C2C9EB4EB00B050D2 /* Frameworks */,
+				2A2B7A8D2C9EB4EB00B050D2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2A2B7A912C9EB4EB00B050D2 /* PBXTargetDependency */,
+			);
+			name = StonedgeUITests;
+			productName = StonedgeUITests;
+			productReference = 2A2B7A8F2C9EB4EB00B050D2 /* StonedgeUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		2A7C14FC2B86B5810003DF79 /* stonedge */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2A7C15222B86B5830003DF79 /* Build configuration list for PBXNativeTarget "stonedge" */;
@@ -245,6 +339,17 @@
 				LastUpgradeCheck = 1520;
 				ORGANIZATIONNAME = "Ogamita Ltd";
 				TargetAttributes = {
+					2A2B7A742C9EB4EA00B050D2 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+					2A2B7A842C9EB4EB00B050D2 = {
+						CreatedOnToolsVersion = 14.2;
+						TestTargetID = 2A2B7A742C9EB4EA00B050D2;
+					};
+					2A2B7A8E2C9EB4EB00B050D2 = {
+						CreatedOnToolsVersion = 14.2;
+						TestTargetID = 2A2B7A742C9EB4EA00B050D2;
+					};
 					2A7C14FC2B86B5810003DF79 = {
 						CreatedOnToolsVersion = 14.2;
 					};
@@ -274,11 +379,35 @@
 				2A7C14FC2B86B5810003DF79 /* stonedge */,
 				2A7C150D2B86B5830003DF79 /* stonedgeTests */,
 				2A7C15172B86B5830003DF79 /* stonedgeUITests */,
+				2A2B7A742C9EB4EA00B050D2 /* Stonedge */,
+				2A2B7A842C9EB4EB00B050D2 /* StonedgeTests */,
+				2A2B7A8E2C9EB4EB00B050D2 /* StonedgeUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		2A2B7A732C9EB4EA00B050D2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A2B7A832C9EB4EB00B050D2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A2B7A8D2C9EB4EB00B050D2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2A7C14FB2B86B5810003DF79 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -307,6 +436,27 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2A2B7A712C9EB4EA00B050D2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A2B7A812C9EB4EB00B050D2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A2B7A8B2C9EB4EB00B050D2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2A7C14F92B86B5810003DF79 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -350,6 +500,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		2A2B7A872C9EB4EB00B050D2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2A2B7A742C9EB4EA00B050D2 /* Stonedge */;
+			targetProxy = 2A2B7A862C9EB4EB00B050D2 /* PBXContainerItemProxy */;
+		};
+		2A2B7A912C9EB4EB00B050D2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2A2B7A742C9EB4EA00B050D2 /* Stonedge */;
+			targetProxy = 2A2B7A902C9EB4EB00B050D2 /* PBXContainerItemProxy */;
+		};
 		2A7C15102B86B5830003DF79 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 2A7C14FC2B86B5810003DF79 /* stonedge */;
@@ -363,6 +523,128 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		2A2B7A972C9EB4EB00B050D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Stonedge/Stonedge.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Stonedge/Preview Content\"";
+				DEVELOPMENT_TEAM = EKM4K54R7P;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Ogamita Ltd. All rights reserved.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ogamita.games.macos.Stonedge;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		2A2B7A982C9EB4EB00B050D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Stonedge/Stonedge.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Stonedge/Preview Content\"";
+				DEVELOPMENT_TEAM = EKM4K54R7P;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Ogamita Ltd. All rights reserved.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ogamita.games.macos.Stonedge;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		2A2B7A992C9EB4EB00B050D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EKM4K54R7P;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.7;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ogamita.games.macos.StonedgeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stonedge.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Stonedge";
+			};
+			name = Debug;
+		};
+		2A2B7A9A2C9EB4EB00B050D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EKM4K54R7P;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.7;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ogamita.games.macos.StonedgeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stonedge.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Stonedge";
+			};
+			name = Release;
+		};
+		2A2B7A9B2C9EB4EB00B050D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EKM4K54R7P;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ogamita.games.macos.StonedgeUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = Stonedge;
+			};
+			name = Debug;
+		};
+		2A2B7A9C2C9EB4EB00B050D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EKM4K54R7P;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ogamita.games.macos.StonedgeUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = Stonedge;
+			};
+			name = Release;
+		};
 		2A7C15202B86B5830003DF79 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -649,6 +931,33 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2A2B7A9D2C9EB4EB00B050D2 /* Build configuration list for PBXNativeTarget "Stonedge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A2B7A972C9EB4EB00B050D2 /* Debug */,
+				2A2B7A982C9EB4EB00B050D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A2B7A9E2C9EB4EB00B050D2 /* Build configuration list for PBXNativeTarget "StonedgeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A2B7A992C9EB4EB00B050D2 /* Debug */,
+				2A2B7A9A2C9EB4EB00B050D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A2B7A9F2C9EB4EB00B050D2 /* Build configuration list for PBXNativeTarget "StonedgeUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A2B7A9B2C9EB4EB00B050D2 /* Debug */,
+				2A2B7A9C2C9EB4EB00B050D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		2A7C14F82B86B5810003DF79 /* Build configuration list for PBXProject "stonedge" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

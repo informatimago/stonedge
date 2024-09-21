@@ -204,10 +204,11 @@ struct StoneView: View {
 }
 
 
-
+#if swift(>=5.9)
 struct StoneView_Previews: PreviewProvider {
    static var previews: some View {
        @StateObject var stone = Stone(x: 3,y: 3, orientation: [1,0,0])
        StoneView(stone: stone)
    }
 }
+#endif

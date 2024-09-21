@@ -1,0 +1,147 @@
+
+
+Stonedge Game Description
+==========================
+
+
+Stonedge game is a board game with one moving token named the menhir.
+
+
+
+The board is made of square cells of various kinds:
+
+
+
+The menhir is a 2x1x1 paralellogram (two cubes).
+
+When standing vertically, the menhir stands on one cell.
+
+When standing horizontally, the menhir stands on two adjacent cells.
+
+The menhir can be moved, by "rotating" it around one of its vertices
+on the ground.
+
+
+
+The kind of cells are:
+
+- empty cell; nothing can stand on an empty cell; if the menhir is moved over an empty cell, it falls down and the game is lost.
+
+- normal solid cell.
+
+- origin cell; the menhir starts vertically on this cell.
+
+- target cell; the menhir must arrive and stand vertically on this cell to win the game.
+
+- ice cell; ice cells are brittle. They can support only half the weight of the menhir. If the menhir stands vertically on a ice cell, it will break and the menhir will fall down and the game is lost.
+
+- crumble cell; once the menhir departs a crumble cell, it breaks and falls down. The menhir cannot come back to the same position.
+
+- pathway cells; pathway cells can be open or closed. The menhir can only stand on an open pathway cell.  A closed pathway cells behaves like an empty cell. The initial state of a pathway cell can be open or closed. Button cells are used to change the state of pathway cells.
+
+- two kinds of button cells: red button cells and blue button cells.  A red button cell is activated when the menhir lands on it vertically or horizontally.  A blue button cell is activated only when the menhir lands on it vertically.  A button cells can switch the state of multiple specific pathway cells.
+
+
+
+To simplify computing the position of the menhir on the board, we can
+assume that there are at least two rows or columns of empty cells
+around the board.
+
+ 
+
+The user is presented with a board with the menhir standing vertically
+on the origin cell.
+
+He gives one by one a series of movements for the menhir (left, right,
+front, back) to reach the target cell.
+
+The program must display the cells and the menhir in an orthographic
+projection, animate the rotation of the menhir for each movement, and
+compute whether the menhir lands on a valid position, a losing
+position or a winning position.
+
+Each kind of cell is drawn in a specific and distinct way (depending
+on the kind and state of the cell).
+
+When landing on a losing position, an animation of the menhir falling
+down is show and the game is lost.
+
+
+
+Stonedge Solver Description
+===========================
+
+
+There is a solver program for the stonedge game.
+
+The solver takes a game description (board cells and menhir position),
+and compute a solution (a path of menhir movements) if possible.
+
+This is done by exploring a tree of possible movements until reaching
+the target cell in vertical position.
+
+
+
+Note that the presence of crumble cells, and pathway cells with two
+states implies that a solution can be thought of as a tree of subgoals
+(to walk a path to some subgoal cell or the target cell), we may need
+to have activated a button, so we may have the subgoal of reaching
+this button (in the right position) first.
+
+Stonedge Game Generator Description
+===================================
+
+We want to generate random stonedge games.
+
+The random generator must produce a description of the board (cells
+positions, cell types, pathway cells states, button cells
+connections).
+
+The Stonedge Solver can be used to validate the generated game and
+ensure that a solution exist.
+
+To ensure that the generated games are interesting problems, the
+generator may use a subgoal approach:
+
+- generate a list of random subgoals (open a given pathway cell, or arrive
+  on a cell vertically or horizontally in one direction or the other
+  direction). 
+
+- for each subgoal, generate a path (list of movement steps)
+  allocating cells in the board to support the movement.
+  Pathway cells and button cells are generated at the ends of the path
+  as required.
+
+- paths may (and should cross one another to avoid generating too many
+  cells),
+
+- crumble cells and ice cells can be added (or replace solid cells) as
+  long as the Solver still validates that a solution is possible. (A
+  crumbler cell ensures that a given path can be travelled only once.
+  Ice cells ensure that the menhir must be horizontal over them, etc).
+
+
+Stonedge Game Description Format
+================================
+
+A Stonedge Game is given in Common Lisp as a list containing a
+multiline string containing the board schema.  This string contains:
+- a dot or whitespace for an empty cell.
+- 'S' for the origin cell.
+- 'T' for the target cell.
+- 'O' for solid cells.
+- 'I' for ice cells.
+- 'C' for crumble cells.
+other characters name button or pathway cells.
+The string is followed by clauses describing the
+button or pathway cells:
+- (bname :blue|:red pname…) for a button cell,
+- (pname :pathway :open|:closed) for a pathway cell.
+bname or pname are 1-letter (case insensitive) symbols, the character
+being used in the string to indicate the position of the cell.
+
+
+Problem
+=======
+
+Write a stonedge game generator in Common Lisp.

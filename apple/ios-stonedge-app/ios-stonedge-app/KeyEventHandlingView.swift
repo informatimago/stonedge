@@ -21,6 +21,17 @@ struct KeyEventHandlingView: UIViewControllerRepresentable {
 
     var onKeyPress: (UIKeyCommand) -> Void
 
+    public static let inputEscape = UIKeyCommand.inputEscape
+    public static let inputUpArrow = UIKeyCommand.inputUpArrow
+    public static let inputDownArrow = UIKeyCommand.inputDownArrow
+    public static let inputLeftArrow = UIKeyCommand.inputLeftArrow
+    public static let inputRightArrow = UIKeyCommand.inputRightArrow
+
+    public static func input(command: UIKeyCommand) -> String?
+    {
+        return command.input
+    }
+
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }

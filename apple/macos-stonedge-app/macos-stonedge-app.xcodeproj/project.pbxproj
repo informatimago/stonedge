@@ -14,6 +14,18 @@
 		2A0F6E5F2CA00F1600BF22F4 /* macos_stonedge_appTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6E5E2CA00F1600BF22F4 /* macos_stonedge_appTests.swift */; };
 		2A0F6E692CA00F1600BF22F4 /* macos_stonedge_appUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6E682CA00F1600BF22F4 /* macos_stonedge_appUITests.swift */; };
 		2A0F6E6B2CA00F1600BF22F4 /* macos_stonedge_appUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6E6A2CA00F1600BF22F4 /* macos_stonedge_appUITestsLaunchTests.swift */; };
+		2A0F6F172CA0691E00BF22F4 /* KeyEventHandlingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F162CA0691E00BF22F4 /* KeyEventHandlingView.swift */; };
+		2A0F6F252CA06C8F00BF22F4 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F1A2CA06C8E00BF22F4 /* Cell.swift */; };
+		2A0F6F262CA06C8F00BF22F4 /* StoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F1B2CA06C8E00BF22F4 /* StoneView.swift */; };
+		2A0F6F272CA06C8F00BF22F4 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F1C2CA06C8E00BF22F4 /* Game.swift */; };
+		2A0F6F282CA06C8F00BF22F4 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F1D2CA06C8E00BF22F4 /* Levels.swift */; };
+		2A0F6F292CA06C8F00BF22F4 /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F1E2CA06C8E00BF22F4 /* UserView.swift */; };
+		2A0F6F2A2CA06C8F00BF22F4 /* ViewGlobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F1F2CA06C8F00BF22F4 /* ViewGlobals.swift */; };
+		2A0F6F2B2CA06C8F00BF22F4 /* Stone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F202CA06C8F00BF22F4 /* Stone.swift */; };
+		2A0F6F2C2CA06C8F00BF22F4 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F212CA06C8F00BF22F4 /* BoardView.swift */; };
+		2A0F6F2D2CA06C8F00BF22F4 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F222CA06C8F00BF22F4 /* User.swift */; };
+		2A0F6F2E2CA06C8F00BF22F4 /* StonedgeGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F232CA06C8F00BF22F4 /* StonedgeGameView.swift */; };
+		2A0F6F2F2CA06C8F00BF22F4 /* GameParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F242CA06C8F00BF22F4 /* GameParser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +57,19 @@
 		2A0F6E642CA00F1600BF22F4 /* macos-stonedge-appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "macos-stonedge-appUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A0F6E682CA00F1600BF22F4 /* macos_stonedge_appUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = macos_stonedge_appUITests.swift; sourceTree = "<group>"; };
 		2A0F6E6A2CA00F1600BF22F4 /* macos_stonedge_appUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = macos_stonedge_appUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		2A0F6F062CA066F300BF22F4 /* stonedge.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = stonedge.entitlements; path = ../../sources/stonedge.entitlements; sourceTree = "<group>"; };
+		2A0F6F162CA0691E00BF22F4 /* KeyEventHandlingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyEventHandlingView.swift; sourceTree = "<group>"; };
+		2A0F6F1A2CA06C8E00BF22F4 /* Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Cell.swift; path = ../../sources/Cell.swift; sourceTree = "<group>"; };
+		2A0F6F1B2CA06C8E00BF22F4 /* StoneView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StoneView.swift; path = ../../sources/StoneView.swift; sourceTree = "<group>"; };
+		2A0F6F1C2CA06C8E00BF22F4 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Game.swift; path = ../../sources/Game.swift; sourceTree = "<group>"; };
+		2A0F6F1D2CA06C8E00BF22F4 /* Levels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Levels.swift; path = ../../sources/Levels.swift; sourceTree = "<group>"; };
+		2A0F6F1E2CA06C8E00BF22F4 /* UserView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserView.swift; path = ../../sources/UserView.swift; sourceTree = "<group>"; };
+		2A0F6F1F2CA06C8F00BF22F4 /* ViewGlobals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewGlobals.swift; path = ../../sources/ViewGlobals.swift; sourceTree = "<group>"; };
+		2A0F6F202CA06C8F00BF22F4 /* Stone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Stone.swift; path = ../../sources/Stone.swift; sourceTree = "<group>"; };
+		2A0F6F212CA06C8F00BF22F4 /* BoardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BoardView.swift; path = ../../sources/BoardView.swift; sourceTree = "<group>"; };
+		2A0F6F222CA06C8F00BF22F4 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = ../../sources/User.swift; sourceTree = "<group>"; };
+		2A0F6F232CA06C8F00BF22F4 /* StonedgeGameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StonedgeGameView.swift; path = ../../sources/StonedgeGameView.swift; sourceTree = "<group>"; };
+		2A0F6F242CA06C8F00BF22F4 /* GameParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameParser.swift; path = ../../sources/GameParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +120,9 @@
 		2A0F6E4B2CA00F1500BF22F4 /* macos-stonedge-app */ = {
 			isa = PBXGroup;
 			children = (
+				2A0F6F192CA06BFD00BF22F4 /* Sources */,
+				2A0F6F062CA066F300BF22F4 /* stonedge.entitlements */,
+				2A0F6F162CA0691E00BF22F4 /* KeyEventHandlingView.swift */,
 				2A0F6E4C2CA00F1500BF22F4 /* macos_stonedge_appApp.swift */,
 				2A0F6E4E2CA00F1500BF22F4 /* ContentView.swift */,
 				2A0F6E502CA00F1600BF22F4 /* Assets.xcassets */,
@@ -127,6 +155,24 @@
 				2A0F6E6A2CA00F1600BF22F4 /* macos_stonedge_appUITestsLaunchTests.swift */,
 			);
 			path = "macos-stonedge-appUITests";
+			sourceTree = "<group>";
+		};
+		2A0F6F192CA06BFD00BF22F4 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				2A0F6F212CA06C8F00BF22F4 /* BoardView.swift */,
+				2A0F6F1A2CA06C8E00BF22F4 /* Cell.swift */,
+				2A0F6F1C2CA06C8E00BF22F4 /* Game.swift */,
+				2A0F6F242CA06C8F00BF22F4 /* GameParser.swift */,
+				2A0F6F1D2CA06C8E00BF22F4 /* Levels.swift */,
+				2A0F6F202CA06C8F00BF22F4 /* Stone.swift */,
+				2A0F6F232CA06C8F00BF22F4 /* StonedgeGameView.swift */,
+				2A0F6F1B2CA06C8E00BF22F4 /* StoneView.swift */,
+				2A0F6F222CA06C8F00BF22F4 /* User.swift */,
+				2A0F6F1E2CA06C8E00BF22F4 /* UserView.swift */,
+				2A0F6F1F2CA06C8F00BF22F4 /* ViewGlobals.swift */,
+			);
+			name = Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -259,8 +305,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A0F6F2F2CA06C8F00BF22F4 /* GameParser.swift in Sources */,
+				2A0F6F2C2CA06C8F00BF22F4 /* BoardView.swift in Sources */,
 				2A0F6E4F2CA00F1500BF22F4 /* ContentView.swift in Sources */,
+				2A0F6F282CA06C8F00BF22F4 /* Levels.swift in Sources */,
+				2A0F6F272CA06C8F00BF22F4 /* Game.swift in Sources */,
+				2A0F6F292CA06C8F00BF22F4 /* UserView.swift in Sources */,
+				2A0F6F252CA06C8F00BF22F4 /* Cell.swift in Sources */,
+				2A0F6F2B2CA06C8F00BF22F4 /* Stone.swift in Sources */,
 				2A0F6E4D2CA00F1500BF22F4 /* macos_stonedge_appApp.swift in Sources */,
+				2A0F6F2D2CA06C8F00BF22F4 /* User.swift in Sources */,
+				2A0F6F262CA06C8F00BF22F4 /* StoneView.swift in Sources */,
+				2A0F6F2A2CA06C8F00BF22F4 /* ViewGlobals.swift in Sources */,
+				2A0F6F172CA0691E00BF22F4 /* KeyEventHandlingView.swift in Sources */,
+				2A0F6F2E2CA06C8F00BF22F4 /* StonedgeGameView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

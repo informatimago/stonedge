@@ -64,6 +64,14 @@ struct StonedgeGameView: View {
         }
     }
 
+    public func backgroundColor() -> Color
+    {
+#if os(macOS)
+        return Color(NSColor.windowBackgroundColor)
+#elseif os(iOS)
+        return Color(UIColor.systemBackground)
+#endif
+    }
 
     var body: some View {
         VStack(spacing: 10) {
@@ -80,8 +88,7 @@ struct StonedgeGameView: View {
                 Text("  ")
             }
             .padding(.horizontal)
-            .background(Color(UIColor.systemBackground))
-
+            .background(backgroundColor())
             Spacer()
 
             GeometryReader { geometry in
@@ -96,25 +103,25 @@ struct StonedgeGameView: View {
 
                     KeyEventHandlingView { keyCommand in
                         currentGame = self
-                        if let input = keyCommand.input {
+                        if let input = KeyEventHandlingView.input(command: keyCommand) {
                             switch input {
-                            case UIKeyCommand.inputEscape, "Q", "q":
+                            case KeyEventHandlingView.inputEscape, "Q", "q":
                                 print("Escape key pressed")
                                 gameView = false;
 
-                            case UIKeyCommand.inputUpArrow, "A", "a":
+                            case KeyEventHandlingView.inputUpArrow, "A", "a":
                                 print("Up arrow key pressed")
                                 user.game.move(direction: .right)
 
-                            case UIKeyCommand.inputDownArrow, "X", "x":
+                            case KeyEventHandlingView.inputDownArrow, "X", "x":
                                 print("Down arrow key pressed")
                                 user.game.move(direction: .left)
 
-                            case UIKeyCommand.inputLeftArrow, "Z", "z":
+                            case KeyEventHandlingView.inputLeftArrow, "Z", "z":
                                 print("Left arrow key pressed")
                                 user.game.move(direction: .back)
 
-                            case UIKeyCommand.inputRightArrow, "S", "s":
+                            case KeyEventHandlingView.inputRightArrow, "S", "s":
                                 print("Right arrow key pressed")
                                 user.game.move(direction: .front)
 
@@ -217,7 +224,7 @@ struct StonedgeGameView: View {
                     user.game.move(direction: .left)
                 }
             }
-              .background(Color(UIColor.systemBackground))
+            .background(backgroundColor())
 
         }
     }

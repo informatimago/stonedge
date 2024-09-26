@@ -264,7 +264,12 @@ open class IceCell : Cell {
     // when the stone is over it in vertical position, it breaks, the stone falls down, and the game is lost.
 
     public override func cellColor() -> Color? {
-        return Color.cyan
+        if #available(macOS 12.0, *) {
+            return Color.cyan
+        } else {
+            // Fallback on earlier versions
+            return Color(red: 0.0, green: 0.7, blue: 0.7)
+        }
     }
 
     public override func stoneMovedOverCell(stone: Stone) {

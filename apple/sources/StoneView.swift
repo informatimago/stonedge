@@ -157,7 +157,11 @@ struct StoneView: View {
     }
 
     public func stoneColor() -> Color {
-        return Color.brown
+        if #available(macOS 12.0, *) {
+            return Color.brown
+        } else {
+            return Color(red: 0.6, green: 0.4, blue: 0.2)
+        }
     }
 
     public func computeView(with geometry: GeometryProxy, d: CGFloat, h: CGFloat, alpha: CGFloat, cornerRadius: CGFloat) -> AnyView

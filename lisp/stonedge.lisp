@@ -36,24 +36,6 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (setf *readtable* (copy-readtable nil)))
 
-(defpackage :com.informatimago.games.stonedge
-  (:use
-   :common-lisp
-   :split-sequence
-   :com.informatimago.common-lisp.cesarum.graph
-   :com.informatimago.common-lisp.graphviz.graph-dot)
-  (:import-from :com.informatimago.common-lisp.cesarum.array
-                #:copy-array)
-  (:shadow #:copy)
-  (:export
-   #:stonedge
-   #:solve-problem
-   #:*simple*
-   #:*level-36*
-   #:*level-37*
-   #:*level-38*
-   #:*level-39*
-   #:*level-52*))
 (in-package :com.informatimago.games.stonedge)
 
 ;;;-----------------------------------------------------------------------------

@@ -34,17 +34,7 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (setf *readtable* (copy-readtable nil)))
 
-(defpackage :com.informatimago.games.stonedge.generator
-  (:use
-   :common-lisp
-   :split-sequence)
-  (:import-from :com.informatimago.common-lisp.cesarum.array
-                #:copy-array)
-  (:shadow #:copy)
-  (:export
-   "GENERATE"))
 (in-package :com.informatimago.games.stonedge.generator)
-(in-package :com.informatimago.games.stonedge)
 
 
 (progn
@@ -57,6 +47,7 @@
  ;; pseudo codes, to be replaced with identifying letters.
  (defconstant +red+     #\r)
  (defconstant +blue+    #\b)
+ (defconstant +pathway+ #\P)
  )
 
 (defun format-level (cells buttons pathways)
@@ -208,18 +199,22 @@
                   (10 9 :vertical))))
 
 (defun stone-minx (nx ny no)
+  (declare (ignore ny no))
   nx)
 
 (defun stone-miny (nx ny no)
+  (declare (ignore nx no))
   ny)
 
 (defun stone-maxx (nx ny no)
+  (declare (ignore ny))
   (case no
     (:vertical nx)
     (:front    nx)
     (:lateral  (+ 1 nx))))
 
 (defun stone-maxy (nx ny no)
+  (declare (ignore nx))
   (case no
     (:vertical ny)
     (:lateral  ny)
@@ -230,34 +225,185 @@
   (and (<= 2 (stone-minx nx ny no))
        (<= 2 (stone-miny nx ny no))
        (<= (stone-maxx nx ny no) (- (array-dimension cells 0) 2))
-       (<= (stone-maxy nx ny no) (- (array-dimension cells 1) 2))
-       ;; check cell contents
-       ))
+       (<= (stone-maxy nx ny no) (- (array-dimension cells 1) 2))))
+
+
+(defstruct node
+  (x 0)
+  (y 0)
+  (orientation '(0 0 1))
+  (previous nil)
+  (cost +infinity+)
+  (cells))
+
+(defmethod node-equal (a b)
+  (declare (ignorable a b))
+  nil)
+(defmethod node-equal ((a node) (b node))
+  (and (= (node-x a) (node-x b))
+       (= (node-y a) (node-y b))
+       (eql (node-orientation a) (node-orientation b))))
+
+(defun solidify (x y orientation cells)
+  (if (or (equal +empty+ (aref cells
+                               (stone-minx x y orientation)
+                               (stone-miny x y orientation)))
+          (equal +empty+ (aref cells
+                               (stone-maxx x y orientation)
+                               (stone-maxy x y orientation))))
+      (let ((cells (copy-array cells)))
+        (when (equal +empty+ (aref cells
+                                   (stone-minx x y orientation)
+                                   (stone-miny x y orientation)))
+          (setf (aref cells
+                      (stone-minx x y orientation)
+                      (stone-miny x y orientation))
+                +solid+))
+        (when (equal +empty+ (aref cells
+                                   (stone-maxx x y orientation)
+                                   (stone-maxy x y orientation)))
+          (setf (aref cells
+                      (stone-maxx x y orientation)
+                      (stone-maxy x y orientation))
+                +solid+))
+        cells)
+      cells))
+
+(defmethod successors ((node node))
+  (let ((cells  (node-cells node)))
+    (mapcan (lambda (direction)
+              (destructuring-bind (new-x new-y new-orientation)
+                  (move-stone (node-x node) (node-y node) (node-orientation node) direction)
+                (when (validate-position new-x new-y new-orientation cells)
+                  (list (make-node :x new-x
+                                   :y new-y
+                                   :orientation new-orientation
+                                   :previous node
+                                   :cells (solidify new-x new-y new-orientation cells))))))
+            '((1 0) (-1 0) (0 1) (0 -1)))))
+
+#-(and)
+(let ((x 2)
+      (y 2)
+      (orientation :vertical)
+      (cells  (make-array '(9 9) :initial-element +empty+)))
+  (setf (aref cells x y) +solid+)
+  (successors (make-node :x x :y y :orientation orientation :cells cells)))
+
+(defmethod previous ((node node))
+  (node-previous node))
+(defmethod set-previous (new-previous (node node))
+  (setf (node-previous node) new-previous))
+(defmethod cost ((node node))
+  (node-cost node))
+(defmethod set-cost (new-cost (node node))
+  (setf (node-cost node) new-cost))
+
+(defun square (x) (* x x))
+(defmethod estimate-distance ((a node) (b node))
+  (+ (square (- (node-x a) (node-x b)))
+     (square (- (node-y a) (node-y b)))))
+
+(defun make-goalp (x y orientation)
+  (case orientation
+    ((:any)
+     (lambda (node)
+       (or (and (= x (stone-minx (node-x node) (node-y node) (node-orientation node)))
+                (= y (stone-miny (node-x node) (node-y node) (node-orientation node))))
+           (and (= x (stone-maxx (node-x node) (node-y node) (node-orientation node)))
+                (= y (stone-maxy (node-x node) (node-y node) (node-orientation node)))))))
+    (otherwise
+     (lambda (node)
+       (and (eql orientation (node-orientation node))
+            (= (stone-minx x y orientation)
+               (stone-minx (node-x node) (node-y node) (node-orientation node)))
+            (= (stone-miny x y orientation)
+               (stone-miny (node-x node) (node-y node) (node-orientation node)))
+            (= (stone-maxx x y orientation)
+               (stone-maxx (node-x node) (node-y node) (node-orientation node)))
+            (= (stone-maxy x y orientation)
+               (stone-maxy (node-x node) (node-y node) (node-orientation node))))))))
+
+
+ "
+DO:                 Implement the A* algorithm.
+
+SUCCESSORS:         a function giving for each node, the list of its
+                    successors.
+
+PREVIOUS:           a getter giving the current previous node for the
+                    given node.
+
+SET-PREVIOUS:       a setter to set the current previous node for the
+                    given node. (lambda (new-previous node))
+
+COST:               a getter giving the current cost of the given
+                    node. The default should be +INFINITY+.
+
+SET-COST:           a setter setting the current cost of the given
+                    node. (lambda (new-cost node))
+
+ESTIMATE-DISTANCE:  a function of two nodes returning a cost estimate
+                    of the distance between them.
+
+GOALP:              a predicate indicating whether the node is the
+                    GOAL-NODE (or close enough).
+
+START-NODE:         the start node of the searched path.
+
+GOAL-NODE:          the end node of the searched path.
+
+RETURN:             a path, ie. a list of nodes from START-NODE to
+                    GOAL-NODE.
+"
+
 
 (defun build-path (start start-orientation end end-orientation cells)
   (if (equalp start end)
       '(())
-      (let* ((delta          (mapcar (function -) end start))
-             (main-direction (if (< (abs (first delta)) (abs (second delta)))
-                                        ; front-back
-                                 (if (plusp (second delta))
-                                     '((0 1) (1 0) (-1 0))
-                                     '((0 -1) (-1 0) (1 0)))
-                                        ; left-right
-                                 (if (plusp (first delta))
-                                     '((0 1) (1 0) (-1 0))
-                                     '((0 -1) (-1 0) (1 0))))))
-        (loop
-          :named search
-          :for direction :in main-direction
-          :for (nx ny no) := (move-stone (first start) (second start) start-orientation direction)
-          :for valid := (validate-position nx ny no cells)
-          :for rest-path := (and valid (build-path (list nx ny) no end end-orientation cells))
-          :if rest-path
-          :do (return-from search
-                (list (cons (list (list nx ny) no) rest-path)))))))
+      (find-path (function successors)
+                 (function previous) (function set-previous)
+                 (function cost) (function set-cost)
+                 (function estimate-distance)
+                 (make-goalp (first end) (second end) end-orientation)
+                 (make-node :x (first start)
+                            :y (second start)
+                            :orientation start-orientation
+                            :cells cells)
+                 (make-node :x (first end)
+                            :y (second end)
+                            :orientation end-orientation
+                            :cells cells)
+                 :node-equal (function node-equal))))
 
-(build-path '(2 2) :vertical '(4 5) :front nil)
+#-(and)
+(map nil 'print
+     (let ((*standard-output* (make-broadcast-stream)))
+       (build-path '(2 2) :vertical '(4 5) :any (make-array '(9 9) :initial-element +empty+))))
+
+#-(and)
+(format-level
+ (node-cells (first (last (build-path '(2 2) :vertical '(4 5) :any (make-array '(9 9) :initial-element +empty+)))))
+ nil nil)
+
+#-(and)
+(loop
+  :with pos   := '((2 2 :vertical) (7 7 :vertical) (7 2 :vertical) (2 7 :vertical) (5 7 :vertical))
+  :with start := (pop pos)
+  :with cells := (make-array '(9 9) :initial-element +empty+)
+  :for next := (pop pos)
+  :for path := (and next
+                    (build-path (list (first start) (second start)) (third start)
+                                (list (first next)  (second next))  (third next)
+                                cells))
+  :while next
+  :append path :into paths
+  :do (setf start next)
+      (setf cells (node-cells (first (last path))))
+  :finally (return (values paths (format-level cells nil nil))))
+
+
+
 
 
 (defun generate-path (start end cells start-orientation)
@@ -269,7 +415,7 @@
       (setf intermediates (loop :repeat (random 3)
                                 :collect (let ((position (random-position cells +empty+)))
                                            (when position
-                                             (setf (aref cell (first position) (second position))
+                                             (setf (aref cells (first position) (second position))
                                                    +pathway+)
                                              position)))))
     `(path ,@
@@ -284,7 +430,7 @@
 
 (defun generate-level-2 (&key (width 5) (height width)
                          (goals (1+ (random (ceiling (* 0.2 width height))))))
-  (let ((cells (make-array (list height width) :initial-element +empty+))
+  (let ((cells (make-array (list (+ 4 height) (+ 4 width)) :initial-element +empty+))
         (m     (* width height)))
     (let ((goal-positions
             (loop :with ngoals := goals
@@ -319,7 +465,7 @@
 
     (format-level cells '() '())))
 
-
+#-(and)
 (let (board)
   (concatenate 'string
                (with-output-to-string (*standard-output*)
@@ -330,21 +476,18 @@
                #(#\newline #\newline)
                board))
 
-"
-((3 0) #\\S)
-((4 0) #\\r)
-((2 4) #\\T)
-(((3 0) #\\S) ((4 0) #\\r) ((2 4) #\\T))
-((path #2A((#\\. #\\. #\\. #\\. #\\.) (#\\. #\\. #\\. #\\. #\\.) (#\\. #\\. #\\. #\\. #\\T) (#\\S #\\. #\\. #\\. #\\.) (#\\r #\\. #\\. #\\. #\\.)) ((3 0) #\\S)) (path #2A((#\\. #\\. #\\. #\\. #\\.) (#\\. #\\. #\\. #\\. #\\.) (#\\. #\\. #\\. #\\. #\\T) (#\\S #\\. #\\. #\\. #\\.) (#\\r #\\. #\\. #\\. #\\.)) ((4 0) #\\r)))
-
-.........
-.........
-.........
-.........
-......T..
-..S......
-..r......
-.........
-.........
-
-"
+#-(and)
+(loop
+  :with pos   := '((2 2 :vertical) (7 7 :vertical) (7 2 :vertical) (2 7 :vertical) (5 7 :vertical))
+  :with start := (pop pos)
+  :with cells := (make-array '(9 9) :initial-element +empty+)
+  :for next := (pop pos)
+  :for path := (and next
+                    (build-path (list (first start) (second start)) (third start)
+                                (list (first next)  (second next))  (third next)
+                                cells))
+  :while next
+  :append path :into paths
+  :do (setf start next)
+      (setf cells (node-cells (first (last path))))
+  :finally (return (values paths (format-level cells nil nil))))

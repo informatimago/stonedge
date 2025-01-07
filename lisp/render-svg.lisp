@@ -1,13 +1,13 @@
 ;;;; -*- mode:lisp;coding:utf-8 -*-
 ;;;;**************************************************************************
-;;;;FILE:               render-png.lisp
+;;;;FILE:               render-svg.lisp
 ;;;;LANGUAGE:           Common-Lisp
 ;;;;SYSTEM:             Common-Lisp
 ;;;;USER-INTERFACE:     NONE
 ;;;;DESCRIPTION
-;;;;
-;;;;    Render a stonedge board game to PNG using vecto.
-;;;;
+;;;;    
+;;;;    Render a stonedge board game to SVG using cl-svg.
+;;;;    
 ;;;;AUTHORS
 ;;;;    <PJB> Pascal J. Bourguignon <pjb@informatimago.com>
 ;;;;MODIFICATIONS
@@ -15,19 +15,19 @@
 ;;;;BUGS
 ;;;;LEGAL
 ;;;;    AGPL3
-;;;;
+;;;;    
 ;;;;    Copyright Pascal J. Bourguignon 2024 - 2024
-;;;;
+;;;;    
 ;;;;    This program is free software: you can redistribute it and/or modify
 ;;;;    it under the terms of the GNU Affero General Public License as published by
 ;;;;    the Free Software Foundation, either version 3 of the License, or
 ;;;;    (at your option) any later version.
-;;;;
+;;;;    
 ;;;;    This program is distributed in the hope that it will be useful,
 ;;;;    but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;;;;    GNU Affero General Public License for more details.
-;;;;
+;;;;    
 ;;;;    You should have received a copy of the GNU Affero General Public License
 ;;;;    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;**************************************************************************
@@ -35,7 +35,7 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (setf *readtable* (copy-readtable nil)))
 
-(in-package :com.informatimago.games.stonedge.render-png)
+(in-package :com.informatimago.games.stonedge.render-svg)
 
 (defvar *geometry-size* (point 1024 1024))
 
@@ -60,7 +60,7 @@
                        (+ (* (+ x1 y1) (* d sin-alpha)) (/ (y *geometry-size*) 2))))
            (dx (- (x pxy) (x oxy)))
            (dy (- (y pxy) (y oxy))))
-
+      
       (when (eq orientation :vertical)
         (setf dx 0)
         (setf dy d))
@@ -84,13 +84,13 @@
       ;; path1.addArc(tangent1End: CGPoint(x: Oxy.x + Du.x, y: Oxy.y + Du.y), tangent2End: CGPoint(x: Oxy.x + D.x, y: Oxy.y + D.y), radius: cornerRadius)
       ;; path1.addArc(tangent1End: CGPoint(x: Oxy.x + D.x, y: Oxy.y + D.y), tangent2End: CGPoint(x: Oxy.x + H.x, y: Oxy.y + H.y), radius: cornerRadius)
       ;; path1.closeSubpath()
-      ;;
+      ;; 
       ;; let transform = CGAffineTransform(translationX: dx, y: dy)
       ;; let path2 = path1.applying(transform)
-      ;;
+      ;; 
       ;; var pathF = path1
       ;; var pathB = path2
-      ;;
+      ;; 
       ;; switch(orientation){
       ;;                     case .vertical:
       ;;                     pathF = path1
@@ -102,10 +102,10 @@
       ;;                     pathF = path2
       ;;                     pathB = path1
       ;;                     }
-      ;;
+      ;; 
       ;; let ticks = Path()
 
-
+      
       (values pathf pathb ticks) ;; Return simulated paths (placeholders in this example)
       )))
 
@@ -120,7 +120,7 @@ Writes to the file at PATHNAME a PNG representaiton of the GAME.
     ;; (vecto:paint-background)
 
 
-
+  
   #-(and) (let* ((cells (game-cells game))
               (line  (with-output-to-string (out)
                        (loop
@@ -160,13 +160,13 @@ Writes to the file at PATHNAME a PNG representaiton of the GAME.
                               (terpri stream))))))
     ;; ;; Set the fill color to black
     ;; (vecto:set-rgb-fill 0 0 0)  ;; RGB for red
-    ;;
+    ;; 
     ;; ;; Draw a circle
     ;; (vecto:circle 150 150 100)  ;; (x y radius)
     ;; (vecto:fill)
 
 
-
+    
     ;; Save the image to a PNG file
     (vecto:save-png pathname)))
 
@@ -198,16 +198,16 @@ Writes to the file at PATHNAME a PNG representaiton of the GAME.
            (ends   (arc-ends x y radius angle1 angle2)))
       ;; (vecto:translate 50 50)
       ;; (vecto:set-rgb-fill 1 1 1)
-      ;;
+      ;; 
       ;; (plus '(0 0))
       ;; (cross (first  ends))
       ;; (cross (second ends))
-      ;;
+      ;; 
       ;; (vecto:move-to (x (first ends))  -50)
       ;; (vecto:line-to (x (first ends))  (y (first ends)))
       ;; (vecto:arc x y radius angle1 angle2)
       ;; (vecto:line-to -50               (y (second ends)))
-      ;;
+      ;; 
       ;; ;; (vecto:arc x y (/ radius 2) (- angle2) angle1)
       ;; ;; (vecto:arc x y (/ radius 4) angle1 angle2)
       ;; (vecto:stroke)

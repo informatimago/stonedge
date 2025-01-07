@@ -1,0 +1,8 @@
+* render
+
+** render-png
+vecto seems to be very slow to generate the png files.
+We'll use svg instead.
+
+** render-svg
+Trying to use cl-svg first.

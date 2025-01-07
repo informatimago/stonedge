@@ -59,33 +59,3 @@
    #:text-icon
    #:stone-coverage))
 
-(defpackage :com.informatimago.games.stonedge.generator
-  (:use
-   :common-lisp
-   :split-sequence
-   :com.informatimago.common-lisp.cesarum.a-star)
-  (:import-from :com.informatimago.common-lisp.cesarum.array
-                #:copy-array)
-  (:shadow #:copy)
-  (:export
-   "GENERATE"))
-
-(defpackage :com.informatimago.games.stonedge.render
-  (:use
-   :common-lisp)
-  (:export
-   "D" "H" "ALPHA"
-   "CELL-CORNER-RADIUS" "SQUARE-SIZE" "INSET"
-   ;;--
-   "CELL-PATHS" "STONE-PATHS" "RENDER-GAME"
-   "POINT" "POINT-X" "POINT-Y" "COPY-POINT"
-   ))
-
-
-(defpackage :com.informatimago.games.stonedge.render-png
-  (:use
-   :common-lisp
-   :vecto
-   :com.informatimago.games.stonedge.render
-   :com.informatimago.games.stonedge)
-  (:export))

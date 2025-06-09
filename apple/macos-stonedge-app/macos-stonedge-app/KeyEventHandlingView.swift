@@ -20,9 +20,23 @@ struct KeyEventHandlingView: NSViewControllerRepresentable {
 
     public static func input(command: NSEvent) -> String?
     {
+//        print("keyCode = \(command.keyCode)")
+//        if #available(macOS 10.9, *) {
+//            // Runs on macOS 10.9 or newer
+//            print("upArrow = \(NSEvent.SpecialKey.upArrow)")
+//        }
+//        print("NSUpArrowFunctionKey = \(NSUpArrowFunctionKey)")
         switch command.keyCode {
         case UInt16(27) /*escape*/:
             return inputEscape
+        case UInt16(123):
+            return inputLeftArrow
+        case UInt16(124):
+            return inputRightArrow
+        case UInt16(125):
+            return inputDownArrow
+        case UInt16(126):
+            return inputUpArrow
         case UInt16(NSUpArrowFunctionKey):
             return inputUpArrow
         case UInt16(NSDownArrowFunctionKey):

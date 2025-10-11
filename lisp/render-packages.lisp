@@ -3,13 +3,16 @@
 
 (defpackage :com.informatimago.games.stonedge.render
   (:use
-   :common-lisp)
+   :common-lisp
+   :com.informatimago.games.stonedge)
+  ;; (:shadowing-import-from :com.informatimago.games.stonedge
+  ;;                         "STONE" "GAME" "CELL")
   (:export
    "D" "H" "ALPHA"
    "CELL-CORNER-RADIUS" "SQUARE-SIZE" "INSET"
    ;;--
    "CELL-PATHS" "STONE-PATHS" "RENDER-GAME"
-   "POINT" "POINT-X" "POINT-Y" "COPY-POINT"
+   "POINT" "X" "Y" "COPY-POINT"
    ))
 
 
@@ -19,6 +22,7 @@
    :vecto
    :com.informatimago.games.stonedge.render
    :com.informatimago.games.stonedge)
+  (:shadowing-import-from :vecto :rotate)
   (:export))
 
 (defpackage :com.informatimago.games.stonedge.render-svg
@@ -27,4 +31,5 @@
    :cl-svg
    :com.informatimago.games.stonedge.render
    :com.informatimago.games.stonedge)
+  (:shadowing-import-from :cl-svg :rotate)
   (:export))

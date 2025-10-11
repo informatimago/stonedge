@@ -14,6 +14,8 @@
 
 (defstruct (point (:type list) (:conc-name nil) (:constructor point (x y))) x y)
 
+
+
 (defgeneric stone-paths (stone d h alpha corner-radius))
 (defgeneric cell-paths  (cell  d h alpha corner-radius))
 (defgeneric render-game (game pathname file-type))

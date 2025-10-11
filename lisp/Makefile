@@ -173,5 +173,5 @@ $(NAME)-haskell:$(NAME).hs
 # 	@ls -l $(ALL_PROGRAMS)
 
 clean:
-	-rm -f *.o *.fas *.lib *.log *.hi *.jar *.class
+	-rm -f *.o *.fas *.lib *.log *.hi *.jar *.class *.[dlw]x64fsl
 	-rm -f $(ALL_PROGRAMS)

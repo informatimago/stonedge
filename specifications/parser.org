@@ -1,8 +1,12 @@
+* Specification of the Stonedge Level File Format
 
+** Syntax
 
 Level specification is a multiline string with the following syntax:
 
-    level-specification ::= grid { cell-definition } .
+#+begin_src
+    level-specification ::= title-comment grid { cell-definition } .
+    title-comment ::= title-line { | description-line } .
     grid ::= { cell-line } .
     cell-line ::= { cell-char } .
     cell-char ::= '.' | ' '    --  empty-cell
@@ -16,6 +20,7 @@ Level specification is a multiline string with the following syntax:
                       | cell-name 'red' { cell-name }
                       | cell-name 'blue' { cell-name } .
     cell-name ::= other-char .
+#+end_src
 
 
 The characters are case insensitive.
@@ -28,7 +33,35 @@ the following keyword indicates its initial state.
 'blue' indicates the class of the cell is blue-button-cell; in
 both cases, the rest is the list of pathway cell-names
 connected to the button. This list can be given with or
-without spaces between the cell-name character.
+without spaces between the cell-name characters.
 
 There must be a single start position, and all the non empty cells
 must be at least two steps from the borders.
+
+
+** Example
+
+#+BEING_EXAMPLE
+    Tutorial 4
+
+    | Yellow cells are open or closed pathways:                                  |
+    | They can be switched open or close by activating button cells.             |
+    | Red button cells can be activated by the stone horizontal or vertical.     |
+    | Blue button cells can only be activated by the stone in vertical position. |
+
+    ..........
+    ..........
+    ..OOROOO..
+    ..SOOO1O..
+    ..OOOO2O..
+    ..OOOO3T..
+    ..OOBOOO..
+    ..........
+    ..........
+
+    R RED 1 2
+    B BLUE 3
+    1 PATHWAY CLOSED
+    2 PATHWAY OPEN
+    3 PATHWAY CLOSED
+#+END_EXAMPLE

@@ -1,0 +1,11 @@
+
+To play a game:
+
+(com.informatimago.games.stonedge.player:stonedge
+   (fourth com.informatimago.games.stonedge.parser::*levels*))
+
+
+To solve a game automatically:
+
+(com.informatimago.games.stonedge.solver:solve-problem
+   (fourth com.informatimago.games.stonedge.parser::*levels*))

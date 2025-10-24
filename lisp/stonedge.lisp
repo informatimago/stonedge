@@ -338,9 +338,11 @@ May signal a game-won or game-lost condition.")
   ()
   (:documentation "The stone may remain securely on a solid cell."))
 
+(defclass start-cell (solid-cell)
+  ()
+  (:documentation "The start position in the grid. There must be only one start cell."))
 
-
-(defclass target-cell (cell)
+(defclass target-cell (solid-cell)
   ()
   (:documentation "Once the stone is in vertical position on a target cell,
 the game is won."))
@@ -480,6 +482,49 @@ the game is lost."))
     :lose))
 
 
+;;;-----------------------------------------------------------------------------
+;;;
+;;; LEVEL
+;;;
+;;; We reify the level class to be able to manipulate and edit them
+;;; easily in the level explorer.
+
+
+(defclass level ()
+  ((title       :initarg :title
+                :initform ""
+                :accessor level-title
+                :documentation "The title of the level (single line).")
+   (description :initarg :description
+                :initform ""
+                :accessor level-description
+                :documentation "The description of the level (multiline).")
+   (cells       :initarg :cells
+                :initform #2a()
+                :reader level-cells
+                :documentation "The cells.")
+   ;; connections
+   ))
+
+
+(defmethod level-start-cell ((level level))
+  (let ((cells (level-cells level)))
+    (loop :for y :below (array-dimension cells 0)
+          :do (loop :for x :below (array-dimension cells 1)
+                    :if (typep (aref cells y x) 'start-cell)
+                    :do (return-from level-start-cell (values (aref cells y x) y x))))
+    (cerror "Continue with no start cell" "Level ~S is missing a start cell"
+            (level-title level))
+    nil))
+
+
+(defmethod print-object ((level level) stream)
+  (print-unreadable-object (level stream :identity t :type t)
+    (format stream ":TITLE ~S~% :DESCRIPTION ~S~% :CELLS ~%"
+            (level-title level)
+            (level-description level))
+    (print-cells (level-cells level) stream))
+  level)
 
 ;;;-----------------------------------------------------------------------------
 ;;;
@@ -495,13 +540,31 @@ the game is lost."))
    (cells :initform #2a()
           :initarg :cells
           :reader game-cells
-          :documentation "The cells.")))
+          :documentation "The cells.")
+   (level-title :initarg :level-title
+                :initform ""
+                :accessor level-title
+                :documentation "The title of the current level (single line).")
+   (level-description :initarg :level-description
+                      :initform ""
+                      :accessor level-description
+                      :documentation "The description of the current level (multiline).")))
+
+
+(defmethod make-game-from-level ((level level))
+  (multiple-value-bind (start-cell x y) (level-start-cell level)
+    (make-instance 'game
+                   :stone (make-instance 'stone :x x :y y :direction #(0 0 1))
+                   :level-title (level-title level)
+                   :level-description (level-description level)
+                   :cells (level-cells level))))
 
 
 (defgeneric text-icon (cell)
   (:documentation "Returns a three-character strings denoting graphically the cell.")
   (:method ((cell empty-cell))       (declare (ignorable cell)) "   ")
   (:method ((cell solid-cell))       (declare (ignorable cell)) "SSS")
+  (:method ((cell start-cell))       (declare (ignorable cell)) "BGN")
   (:method ((cell red-button-cell))  (declare (ignorable cell)) "[R]")
   (:method ((cell blue-button-cell)) (declare (ignorable cell)) "[B]")
   (:method ((cell ice-cell))         (declare (ignorable cell)) ",,,")
@@ -536,47 +599,65 @@ DIRECTION: (member :vertical :lateral :front)
           (values direction (min x0 x1) (min y0 y1) (max x0 x1) (max y0 y1))))))
 
 
-(defun print-game (game stream)
+(defun print-cells (cells stream &optional stone)
   "
-Prints an ASCII-art representation of the GAME onto the STREAM.
+Prints an ASCII-art representation of the cells onto the STREAM.
 "
-  (let* ((cells (game-cells game))
-         (line  (with-output-to-string (out)
+  (let* ((line  (with-output-to-string (out)
                   (loop
                     :initially (princ "+" out)
                     :repeat (array-dimension cells 0)
                     :do (princ "---+" out)))))
-    (multiple-value-bind (direction stone-left stone-back stone-right stone-front)
-        (stone-coverage  (game-stone game))
-      (loop
-         :for j :from (1-  (array-dimension cells 1)) :downto 0
-         :initially (princ line stream) (terpri stream)
-         :do (loop
+    (if stone
+        (multiple-value-bind (direction stone-left stone-back stone-right stone-front)
+            (stone-coverage stone)
+          (loop
+            :for j :from (1-  (array-dimension cells 1)) :downto 0
+            :initially (princ line stream) (terpri stream)
+            :do (loop
+                  :for i :from 0 :below (array-dimension cells 0)
+                  :initially (princ "|" stream)
+                  :do (unless (ecase direction
+                                ((:vertical)
+                                 (when (and (= stone-left i) (= stone-back j))
+                                   (princ "BBB" stream) (princ "|" stream) t))
+                                ((:lateral)
+                                 (cond
+                                   ((and (= stone-left i) (= stone-back j))
+                                    (princ "BBBB" stream) t)
+                                   ((and (= stone-right i) (= stone-back j))
+                                    (princ "BBB" stream) (princ "|" stream) t)))
+                                ((:front)
+                                 (when (and (= stone-left i) (or (= stone-back j)
+                                                                 (= stone-front j)))
+                                   (princ "BBB" stream) (princ "|" stream) t)))
+                        (princ (text-icon (aref cells i j)) stream) (princ "|" stream))
+                  :finally (progn
+                             (terpri stream)
+                             (if (and (eql direction :front) (= stone-front j))
+                                 (let ((line (copy-seq line)))
+                                   (replace line "BBB" :start1 (+ 1 (* 4 stone-left)))
+                                   (princ line stream))
+                                 (princ line stream))
+                             (terpri stream)))))
+        (loop
+          :for j :from (1-  (array-dimension cells 1)) :downto 0
+          :initially (princ line stream) (terpri stream)
+          :do (loop
                 :for i :from 0 :below (array-dimension cells 0)
                 :initially (princ "|" stream)
-                :do (unless (ecase direction
-                              ((:vertical)
-                               (when (and (= stone-left i) (= stone-back j))
-                                 (princ "BBB" stream) (princ "|" stream) t))
-                              ((:lateral)
-                               (cond
-                                 ((and (= stone-left i) (= stone-back j))
-                                  (princ "BBBB" stream) t)
-                                 ((and (= stone-right i) (= stone-back j))
-                                  (princ "BBB" stream) (princ "|" stream) t)))
-                              ((:front)
-                               (when (and (= stone-left i) (or (= stone-back j)
-                                                               (= stone-front j)))
-                                 (princ "BBB" stream) (princ "|" stream) t)))
-                      (princ (text-icon (aref cells i j)) stream) (princ "|" stream))
+                :do (princ (text-icon (aref cells i j)) stream)
+                    (princ "|" stream)
                 :finally (progn
                            (terpri stream)
-                           (if (and (eql direction :front) (= stone-front j))
-                               (let ((line (copy-seq line)))
-                                 (replace line "BBB" :start1 (+ 1 (* 4 stone-left)))
-                                 (princ line stream))
-                               (princ line stream))
+                           (princ line stream)
                            (terpri stream)))))))
+
+(defun print-game (game stream)
+  "
+Prints an ASCII-art representation of the GAME onto the STREAM.
+"
+  (print-cells (game-cells game) stream (game-stone game)))
 
 
 (defmethod print-object ((self game) stream)
@@ -587,471 +668,16 @@ Prints an ASCII-art representation of the GAME onto the STREAM.
   self)
 
 
-(defun parse-game (level)
-  "
-LEVEL:   A CONS whose car is a string drawing the cells, and whose cdr
-         is a list of cell definitions.  The string is a multiline
-         string, each line containing one character per cell.  The
-         character encodes the class of cell (case insensitively):
-
-            . or space:  empty-cell
-            S            solid-cell starting position
-            O            solid-cell
-            T            target-cell
-            I            ice-cell
-            C            crumble-cell
-            other:       the character is searched in the list of cell definitions.
-
-         The list of cell definitions contains sublists of these forms:
-            (cell-name  :pathway  :open|:closed)
-            (cell-name  :red      . list-of-cell-names)
-            (cell-name  :blue     . list-of-cell-names)
-
-         Cell-name is either a character, a single-character string or
-         symbol, or a digit (0 from 9).
-
-         :pathway indicates the class of the cell is pathway-cell, and
-         the following keyword indicates its initial state.
-
-         :red indicates the class of the cell is red-button-cell;
-         :blue indicates the class of the cell is blue-button-cell; in
-         both cases, the rest is the list of pathway cell-names
-         connected to the button.
-
-         There must be a start position, and all the non empty cells
-         must be at least two steps from the borders.
-"
-  (let* ((lines (split-sequence:split-sequence #\newline (first level)))
-         (depth (length lines))
-         (width (reduce (function max) lines :key (function length)))
-         (cells (make-array (list width depth)))
-         (links (rest level))
-         (linked-cells '())
-         (stone))
-    (flet ((cell-key (designator)
-             (typecase designator
-               ((or symbol string character) (char (string-upcase designator) 0))
-               ((integer 0 9) (char (princ-to-string designator) 0))
-               (t (error "Invalid reference in level links: ~S" designator)))))
-      (loop
-         :with start-x :with start-y
-         :for line :in lines
-         :for j :from (1- depth) :downto 0
-         :do (loop
-                :for i :from 0 :below width
-                :for ch = (if (< i (length line))
-                              (aref line i)
-                              #\.)
-                :do (setf (aref cells i j)
-                          (flet ((make-cell (class &rest args)
-                                   (unless (eql class 'empty-cell)
-                                     (assert (and (< 1 i (- width  2))
-                                                  (< 1 j (- depth 2)))
-                                             (i j)
-                                             "Non empty cells must be at more than two steps from the border."))
-                                   (apply (function make-instance) class :x i :y j args)))
-                            (case (char-upcase ch)
-                              ((#\. #\space)  (make-cell 'empty-cell))
-                              ((#\S)          (progn
-                                                (setf start-x i
-                                                      start-y j)
-                                                (make-cell 'solid-cell)))
-                              ((#\O)          (make-cell 'solid-cell))
-                              ((#\I)          (make-cell 'ice-cell))
-                              ((#\C)          (make-cell 'crumble-cell))
-                              ((#\T)          (make-cell 'target-cell))
-                              (otherwise
-                               (let ((link (assoc (char-upcase ch) links :key (function cell-key))))
-                                 (if link
-                                     (let ((cell
-                                            (ecase (second link)
-                                              ((:red)     (make-cell 'red-button-cell))
-                                              ((:blue)    (make-cell 'blue-button-cell))
-                                              ((:pathway) (make-cell 'pathway-cell :state (third link))))))
-                                       (push (cons (cell-key ch) cell) linked-cells)
-                                       cell)
-                                     (error "Invalid character in level map: ~S" ch))))))))
-         :finally (progn
-                    (unless start-x
-                      (error "The level is missing a start position. ~%~S" level))
-                    (setf stone (make-instance 'stone :x start-x :y start-y))
-                    (loop
-                       ;; Put the pathways in the switches list of the buttons.
-                       :for (key . cell) :in linked-cells
-                       :for link = (assoc key links :key (function cell-key))
-                       :do (ecase (second link)
-                             ((:red :blue) (dolist (pathway (cddr link))
-                                             (pushnew (cdr (assoc (cell-key pathway) linked-cells))
-                                                      (button-cell-switches cell))))
-                             ((:pathway))))
-                    (return (make-instance 'game :stone stone :cells cells)))))))
-
-
-(defmethod move ((game game) direction)
-  "
-Moves the stone of the game in the given direction.
-"
-  (let ((stone (game-stone game))
-        (cells (game-cells game)))
-    (multiple-value-bind (direction stone-left stone-back stone-right stone-front) (stone-coverage stone)
-      (if (eql direction :vertical)
-          (stone-left-cell stone (aref cells stone-left stone-back))
-          (progn
-            (stone-left-cell stone (aref cells stone-left stone-back))
-            (stone-left-cell stone (aref cells stone-right stone-front)))))
-    (move (game-stone game) direction)
-    (multiple-value-bind (direction stone-left stone-back stone-right stone-front) (stone-coverage stone)
-      (if (eql direction :vertical)
-          (stone-moved-over-cell stone (aref cells stone-left stone-back))
-          (progn
-            (stone-moved-over-cell stone (aref cells stone-left stone-back))
-            (stone-moved-over-cell stone (aref cells stone-right stone-front))))))
-  game)
-
-
-(defun stonedge (level)
-  "
-Play the playtomo stonedge game for the given LEVEL.
-See PARSE-GAME for the description of LEVEL.
-"
-  (let ((game (parse-game level)))
-    (handler-case
-        (loop
-           (print-game game *query-io*)
-           (format *query-io* "Your move: ")
-           (block :abort
-             (move game
-                   (case (char (string-trim #(#\space #\tab) (read-line *query-io*)) 0)
-                     ((#\j #\4) :left)
-                     ((#\l #\6) :right)
-                     ((#\i #\8) :front)
-                     ((#\k #\2) :back)
-                     (otherwise (return-from :abort))))))
-      (game-won  () (format t "~%You win!~2%"))
-      (game-lost () (format t "~%You lose!~2%")))
-    (values)))
-
-
-;;;-----------------------------------------------------------------------------
-;;;
-;;; Solver
-;;;
-
-(defgeneric cell-state (cell)
-  (:documentation "Return NIL or the state of the cell.")
-  (:method (cell)                (declare (ignorable cell)) nil)
-  (:method ((cell crumble-cell)) (declare (ignorable cell)) (crumble-cell-state cell))
-  (:method ((cell pathway-cell)) (declare (ignorable cell)) (pathway-cell-state cell)))
-
-
-(defgeneric game-state (game)
-  (:documentation "Return a list containing in a concise form the full state of the game.")
-  (:method ((game game))
-    (let ((cells (game-cells game))
-          (stone (game-stone game)))
-      (multiple-value-bind (direction stone-left stone-back stone-right stone-front)
-          (stone-coverage stone)
-        (declare (ignore direction))
-        (list* (or (game-status stone (aref cells stone-left  stone-back))
-                   (game-status stone (aref cells stone-right stone-front)))
-               stone-left stone-back stone-right stone-front
-               (loop
-                  :for i :from 0 :below (array-total-size cells)
-                  :for state = (cell-state (row-major-aref cells i))
-                  :when state :collect state))))))
 
 
 
-(defgeneric copy (object &key &allow-other-keys)
-
-  (:documentation "Copy the game objects.  Stateless cells are returned uncopied.")
-
-  (:method ((stone stone) &key &allow-other-keys)
-    (make-instance 'stone
-        :x (stone-x stone)
-        :y (stone-y stone)
-        :direction (stone-direction stone)))
-
-  (:method ((cell cell) &key &allow-other-keys)
-    cell)
-
-  (:method ((cell button-cell) &key &allow-other-keys)
-    (make-instance (class-of cell)
-        :x (cell-x cell)
-        :y (cell-y cell)
-        :switches (button-cell-switches cell)))
-
-  (:method ((cell pathway-cell) &key &allow-other-keys)
-    (make-instance (class-of cell)
-        :x (cell-x cell)
-        :y (cell-y cell)
-        :state (pathway-cell-state cell)))
-
-  (:method ((cell crumble-cell) &key &allow-other-keys)
-    (make-instance (class-of cell)
-        :x (cell-x cell)
-        :y (cell-y cell)
-        :state (crumble-cell-state cell)))
-
-  (:method ((game game) &key &allow-other-keys)
-    (make-instance 'game
-        :stone (copy (game-stone game))
-        :cells (loop
-                  :with cells    = (copy-array (game-cells game))
-                  :with pathways = '()
-                  :with buttons  = '()
-                  :for i :from 0 :below (array-total-size cells)
-                  :for original = (row-major-aref cells i)
-                  :for copy     = (copy original)
-                  :do (setf (row-major-aref cells i) copy)
-                  :do (typecase original
-                        (pathway-cell (push (cons original copy) pathways))
-                        (button-cell  (push copy                 buttons)))
-                  :finally (progn
-                             (dolist (button buttons)
-                               (setf (button-cell-switches button)
-                                     (mapcar (lambda (old) (cdr (assoc old pathways)))
-                                             (button-cell-switches button))))
-                             (return cells))))))
 
 
 
-(defstruct node
-  "A node of the graph of the stonedge game."
-  state
-  game
-  path
-  visitedp
-  startp
-  ;; neighbors is nil or a vector of neighbor nodes in (:right :left :front :back) order.
-  neighbors)
-
-
-(defvar *states* (make-hash-table :test (function equal))
-  "A hash-table mapping game states to nodes.")
-
-
-(defun make-graph-from-states (states)
-  (let* ((ne (make-hash-table))
-         (en (make-hash-table))
-         (elements
-          (let ((elements '()))
-            (maphash
-             (lambda (state node)
-               (let ((element (make-instance 'element-class :ident state)))
-                 (set-property element :path (reverse (node-path node)))
-                 (set-property element :dot-label
-                               #- (and) (with-output-to-string (out)
-                                                     (dolist (line (split-sequence:split-sequence
-                                                                    #\newline
-                                                                    (with-output-to-string (out)
-                                                                      (print-game (node-game node) out))))
-                                                       (princ line out)
-                                                       (princ "\\n" out)))
-                               #+ (and) "x")
-                 (set-property element :dot-fill-color (if (node-startp node)
-                                                           "Yellow"
-                                                           (ecase (first state)
-                                                             ((:win)  "Green")
-                                                             ((:lose) "Red")
-                                                             ((nil)   "White"))))
-                 (setf (gethash element en) node)
-                 (setf (gethash node ne) element)
-                 (push element elements)))
-             states)
-            elements))
-         (graph (make-instance 'graph-class
-                    :nodes (make-instance 'set-class :elements elements)
-                    :edge-class 'directed-edge)))
-    (print (list (length elements)  'elements))
-    (dolist (element elements)
-      (let ((node (gethash element en)))
-        (when (node-neighbors node)
-          (loop
-             :for successor :across (node-neighbors node)
-             :for direction :in '(:right :left :front :back)
-             :do (when successor
-                   (let ((edge (make-instance 'directed-edge-class
-                                   :from element
-                                   :to (gethash successor ne))))
-                     (set-property edge :dot-label direction)
-                     (add-edge graph edge)))))))
-    graph))
-
-(defun reset ()
-  "Cleans up the *STATES* hash-table."
-  (setf  *states* (make-hash-table :test (function equal))))
-
-
-(defun explore (game path)
-  "Walks the game graph, recoding each node in the *STATES* hash-table."
-  (let* ((state (game-state game))
-         (node  (gethash state *states*)))
-    (unless node
-      (setf node (setf (gethash state *states*)
-                       (make-node :state state
-                                  :game game
-                                  :path path
-                                  :visitedp nil))))
-    (unless (node-visitedp node)
-      (setf (node-visitedp node) t)
-      (unless (first state)
-        (setf (node-neighbors node)
-              (coerce
-               (loop
-                  :for move    :in '(:right :left :front :back)
-                 ;; :for reverse :in '(:left :right :back :front)
-                  :collect (let ((child (copy game)))
-                             (move child move)
-                             (explore child (cons move path))))
-               'vector))))
-    node))
-
-
-(defun print-wins ()
-  "Find all the WIN nodes from the *STATES* hash-table, and print thei state and path."
-  (maphash (lambda (state node)
-             (when (eq :win (first state))
-               (print (list state (reverse (node-path node))))))
-           *states*))
-
-
-(defun solve-problem (problem)
-  "Solves the playtomo-stonedge game level PROBLEM,
-printing the number of states and the win states."
-  (time (progn
-          (reset)
-          (setf (node-startp (explore (parse-game problem) '())) t)
-          (print `(number of states = ,(hash-table-count *states*)))
-          (print-wins))))
-
-
-
-;;;-----------------------------------------------------------------------------
-
-(defparameter *simple*
-  '("
-...............
-...............
-......AO.......
-....OOOOOO.....
-..SOOOOOOO1OT..
-...IIOOOOO.....
-......IO.......
-...............
-...............
-"
-    (a :red     1)
-    (1 :pathway :closed)))
-
-(defparameter *level-0-moves*
-  '("
-...............
-...............
-..SOOOOOOOOOO..
-..OOOOOOOOOOO..
-..OOOOOOOOOOO..
-..OOOOOOOOOOO..
-..OOOOOOOOOOO..
-..OOOOOOOOOOO..
-..OOOOOOOOOOT..
-...............
-...............
-"))
-
-(defparameter *level-36*
-  '("
-...............
-...............
-......AO.......
-....OOOIIO.....
-..SOOOICOO1OT..
-...IIOIOOO.....
-......IO.......
-...............
-...............
-"
-    (a :red     1)
-    (1 :pathway :closed)))
-
-(defparameter *level-37*
-  '("
-...........
-...........
-.....OC....
-....CII....
-..OO1BS23..
-..OR4TCOO..
-....COL....
-.....O5....
-...........
-...........
-"
-    (b :blue 1)
-    (r :red  4)
-    (l :red  2 3 5)
-    (1 :pathway :closed)
-    (2 :pathway :closed)
-    (3 :pathway :closed)
-    (4 :pathway :open)
-    (5 :pathway :open)))
-
-(defparameter *level-38*
-  '("
-.................
-.................
-..II.IIIICIIOIT..
-..II..III.IIIII..
-..SOII.II.IIIII..
-..IIICOOC........
-.................
-.................
-"))
-
-(defparameter *level-39*
-  '("
-..............
-..............
-..IIB1R2CLO...
-..IIO.....O...
-....O.....O...
-....O.....3O..
-....O.....OO..
-....IO...OTO..
-....SO...CO...
-.....OCOCOO...
-..............
-..............
-"
-    (b :blue 1)
-    (r :red  2)
-    (l :red  3)
-    (1 :pathway :closed)
-    (2 :pathway :closed)
-    (3 :pathway :closed)))
-
-(defparameter *level-52*
-  '("
-.........
-...RO
-...OC
-..SBOC1
-..OTIO2
-..3OCO
-..OC
-
-
-"
-    (r :red 3)
-    (b :blue 1 2)
-    (1 :pathway :closed)
-    (2 :pathway :closed)
-    (3 :pathway :closed)))
-
-;; (defparameter *game* (parse-game *problem*))
+;; (defparameter *game* (make-game-from-level (parse-level *problem*))
 ;; (stonedge *level-39*)
 ;; (solve-problem *problem*) (solve-problem *simple*)
-;; (time (progn (reset) (explore (parse-game ) '()) (find-win)))
+;; (time (progn (reset) (explore (make-game-from-level (parse-level )) '()) (find-win)))
 ;;
 ;; (solve-problem *level-37*)
 ;; (solve-problem *level-38*)

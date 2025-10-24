@@ -4,11 +4,8 @@
 (defpackage :com.informatimago.games.stonedge
   (:use
    :common-lisp
-   :split-sequence
-   :com.informatimago.common-lisp.cesarum.graph
-   :com.informatimago.common-lisp.graphviz.graph-dot)
-  (:import-from :com.informatimago.common-lisp.cesarum.array
-                #:copy-array)
+   :split-sequence)
+
   (:shadow #:copy)
 
   (:export
@@ -40,11 +37,18 @@
    #:game-lost
    #:stone-moved-over-cell
    #:stone-left-cell
+   #:level
+   #:level-title
+   #:level-description
+   #:level-cells
+   #:level-start-cell
    #:game-status
    #:game
    #:game-stone
    #:game-cells
+   #:make-game-from-level
    #:solid-cell
+   #:start-cell
    #:target-cell
    #:empty-cell
    #:button-cell
@@ -57,5 +61,10 @@
    #:crumble-cell-state
    #:ice-cell
    #:text-icon
-   #:stone-coverage))
+   #:stone-coverage
+   ;;
+   #:print-game
+   #:print-cells
+   #:*levels*
+   ))
 

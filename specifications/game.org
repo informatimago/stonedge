@@ -1,0 +1,134 @@
+* Stonedge Game Specifications
+
+The purpose of this puzzle game is to move a menhir from a start cell to a destination cell.
+
+The board is made of square cells of various classes:
+
+| Class          | Color     |
+|----------------+-----------|
+| SolidCell      | green     |
+| SourceCell     | grey      |
+| TargetCell     | white     |
+| EmptyCell      | invisible |
+| PathwayCell    | yellow    |
+| RedButtonCell  | red       |
+| BlueButtonCell | blue      |
+| CrumbleCell    | orange    |
+| IceCell        | cyan      |
+
+The menhir is a parallelipiped of size 1x1x2.
+It can stand vertically on a single cell,
+or be horizontally covering two adjacent cells.
+
+At each step, the user can move the menhir in one of the four
+direction, by rotating it on its side.  Thus if the menhir is
+vertical, it will rotate horizontally on two cells adjacent to the
+current one.  If the menhir is horizontal, it can rotate along a short
+side and land vertically on the next cell, or it can rotate along a
+long side and stay horizonal on the adjacent cells.
+
+
+The SolidCell is a normal cell.
+
+The SourceCell is the cell where the menhir stands vertically at the
+start of the game.
+
+The TargetCell is the cell where the player must move the menhir
+(vertically) to win the game.
+
+An EmptyCell is a placeholder to indicate that no cell is present on
+the board at this place. If the menhir is moved over an EmptyCell, it
+falls down and the game is lost.
+
+An IceCell is a weak cell. It cannot hold the menhir vertically. But
+it can hold the menhir horizontally.  Notably, two IceCells can stand
+the menhir horizontally. When the user moves the menhir vertically
+over an IceCell, this cell breaks and the menhir falls thru, the game
+is lost.
+
+A CrumbleCell is a weak cell. It can hold the menhir vertically or
+horizontally, but once the menhir leaves it, it crumbles and
+disappears (an EmptyCell replaces it). So the menhir can pass thru a
+CrumbleCell only once.
+
+A PathwayCell is a cell that can be open or closed. When open, it
+behaves like a SolidCell. When closed, the menhir cannot pass thru
+it. If the user moves the menhir over a closed PathwayCell, the game
+is lost.
+
+A RedButtonCell is connected to zero, one or more PathwayCells. When
+the menhir lands on a RedButtonCell (vertically or horizontally), it
+switches the states (open <-> closed) of each of the connected
+PathwayCells.
+
+A BlueButtonCell is connected to zero, one or more PathwayCells. When
+the menhir lands on a BlueButtonCell vertically (but not
+horizontally), it switches the states (open <-> closed) of each of the
+connected PathwayCells.
+
+** Syntax of the Stonedge Level File Format
+
+Level specification is a multiline string with the following syntax:
+
+#+begin_src
+    level-specification ::= title-comment grid { cell-definition } .
+    title-comment ::= title-line { | description-line } .
+    grid ::= { cell-line } .
+    cell-line ::= { cell-char } .
+    cell-char ::= '.' | ' '    --  empty-cell
+                | 'S'          --  solid-cell starting position
+                | 'O'          --  solid-cell
+                | 'T'          --  target-cell
+                | 'I'          --  ice-cell
+                | 'C'          --  crumble-cell
+                | other-char . --  the character is searched in the list of cell definitions.
+    cell-definition ::= cell-name 'pathway' 'open'|'closed'
+                      | cell-name 'red' { cell-name }
+                      | cell-name 'blue' { cell-name } .
+    cell-name ::= other-char .
+#+end_src
+
+
+The characters are case insensitive.
+Each cell-definition is on its own line.
+
+'pathway' indicates the class of the cell is pathway-cell, and
+the following keyword indicates its initial state.
+
+'red' indicates the class of the cell is red-button-cell;
+'blue' indicates the class of the cell is blue-button-cell; in
+both cases, the rest is the list of pathway cell-names
+connected to the button. This list can be given with or
+without spaces between the cell-name characters.
+
+There must be a single start position, and all the non empty cells
+must be at least two steps from the borders.
+
+
+*** Example
+
+#+BEING_EXAMPLE
+    Tutorial 4
+
+    | Yellow cells are open or closed pathways:                                  |
+    | They can be switched open or close by activating button cells.             |
+    | Red button cells can be activated by the stone horizontal or vertical.     |
+    | Blue button cells can only be activated by the stone in vertical position. |
+
+    ..........
+    ..........
+    ..OOROOO..
+    ..SOOO1O..
+    ..OOOO2O..
+    ..OOOO3T..
+    ..OOBOOO..
+    ..........
+    ..........
+
+    R RED 1 2
+    B BLUE 3
+    1 PATHWAY CLOSED
+    2 PATHWAY OPEN
+    3 PATHWAY CLOSED
+#+END_EXAMPLE
+

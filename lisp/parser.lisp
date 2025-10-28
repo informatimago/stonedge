@@ -9,10 +9,9 @@
    #:parse-level
    #:create-cell
    ;; exported types & helpers
-   #:make-definition
-   #:definition-name #:definition-link #:definition-connected #:definition-state
    #:*empty-name* #:*empty-name2* #:*start-name* #:*solid-name*
-   #:*target-name* #:*ice-name* #:*crumble-name*))
+   #:*target-name* #:*ice-name* #:*crumble-name*
+   #:unparse-level))
 
 (in-package :com.informatimago.games.stonedge.parser)
 
@@ -36,7 +35,7 @@
 (defmethod set-pathway-state ((pathway pathway-cell) state)
   (setf (slot-value pathway 'com.informatimago.games.stonedge::state) state))
 
-(defun make-level (title description cells #|connections|#)
+(defun make-level (title description cells  named-cells definitions)
   (make-instance 'level
                  :title (or title "Untitled Level")
                  :description (or description "")
@@ -45,13 +44,13 @@
                            (make-array (list (length cells) (length (first cells)))
                                        :initial-contents cells))
                           ((not (arrayp cells))
-                           (error "~S: cells must be an array"))
+                           (error "~S: cells must be an array" 'make-level))
                           (t (ecase (array-rank cells) 
                                ((2) cells)
                                ((1) (make-array (list (length cells) (length (aref cells 0)))
                                                 :initial-contents cells)))))
-                 ;; connections
-                 ))
+                 :named-cells named-cells
+                 :definitions definitions))
 
 ;;; OPTIONAL: If your STONE and GAME have different initialization APIs,
 ;;; adapt these two helpers:
@@ -74,11 +73,6 @@
 ;; Lisp uses keywords:
 ;;   :RED, :BLUE, :PATHWAY
 
-(defstruct definition
-  (name      "" :type string)
-  (link      :pathway :type keyword)  ; one of :RED :BLUE :PATHWAY
-  (connected '() :type list)          ; list of cell-name strings
-  (state     :closed :type keyword))  ; :OPEN or :CLOSED
 
 (defparameter *empty-name* ".")
 (defparameter *empty-name2* " ")
@@ -160,15 +154,20 @@
               (:RED (setf link :red))
               (:BLUE (setf link :blue)))
             (setf (gethash name defs)
-                  (make-definition :name name :link link
-                                   :connected connected-names :state state))))))
+                  (make-instance 'definition
+                                 :name name
+                                 :link link
+                                 :connected connected-names
+                                 :state state))))))
     defs))
 
 (defun width-of-grid (grid-lines)
   (reduce #'max grid-lines :initial-value 0 :key #'length))
 
-(defun make-cell (class x y)
-  (make-instance class :x x :y y))
+(defun make-cell (class x y &optional cell-name)
+  (if cell-name
+      (make-instance class :x x :y y :name cell-name)
+      (make-instance class :x x :y y)))
 
 (defun create-cell (cell-name x y definitions)
   "Mirrors Swift createCell(from: x:y:definitions:)."
@@ -176,9 +175,9 @@
     (cond
       (def
           (ecase (definition-link def)
-            (:red     (make-cell 'red-button-cell  x y))
-            (:blue    (make-cell 'blue-button-cell x y))
-            (:pathway (make-cell 'pathway-cell     x y))))
+            (:red     (make-cell 'red-button-cell  x y cell-name))
+            (:blue    (make-cell 'blue-button-cell x y cell-name))
+            (:pathway (make-cell 'pathway-cell     x y cell-name))))
       (t
        (cond
          ((or (string= cell-name *empty-name*)
@@ -244,8 +243,7 @@ Follows the same steps as the Swift version."
            (width        (width-of-grid grid-lines))
            (definitions  (parse-definitions cell-defines))
            (named-cells  (make-hash-table :test 'equal))
-           (grid         (make-array height))
-           (stone        nil))
+           (grid         (make-array height)))
 
       ;; Fill grid and track coordinates
       (loop for y from 0 below height
@@ -306,6 +304,8 @@ Follows the same steps as the Swift version."
       (make-level title
                   description
                   grid
+                  named-cells
+                  definitions
                   ;; connections
                   )
       ;; ;; Build GAME
@@ -320,3 +320,47 @@ Follows the same steps as the Swift version."
       ;; (cerror "Continue returning NIL" "Missing a start cell")
       ;; nil
       )))
+
+
+(defmethod unparse-level ((level level))
+  (with-output-to-string (*standard-output*)
+    (terpri)
+    (write-line (level-title level))
+    (format t "~{| ~A~^~%~}~%" (level-description level))
+    (loop :for y :below (array-dimension (level-cells level) 0)
+          :do (terpri)
+              (loop :for x :below (array-dimension (level-cells level) 1)
+                    :do (write-string (cell-name (aref (level-cells level) y x)))))
+    (terpri)
+    ;; We could also scan the cells for red, blue or pathway cells,
+    ;; and extract the data from the cells directly.
+    (maphash (lambda (name def)
+               (ecase (definition-link def)
+                 ((:red :blue)
+                  (format t "~A ~A ~{~A~^ ~}~%"
+                          (definition-link def)
+                          name
+                          (definition-connected def))) 
+                 ((:pathway)
+                  (format t "~A ~A ~:[CLOSED~;OPEN~]~%"
+                          (definition-link def)
+                          name
+                          (eq (definition-state def) :open)))))
+             (level-definitions level))))
+
+
+#|
+(unparse-level
+ (com.informatimago.games.stonedge.parser:parse-level
+  (fourth com.informatimago.games.stonedge.parser::*levels*)))
+
+ (level-description(com.informatimago.games.stonedge.parser:parse-level
+   (fourth com.informatimago.games.stonedge.parser::*levels*)))
+
+
+  (fourth com.informatimago.games.stonedge.parser::*levels*)
+
+(inspect
+ (com.informatimago.games.stonedge.parser:parse-level
+  (elt com.informatimago.games.stonedge.parser::*levels* 4)))
+|#

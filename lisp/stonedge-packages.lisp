@@ -63,8 +63,19 @@
    #:text-icon
    #:stone-coverage
    ;;
-   #:print-game
-   #:print-cells
+   #:display
    #:*levels*
+   #:named-cell
+   #:cell-name
+   #:definition
+   #:definition-name
+   #:definition-link
+   #:definition-connected
+   #:definition-state
+   #:level-named-cells
+   #:level-definitions
+   #:*reserved-names*
+   #:*button-cell-names*
+   #:*pathway-cell-names*
    ))
 

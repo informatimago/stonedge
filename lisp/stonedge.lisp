@@ -38,6 +38,8 @@
 
 (in-package :com.informatimago.games.stonedge)
 
+(defgeneric display (object stream &key &allow-other-keys))
+
 ;;;-----------------------------------------------------------------------------
 ;;;
 ;;; STONE
@@ -372,73 +374,6 @@ the game is lost."))
   (declare (ignorable stone cell))
   :lose)
 
-
-(defclass button-cell (cell)
-  ((switches :initform '()
-             :initarg :switches
-             :accessor button-cell-switches
-             :documentation "A list of cells that may be switched when the stone is over the button cell."))
-  (:documentation "This is an abstract button cell.
-Button cells may switch the state of pathway-cells."))
-
-(defgeneric switch-pathway-cells (button-cell)
-  (:documentation "Switches the associated pathway-cells.")
-  (:method ((self button-cell))
-    (map nil (function switch-cell) (button-cell-switches self))
-    self))
-
-
-
-(defclass red-button-cell (button-cell)
-  ()
-  (:documentation "A red button cell switches its pathway cells
-as soon as the stone is over it."))
-
-(defmethod stone-moved-over-cell ((s stone) (cell red-button-cell))
-  (declare (ignorable s))
-  (switch-pathway-cells cell))
-
-
-
-(defclass blue-button-cell (button-cell)
-  ()
-  (:documentation "A blue button cell switches its pathway cells
-only when the stone is over it in vertical position."))
-
-(defmethod stone-moved-over-cell ((s stone) (cell blue-button-cell))
-  (when (verticalp (stone-direction s))
-    (switch-pathway-cells cell)))
-
-
-
-(defclass pathway-cell (cell)
-  ((state :initform :closed
-          :initarg :state
-          :reader pathway-cell-state
-          :type (member :closed :open)
-          :documentation "A pathway cell may be :open or :closed."))
-  (:documentation "When a pathway cell is :open, it supports a stone;
-when it's :closed the stone falls down and
-the game is lost."))
-
-(defmethod stone-moved-over-cell ((s stone) (cell pathway-cell))
-  (declare (ignorable s))
-  (when (eql :closed (pathway-cell-state cell))
-    (signal 'game-lost)))
-
-(defmethod game-status (stone (cell pathway-cell))
-  (declare (ignorable stone))
-  (when (eql :closed (pathway-cell-state cell))
-    :lose))
-
-(defmethod switch-cell ((self pathway-cell))
-  (setf (slot-value self 'state) (ecase (pathway-cell-state self)
-                                   ((:open)   :closed)
-                                   ((:closed) :open)))
-  self)
-
-
-
 (defclass crumble-cell (cell)
   ((state :initform :open
           :initarg :state
@@ -482,6 +417,92 @@ the game is lost."))
     :lose))
 
 
+(defgeneric cell-name (cell)
+  (:method ((cell empty-cell))   ".")
+  (:method ((cell solid-cell))   "O")
+  (:method ((cell start-cell))   "S")
+  (:method ((cell target-cell))  "T")
+  (:method ((cell ice-cell))     "I")
+  (:method ((cell crumble-cell)) "C"))
+
+(defparameter *reserved-names* " .OSTICXYZ")
+(defparameter *button-cell-names* "ABDEFGHJKLMNPQRUVW")
+(defparameter *pathway-cell-names* "0123456789!@#$%^&*()_+-={}[]")
+
+(defclass named-cell (cell)
+  ((name :initarg :name
+         :reader cell-name
+         :type string
+         :documentation "A one-char string containing the name of the cell.")))
+
+(defclass button-cell (named-cell)
+  ((switches :initform '()
+             :initarg :switches
+             :accessor button-cell-switches
+             :documentation "A list of cells that may be switched when the stone is over the button cell."))
+  (:documentation "This is an abstract button cell.
+Button cells may switch the state of pathway-cells."))
+
+(defgeneric switch-pathway-cells (button-cell)
+  (:documentation "Switches the associated pathway-cells.")
+  (:method ((self button-cell))
+    (map nil (function switch-cell) (button-cell-switches self))
+    self))
+
+
+
+(defclass red-button-cell (button-cell)
+  ()
+  (:documentation "A red button cell switches its pathway cells
+as soon as the stone is over it."))
+
+(defmethod stone-moved-over-cell ((s stone) (cell red-button-cell))
+  (declare (ignorable s))
+  (switch-pathway-cells cell))
+
+
+
+(defclass blue-button-cell (button-cell)
+  ()
+  (:documentation "A blue button cell switches its pathway cells
+only when the stone is over it in vertical position."))
+
+(defmethod stone-moved-over-cell ((s stone) (cell blue-button-cell))
+  (when (verticalp (stone-direction s))
+    (switch-pathway-cells cell)))
+
+
+
+(defclass pathway-cell (named-cell)
+  ((state :initform :closed
+          :initarg :state
+          :reader pathway-cell-state
+          :type (member :closed :open)
+          :documentation "A pathway cell may be :open or :closed."))
+  (:documentation "When a pathway cell is :open, it supports a stone;
+when it's :closed the stone falls down and
+the game is lost."))
+
+(defmethod stone-moved-over-cell ((s stone) (cell pathway-cell))
+  (declare (ignorable s))
+  (when (eql :closed (pathway-cell-state cell))
+    (signal 'game-lost)))
+
+(defmethod game-status (stone (cell pathway-cell))
+  (declare (ignorable stone))
+  (when (eql :closed (pathway-cell-state cell))
+    :lose))
+
+(defmethod switch-cell ((self pathway-cell))
+  (setf (slot-value self 'state) (ecase (pathway-cell-state self)
+                                   ((:open)   :closed)
+                                   ((:closed) :open)))
+  self)
+
+
+
+
+
 ;;;-----------------------------------------------------------------------------
 ;;;
 ;;; LEVEL
@@ -489,6 +510,23 @@ the game is lost."))
 ;;; We reify the level class to be able to manipulate and edit them
 ;;; easily in the level explorer.
 
+(defclass definition ()
+  ((name      :initarg :name
+              :type string
+              :reader definition-name)
+   (link      :initarg :link
+              :initform :pathway
+              :type (member :red :blue :pathway)
+              :reader definition-link)
+   (connected :initarg :connected
+              :initform '()
+              :type list ; list of cell-name strings
+              :reader definition-connected)
+   (state     :initarg :state
+              :initform :closed
+              :type (member :open :closed)
+              :reader definition-state))
+  (:documentation "Definition of a red-button, blue-button or pathway cell."))
 
 (defclass level ()
   ((title       :initarg :title
@@ -503,8 +541,14 @@ the game is lost."))
                 :initform #2a()
                 :reader level-cells
                 :documentation "The cells.")
-   ;; connections
-   ))
+   (named-cells :initarg :named-cells
+                :reader level-named-cells
+                :type hash-table
+                :documentation "A map from cell names (strings) to cells.")
+   (definitions :initarg :definitions
+                :reader level-definitions
+                :type hash-table
+                :documentation "A map from cell names (string) to cell definition.")))
 
 
 (defmethod level-start-cell ((level level))
@@ -523,7 +567,7 @@ the game is lost."))
     (format stream ":TITLE ~S~% :DESCRIPTION ~S~% :CELLS ~%"
             (level-title level)
             (level-description level))
-    (print-cells (level-cells level) stream))
+    (display (level-cells level) stream))
   level)
 
 ;;;-----------------------------------------------------------------------------
@@ -599,7 +643,7 @@ DIRECTION: (member :vertical :lateral :front)
           (values direction (min x0 x1) (min y0 y1) (max x0 x1) (max y0 y1))))))
 
 
-(defun print-cells (cells stream &optional stone)
+(defmethod display ((cells array) stream &key stone)
   "
 Prints an ASCII-art representation of the cells onto the STREAM.
 "
@@ -653,17 +697,17 @@ Prints an ASCII-art representation of the cells onto the STREAM.
                            (princ line stream)
                            (terpri stream)))))))
 
-(defun print-game (game stream)
+(defmethod display ((game game) stream &key)
   "
 Prints an ASCII-art representation of the GAME onto the STREAM.
 "
-  (print-cells (game-cells game) stream (game-stone game)))
+  (display (game-cells game) stream :stone (game-stone game)))
 
 
 (defmethod print-object ((self game) stream)
   (print-unreadable-object (self stream :type t :identity t)
     (format stream "\"~%")
-    (print-game self stream)
+    (display self stream :stone (game-stone self))
     (format stream "~%\""))
   self)
 

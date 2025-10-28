@@ -127,9 +127,9 @@
                                                      (dolist (line (split-sequence:split-sequence
                                                                     #\newline
                                                                     (with-output-to-string (out)
-                                                                      (print-game (node-game node) out))))
+                                                                      (display (node-game node) out))))
                                                        (princ line out)
-                                                       (princ "\\n" out)))b
+                                                       (princ "\\n" out)))
                                #+ (and) "x")
                  (set-property element :dot-fill-color (if (node-startp node)
                                                            "Yellow"

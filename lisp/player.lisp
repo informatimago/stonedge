@@ -38,7 +38,7 @@ See PARSE-LEVEL for the description of LEVEL.
   (let ((game (make-game-from-level (parse-level level))))
     (handler-case
         (loop
-           (print-game game *query-io*)
+           (display game *query-io*)
            (format *query-io* "Your move: ")
            (block :abort
              (move game
@@ -48,8 +48,8 @@ See PARSE-LEVEL for the description of LEVEL.
                      ((#\i #\8) :front)
                      ((#\k #\2) :back)
                      (otherwise (return-from :abort))))))
-      (game-won  () (format t "~%You win!~2%"))
-      (game-lost () (format t "~%You lose!~2%")))
+      (game-won  () (display game *query-io*) (format t "~%You win!~2%"))
+      (game-lost () (display game *query-io*) (format t "~%You lose!~2%")))
     (values)))
 
 ;;;; THE END ;;;;

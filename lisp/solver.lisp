@@ -10,7 +10,7 @@
    :com.informatimago.common-lisp.graphviz.graph-dot)
   (:import-from :com.informatimago.common-lisp.cesarum.array
                 #:copy-array)
-  (:export #:solve-problem))
+  (:export #:solve-level))
 
 (in-package :com.informatimago.games.stonedge.solver)
 
@@ -190,6 +190,16 @@
     node))
 
 
+(defun count-wins ()
+  "Count the WIN nodes from the *STATES* hash-table."
+  (let ((wins 0))
+   (maphash (lambda (state node)
+              (declare (ignore node))
+              (when (eq :win (first state))
+                (incf wins)))
+            *states*)
+    wins))
+
 (defun print-wins ()
   "Find all the WIN nodes from the *STATES* hash-table, and print thei state and path."
   (maphash (lambda (state node)
@@ -198,13 +208,14 @@
            *states*))
 
 
-(defun solve-problem (problem)
+(defun solve-level (level)
   "Solves the playtomo-stonedge game level PROBLEM,
 printing the number of states and the win states."
   (time (progn
           (reset)
-          (setf (node-startp (explore (make-game-from-level (parse-level problem)) '())) t)
+          (setf (node-startp (explore (make-game-from-level level) '())) t)
           (print `(:number-of-states ,(hash-table-count *states*)))
+          (print `(:number-of-wins ,(count-wins)))
           (print-wins))))
 
 ;;;; THE END ;;;;

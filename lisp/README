@@ -1,11 +1,16 @@
 
 To play a game:
 
-(com.informatimago.games.stonedge.player:stonedge
-   (fourth com.informatimago.games.stonedge.parser::*levels*))
+#+begin_src lisp
+  (com.informatimago.games.stonedge.player:stonedge
+   (com.informatimago.games.stonedge.parser:parse-level
+    (fourth com.informatimago.games.stonedge.parser::*levels*)))
+#+end_src
 
 
 To solve a game automatically:
 
-(com.informatimago.games.stonedge.solver:solve-problem
+#+begin_src lisp
+  (com.informatimago.games.stonedge.solver:solve-problem
    (fourth com.informatimago.games.stonedge.parser::*levels*))
+#+end_src

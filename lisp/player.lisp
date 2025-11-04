@@ -35,7 +35,7 @@ Moves the stone of the game in the given direction.
 Play the playtomo stonedge game for the given LEVEL.
 See PARSE-LEVEL for the description of LEVEL.
 "
-  (let ((game (make-game-from-level (parse-level level))))
+  (let ((game (make-game-from-level level)))
     (handler-case
         (loop
            (display game *query-io*)

@@ -542,10 +542,12 @@ the game is lost."))
                 :reader level-cells
                 :documentation "The cells.")
    (named-cells :initarg :named-cells
+                :initform (make-hash-table :test (function equal))
                 :reader level-named-cells
                 :type hash-table
                 :documentation "A map from cell names (strings) to cells.")
    (definitions :initarg :definitions
+                :initform (make-hash-table :test (function equal))
                 :reader level-definitions
                 :type hash-table
                 :documentation "A map from cell names (string) to cell definition.")))

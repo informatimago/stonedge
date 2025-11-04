@@ -217,11 +217,11 @@ Follows the same steps as the Swift version."
       (let* ((from (1+ title-index))
              (to   (or first-grid-idx (length lines))))
         (setf description
-              (loop for i from from below to
-                    for line = (nth i lines)
-                    collect (if (string= line "")
-                                line
-                                (trim-left-bars line))))))
+              (loop :for i :from from :below to
+                    :for line := (nth i lines)
+                    :collect (if (string= line "")
+                                 line
+                                 (trim-left-bars line))))))
 
     ;; Uppercase all lines for parsing grid & defs (matches Swift)
     (let* ((ulines      (uppercase-lines lines))
@@ -236,7 +236,22 @@ Follows the same steps as the Swift version."
                                           (search "BLUE" ln)))))
                               (length ulines)))
            (grid-lines   (if first-grid-idx
-                             (subseq ulines first-grid-idx first-def-idx)
+                             (let ((grid-lines (subseq ulines first-grid-idx first-def-idx)))
+                               ;; Remove the last grid line if it's
+                               ;; empty and the two previous only
+                               ;; contain empty cells.
+                               (if (and (< 5 (length grid-lines))
+                                        (string= "" (elt grid-lines (1- (length grid-lines)))) 
+                                        (every (lambda (ch)
+                                                 (or (char= ch #\.)
+                                                     (char= ch #\space)))
+                                               (elt grid-lines (- (length grid-lines) 2)))
+                                        (every (lambda (ch)
+                                                 (or (char= ch #\.)
+                                                     (char= ch #\space)))
+                                               (elt grid-lines (- (length grid-lines) 3))))
+                                   (subseq grid-lines 0 (1- (length grid-lines)))
+                                   grid-lines))
                              '()))
            (cell-defines (subseq ulines first-def-idx))
            (height       (length grid-lines))
@@ -246,32 +261,36 @@ Follows the same steps as the Swift version."
            (grid         (make-array height)))
 
       ;; Fill grid and track coordinates
-      (loop for y from 0 below height
-            for line = (nth y grid-lines) do
+      (loop :for y :from 0 :below height
+            :for line := (nth y grid-lines)
+            :do
             ;; (terpri)
             (let ((row '()))
-              (loop for x from 0 below (length line)
-                    for ch = (aref line x)
-                    for name = (string ch)
-                    for cell = (create-cell name x y definitions) do
+              (loop :for x :from 0 :below (length line)
+                    :for ch := (aref line x)
+                    :for name := (string ch)
+                    :for cell := (create-cell name x y definitions)
+                    :do
                     ;; (print (list x y name cell))
                     (setf row (nconc row (list cell)))
                     (setf (gethash name named-cells) cell))
               ;; pad up to WIDTH with EmptyCell
-              (loop for x from (length row) below width
-                    do (setf row (nconc row (list (make-cell 'empty-cell x y)))))
+              (loop :for x :from (length row) :below width
+                    :do (setf row (nconc row (list (make-cell 'empty-cell x y)))))
               (setf (aref grid y) row)))
 
       ;; Validate borders and apply definitions
       (labels ((near-border-p (x y)
                  (or (< x 2) (< y 2) (< (- width 2) x) (< (- height 2) y))))
-        (loop for y from 0 below height
-              for line across grid do
-              (loop for x from 0 below width
-                    for cell = (nth x line)
-                    for ch   = (if (< x (length (nth y grid-lines)))
-                                   (aref (nth y grid-lines) x)
-                                   #\.) do
+        (loop :for y :from 0 :below height
+              :for line :across grid
+              :do
+              (loop :for x :from 0 :below width
+                    :for cell := (nth x line)
+                    :for ch   := (if (< x (length (nth y grid-lines)))
+                                     (aref (nth y grid-lines) x)
+                                     #\.)
+                    :do
                     ;; Border rule: only EmptyCell allowed near border
                     (when (and (near-border-p x y)
                                (not (typep cell 'empty-cell)))

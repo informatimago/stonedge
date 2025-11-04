@@ -110,7 +110,8 @@
 
 
 
-(defvar *level-list*)
+(defvar *level-list*  (make-instance 'level-list))
+(defvar *unsaved*     nil)
 
 (defun query-filename (prompt)
   (loop
@@ -176,74 +177,260 @@
             (format *error-output* "~%~A~%" err)
             (finish-output  *error-output*)))))
 
+
+(defun display-cells (cells stream selected-x selected-y)
+  "
+Prints an ASCII-art representation of the cells onto the STREAM.
+The cell at selected-x selected-y coordinates is highlighed.
+"
+  (assert (<= 2 selected-x (- (array-dimension cells 1) 2)))
+  (assert (<= 2 selected-y (- (array-dimension cells 0) 2)))
+  (flet ((print-line (j)
+           (loop
+             :initially (princ "+" stream)
+             :for i :below (array-dimension cells 1)
+             :do (if (or (= (- j 1) selected-y)
+                         (=    j    selected-y))
+                     (cond
+                       ((= (1+ i) selected-x) (princ "---*" stream))
+                       ((= i selected-x)      (princ "****" stream))
+                       (t                     (princ "---+" stream)))
+                     (princ "---+" stream)))))
+    (loop
+      :for j :from (- (array-dimension cells 0) 1) :downto 0
+      :initially (print-line j) (terpri stream)
+      :do (loop
+            :for i :below (array-dimension cells 1)
+            :initially (princ "|" stream)
+            :do (princ (text-icon (aref cells j i)) stream)
+                (if (= j selected-y)
+                    (cond
+                      ((= (1+ i) selected-x) (princ "*" stream))
+                      ((= i selected-x)      (princ "*" stream))
+                      (t                     (princ "|" stream)))
+                    (princ "|" stream))
+            :finally (progn
+                       (terpri stream)
+                       (print-line j)
+                       (terpri stream))))))
+
+
 (defmethod edit-level ((level level))
-  level)
+  (let ((selected-x 2)
+        (selected-y 2)
+        (cells (level-cells level)))
+    (loop
+     (display-cells (level-cells level) t selected-x selected-y)
+     (format *query-io* "~& .ozticbrp ky asdw x > ")
+     (finish-output *query-io*)
+     (let ((input (read-line *query-io*)))
+       (loop :for cmd :across input
+             :do (case cmd
+                   ((#\.)
+                    (setf (aref cells selected-y selected-x)
+                          (make-instance 'empty-cell
+                                         :x selected-x
+                                         :y selected-y)))
+                   ((#\o #\O)
+                    (setf (aref cells selected-y selected-x)
+                          (make-instance 'solid-cell
+                                         :x selected-x
+                                         :y selected-y)))
+                   ((#\z #\Z)
+                    (multiple-value-bind (old-cell old-y old-x)
+                        (level-start-cell level)
+                      (declare (ignore old-cell))
+                      (setf (aref cells old-y old-x)
+                            (make-instance 'solid-cell
+                                           :x selected-x
+                                           :y selected-y)
+                            (aref cells selected-y selected-x)
+                            (make-instance 'start-cell
+                                           :x selected-x
+                                           :y selected-y))))
+                   ((#\t #\T)
+                    (setf (aref cells selected-y selected-x)
+                          (make-instance 'target-cell
+                                         :x selected-x
+                                         :y selected-y)))
+                   ((#\i #\I)
+                    (setf (aref cells selected-y selected-x)
+                          (make-instance 'ice-cell
+                                         :x selected-x
+                                         :y selected-y)))
+                   ((#\c #\C)
+                    (setf (aref cells selected-y selected-x)
+                          (make-instance 'crumble-cell
+                                         :x selected-x
+                                         :y selected-y)))
+                   ((#\b #\B)
+                    (setf (aref cells selected-y selected-x)
+                          (make-instance 'blue-button-cell
+                                         :x selected-x
+                                         :y selected-y)))
+                   ((#\r #\R)
+                    (setf (aref cells selected-y selected-x)
+                          (make-instance 'red-button-cell
+                                         :x selected-x
+                                         :y selected-y)))
+                   ((#\p #\P)
+                    (setf (aref cells selected-y selected-x)
+                          (make-instance 'pathway-cell
+                                         :x selected-x
+                                         :y selected-y)))
+                   
+                   ((#\y #\Y)
+                    ;; swap open/close on pathway-cell
+                    )
+                   ((#\k #\K)
+                    ;; connect button cell to pathway-cell(s)
+                    )
+
+                   ((#\a #\A) (setf selected-x (max 2 (- selected-x 1))))
+                   ((#\s #\S) (setf selected-y (max 2 (- selected-y 1))))
+                   ((#\d #\D) (setf selected-x (min (- (array-dimension cells 1) 2)
+                                                    (+ selected-x 1))))
+                   ((#\w #\W) (setf selected-y (min (- (array-dimension cells 0) 2)
+                                                    (+ selected-y 1))))
+                   ((#\x #\X) (return-from edit-level level))))))
+    level))
+
+(defun cmd-load ()
+  (unless (and *unsaved*
+               (not (y-or-n-p "~&Changes are unsaved, confirm overriding them? ")))
+    (let* ((filename     (query-filename "Level file: "))
+           (descriptions (sexp-file-contents filename)))
+      (setf (slot-value *level-list* 'levels)
+            (mapcar (function parse-level) descriptions))
+      (setf *unsaved* nil))))
+
+(defun cmd-append ()
+  (unless (and *unsaved*
+               (not (y-or-n-p "~&Changes are unsaved, confirm overriding them? ")))
+    (let* ((filename     (query-filename "Level file: "))
+           (descriptions (sexp-file-contents filename)))
+      (setf (slot-value *level-list* 'levels)
+            (nconc (slot-value *level-list* 'levels)
+                   (mapcar (function parse-level) descriptions)))
+      (setf *unsaved* t))))
+
+(defun cmd-save ()
+  (let* ((filename     (query-filename "Level file: ")))
+    (setf (sexp-file-contents
+           filename
+           :if-exists (if (and (probe-file filename)
+                               (y-or-n-p "File exist, should we override it? "))
+                          :supersede
+                          :error)
+           :if-does-not-exist :create)
+          (mapcar (function unparse-level) (levels *level-list*)))
+    (setf *unsaved* nil)))
+
+(defun cmd-select ()
+  (let ((index (query-integer "Level index: ")))
+    (select-level *level-list* index)))
+
+(defun cmd-delete ()
+  (when (levels *level-list*)
+    (if (selected-level *level-list*)
+        (delete-level *level-list* (selected-level *level-list*))
+        (let ((index (query-integer "Level index: ")))
+          (delete-level *level-list* index)))
+    (setf *unsaved* t)))
+
+(defun cmd-move ()
+  (when (levels *level-list*)
+    (unless (selected-level *level-list*)
+      (let ((index (query-integer "Level index: ")))
+        (select-level *level-list* index)))
+    (let ((index (query-integer "Destination index: ")))
+      (insert-level-before *level-list* (selected-level *level-list*) index))
+    (setf *unsaved* t)))
+
+(defun make-cells (width &optional (height width))
+  (let* ((height (+ height 4))
+         (width  (+ width  4))
+         (cells  (make-array (list height width))))
+    (loop :for y :below height
+          :do (loop :for x :below width
+                    :do (setf (aref cells y x)
+                              (make-instance 'empty-cell :x x :y y))))
+    (setf (aref cells 2 2)
+          (make-instance 'start-cell :x 2 :y 2)
+          (aref cells (- height 3) (- width 3))
+          (make-instance 'target-cell :x (- width 3) :y (- height 3)))
+    cells))
+
+(defun cmd-new ()
+  (let* ((title       (query-string "Title: "))
+         (description (query-multi-line-string "Description: "))
+         (size        (let ((size (query-integer "Size (min 3): ")))
+                        (if (<= 3 size 30)
+                            size
+                            (error "Invalid grid size ~A" size))))
+         (new         (make-instance
+                       'level
+                       :title title
+                       :description description
+                       :cells (make-cells size)
+                       :definitions )))
+    (insert-level-before *level-list* new (or (selected-level *level-list*)
+                                              (length (levels *level-list*))))
+    (select-level *level-list* new)
+    (setf *unsaved* t)))
+
+(defun cmd-edit ()
+  (when (levels *level-list*)
+    (unless (selected-level *level-list*)
+      (let ((index (query-integer "Level index: ")))
+        (select-level *level-list* index)))
+    (edit-level (selected-level *level-list*))
+    (setf *unsaved* t)))
+
+(defun play-level (level)
+  (com.informatimago.games.stonedge.player:stonedge level))
+
+(defun solve-level (level)
+  (com.informatimago.games.stonedge.solver:solve-level level))
+
+(defun cmd-play ()
+  (when (levels *level-list*)
+    (unless (selected-level *level-list*)
+      (let ((index (query-integer "Level index: ")))
+        (select-level *level-list* index)))
+    (play-level (selected-level *level-list*))))
+
+(defun cmd-solve ()
+  (when (levels *level-list*)
+    (unless (selected-level *level-list*)
+      (let ((index (query-integer "Level index: ")))
+        (select-level *level-list* index)))
+    (solve-level (selected-level *level-list*))))
 
 (defun manage-levels ()
   (let ((*level-list*  (make-instance 'level-list))
-        (unsaved       t))
+        (*unsaved*     t))
     (loop
       :do (format t "~%Levels:")
           (display *level-list* t)
           (format t "~{~A~^ ~}?~%"
-                  '(load save select delete move new edit quit))
+                  '(load append save select delete move new edit play solve quit))
           (handler-case
-              (let ((command (read)))
+              (let ((command (let ((*package* (find-package #.(package-name *package*))))
+                                (read))))
                 (case command
-                  ((load)
-                   (unless (and unsaved
-                                (not (y-or-n-p "~&Changes are unsaved, confirm overriding them? ")))
-                     (let* ((filename     (query-filename "Level file: "))
-                            (descriptions (sexp-file-contents filename)))
-                       (setf (slot-value *level-list* 'levels)
-                             (mapcar (function parse-level) descriptions))
-                       (setf unsaved nil))))
-                  ((save)
-                   (let* ((filename     (query-filename "Level file: ")))
-                     (setf (sexp-file-contents
-                            filename
-                            :if-exists (if (and (probe-file filename)
-                                                (y-or-n-p "File exist, should we override it? "))
-                                           :supersede
-                                           :error)
-                            :if-does-not-exist :create)
-                           (mapcar (function unparse-level) (levels *level-list*))))
-                   (setf unsaved nil))
-                  ((select)
-                   (let ((index (query-integer "Level index: ")))
-                     (select-level *level-list* index)))
-                  ((delete)
-                   (when (levels *level-list*)
-                     (if (selected-level *level-list*)
-                         (delete-level *level-list* (selected-level *level-list*))
-                         (let ((index (query-integer "Level index: ")))
-                           (delete-level *level-list* index)))
-                     (setf unsaved t)))
-                  ((move)
-                   (when (levels *level-list*)
-                     (unless (selected-level *level-list*)
-                       (let ((index (query-integer "Level index: ")))
-                         (select-level *level-list* index)))
-                     (let ((index (query-integer "Destination index: ")))
-                       (insert-level-before *level-list* (selected-level *level-list*) index))
-                     (setf unsaved t)))
-                  ((new)
-                   (let* ((title (query-string "Title: "))
-                          (description (query-multi-line-string "Description: "))
-                          (level (make-instance 'level :title title :description description)))
-                     (insert-level-before *level-list* new (or (selected-level *level-list*)
-                                                             (length (levels *level-list*))))
-                     (select-level *level-list* new)
-                     (setf unsaved t)))
-                  ((edit)
-                   (when (levels *level-list*)
-                     (unless (selected-level *level-list*)
-                       (let ((index (query-integer "Level index: ")))
-                         (select-level *level-list* index)))
-                     (edit-level (selected-level *level-list*))
-                     (setf unsaved t)))
+                  ((load)   (cmd-load))
+                  ((append) (cmd-append))
+                  ((save)   (cmd-save))
+                  ((select) (cmd-select))
+                  ((delete) (cmd-delete))
+                  ((move)   (cmd-move))
+                  ((new)    (cmd-new))
+                  ((edit)   (cmd-edit))
+                  ((play)   (cmd-play))
+                  ((solve)  (cmd-solve))
                   ((quit)
-                   (if unsaved
+                   (if *unsaved*
                        (when (y-or-n-p "~&Changes are unsaved, confirm quit without saving? ")
                          (return-from manage-levels))
                        (return-from manage-levels)))))

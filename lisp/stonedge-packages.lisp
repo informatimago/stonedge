@@ -78,5 +78,6 @@
    #:*reserved-names*
    #:*button-cell-names*
    #:*pathway-cell-names*
-   ))
+   #:pathway-cell-p
+   #:level-pathway-cells))
 

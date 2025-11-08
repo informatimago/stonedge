@@ -197,8 +197,8 @@
 Prints an ASCII-art representation of the cells onto the STREAM.
 The cell at selected-x selected-y coordinates is highlighed.
 "
-  (assert (<= 2 selected-x (- (array-dimension cells 1) 2)))
-  (assert (<= 2 selected-y (- (array-dimension cells 0) 2)))
+  (assert (<= 2 selected-x (- (array-dimension cells 1) 3)))
+  (assert (<= 2 selected-y (- (array-dimension cells 0) 3)))
   (flet ((print-line (j)
            (loop
              :initially (princ "+" stream)
@@ -460,12 +460,12 @@ The cell at selected-x selected-y coordinates is highlighed.
       ((#\z #\Z)
        (multiple-value-bind (old-cell old-y old-x)
            (level-start-cell level)
-         (declare (ignore old-cell))
-         (setf (aref cells old-y old-x)
-               (make-instance 'solid-cell
-                              :x selected-x
-                              :y selected-y)
-               (aref cells selected-y selected-x)
+         (when old-cell
+           (setf (aref cells old-y old-x)
+                 (make-instance 'solid-cell
+                                :x selected-x
+                                :y selected-y)))
+         (setf (aref cells selected-y selected-x)
                (make-instance 'start-cell
                               :x selected-x
                               :y selected-y))))
@@ -555,8 +555,8 @@ The cell at selected-x selected-y coordinates is highlighed.
 
       ((#\f #\F)
        (level-cells (size-to-fit level))
-       (setf selected-x (max 2 (min selected-x (array-dimension cells 1)))
-             selected-y (max 2 (min selected-y (array-dimension cells 0)))))
+       (setf selected-x (max 2 (min selected-x (- (array-dimension cells 1) 3)))
+             selected-y (max 2 (min selected-y (- (array-dimension cells 0) 3)))))
       ((#\n #\N) ;; display named cells
        (maphash (lambda (name cell)
                   (format t "~&~A: ~A~%" name cell))
@@ -687,8 +687,7 @@ The cell at selected-x selected-y coordinates is highlighed.
                        'level
                        :title title
                        :description description
-                       :cells (make-cells size)
-                       :definitions )))
+                       :cells (make-cells size))))
     (insert-level-before *level-list* new (or (selected-level *level-list*)
                                               (length (levels *level-list*))))
     (select-level *level-list* new)
@@ -737,6 +736,7 @@ The cell at selected-x selected-y coordinates is highlighed.
     (play    "Play the current level.")
     (solve   "Solve the current level")
     (help    "Display this help.")
+    (debug   "Toggle debugging.")
     (quit    "Quit the level manager.")))
 
 (defun cmd-help ()
@@ -781,6 +781,9 @@ The cell at selected-x selected-y coordinates is highlighed.
                ((play)          (cmd-play))
                ((solve)         (cmd-solve))
                ((help)          (cmd-help))
+               ((debug)
+                (setf *debug* (not *debug*))
+                (format t "~&Debugging ~:[disabled~;activated~]~%" *debug*))
                ((quit)
                 (if *unsaved*
                     (when (y-or-n-p "~&Changes are unsaved, confirm quit without saving? ")

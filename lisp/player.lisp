@@ -17,17 +17,17 @@ Moves the stone of the game in the given direction.
         (cells (game-cells game)))
     (multiple-value-bind (direction stone-left stone-back stone-right stone-front) (stone-coverage stone)
       (if (eql direction :vertical)
-          (stone-left-cell stone (aref cells stone-left stone-back))
+          (stone-left-cell stone (aref cells stone-back stone-left))
           (progn
-            (stone-left-cell stone (aref cells stone-left stone-back))
-            (stone-left-cell stone (aref cells stone-right stone-front)))))
+            (stone-left-cell stone (aref cells stone-back stone-left))
+            (stone-left-cell stone (aref cells stone-front stone-right)))))
     (move (game-stone game) direction)
     (multiple-value-bind (direction stone-left stone-back stone-right stone-front) (stone-coverage stone)
       (if (eql direction :vertical)
-          (stone-moved-over-cell stone (aref cells stone-left stone-back))
+          (stone-moved-over-cell stone (aref cells stone-back stone-left))
           (progn
-            (stone-moved-over-cell stone (aref cells stone-left stone-back))
-            (stone-moved-over-cell stone (aref cells stone-right stone-front))))))
+            (stone-moved-over-cell stone (aref cells stone-back stone-left))
+            (stone-moved-over-cell stone (aref cells stone-front stone-right))))))
   game)
 
 (defun stonedge (level)
@@ -38,18 +38,20 @@ See PARSE-LEVEL for the description of LEVEL.
   (let ((game (make-game-from-level level)))
     (handler-case
         (loop
-           (display game *query-io*)
-           (format *query-io* "Your move: ")
-           (block :abort
-             (move game
-                   (case (char (string-trim #(#\space #\tab) (read-line *query-io*)) 0)
-                     ((#\j #\4) :left)
-                     ((#\l #\6) :right)
-                     ((#\i #\8) :front)
-                     ((#\k #\2) :back)
-                     (otherwise (return-from :abort))))))
+         (display game *query-io*)
+         (format *query-io* "Your move: ")
+         (block :abort
+           (let ((input (string-trim #(#\space #\tab) (read-line *query-io*))))
+             (unless (zerop (length input))
+               (move game
+                     (case (char input 0)
+                       ((#\j #\4) :left)
+                       ((#\l #\6) :right)
+                       ((#\i #\8) :front)
+                       ((#\k #\2) :back)
+                       (otherwise (return-from :abort))))))))
       (game-won  () (display game *query-io*) (format t "~%You win!~2%"))
       (game-lost () (display game *query-io*) (format t "~%You lose!~2%")))
     (values)))
 
-;;;; THE END ;;;;
+;;;; THE END ;;;; 

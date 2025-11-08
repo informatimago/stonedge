@@ -626,7 +626,7 @@ the game is lost."))
 
 
 (defmethod make-game-from-level ((level level))
-  (multiple-value-bind (start-cell x y) (level-start-cell level)
+  (multiple-value-bind (start-cell y x) (level-start-cell level)
     (declare (ignore start-cell))
     (make-instance 'game
                    :stone (make-instance 'stone :x x :y y :direction #(0 0 1))
@@ -681,16 +681,16 @@ Prints an ASCII-art representation of the cells onto the STREAM.
   (let* ((line  (with-output-to-string (out)
                   (loop
                     :initially (princ "+" out)
-                    :repeat (array-dimension cells 0)
+                    :repeat (array-dimension cells 1)
                     :do (princ "---+" out)))))
     (if stone
         (multiple-value-bind (direction stone-left stone-back stone-right stone-front)
             (stone-coverage stone)
           (loop
-            :for j :from (1-  (array-dimension cells 1)) :downto 0
+            :for j :from (1-  (array-dimension cells 0)) :downto 0
             :initially (princ line stream) (terpri stream)
             :do (loop
-                  :for i :from 0 :below (array-dimension cells 0)
+                  :for i :from 0 :below (array-dimension cells 1)
                   :initially (princ "|" stream)
                   :do (unless (ecase direction
                                 ((:vertical)
@@ -706,7 +706,7 @@ Prints an ASCII-art representation of the cells onto the STREAM.
                                  (when (and (= stone-left i) (or (= stone-back j)
                                                                  (= stone-front j)))
                                    (princ "BBB" stream) (princ "|" stream) t)))
-                        (princ (text-icon (aref cells i j)) stream) (princ "|" stream))
+                        (princ (text-icon (aref cells j i)) stream) (princ "|" stream))
                   :finally (progn
                              (terpri stream)
                              (if (and (eql direction :front) (= stone-front j))
@@ -716,12 +716,12 @@ Prints an ASCII-art representation of the cells onto the STREAM.
                                  (princ line stream))
                              (terpri stream)))))
         (loop
-          :for j :from (1-  (array-dimension cells 1)) :downto 0
+          :for j :from (1-  (array-dimension cells 0)) :downto 0
           :initially (princ line stream) (terpri stream)
           :do (loop
-                :for i :from 0 :below (array-dimension cells 0)
+                :for i :from 0 :below (array-dimension cells 1)
                 :initially (princ "|" stream)
-                :do (princ (text-icon (aref cells i j)) stream)
+                :do (princ (text-icon (aref cells j i)) stream)
                     (princ "|" stream)
                 :finally (progn
                            (terpri stream)

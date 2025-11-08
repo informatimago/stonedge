@@ -72,7 +72,11 @@ open class SolidCell : Cell {
 
 }
 
-open class TargetCell : Cell {
+open class StartCell : SolidCell {
+
+}
+
+open class TargetCell : SolidCell {
     // Once the stone is in vertical position on a target cell, the game is won.
 
     public override func cellColor() -> Color? {

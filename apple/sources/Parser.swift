@@ -1,5 +1,5 @@
 //
-//  GameParser.swift
+//  Parser.swift
 //  stonedge
 //
 //  Created by Pascal Bourguignon on 05/03/2024.
@@ -11,15 +11,6 @@ import Foundation
 // Assuming Cell and its subclasses are defined as before, with
 // constructors accepting x and y parameters
 
-enum LinkType {
-    case red, blue, pathway
-}
-struct Definition {
-    var name : String
-    var link : LinkType
-    var connected : [String] // for red or blue
-    var state : PathwayCell.State // for pathway
-}
 
 let emptyName = "."
 let emptyName2 = " "
@@ -30,7 +21,7 @@ let iceName = "I"
 let crumbleName = "C"
 
 
-func parseGame(specification: String) -> Game? {
+func parseLevel(specification: String) -> Level? {
     var lines = specification.split(separator: "\n").map(String.init)
 
     let titleIndex = lines.firstIndex(where: { line in !line.isEmpty && !line.allSatisfy({ $0 == "." })})
@@ -73,7 +64,6 @@ func parseGame(specification: String) -> Game? {
     let width = gridLines.map { $0.count }.max() ?? 0
 
     var grid : [[Cell]] = []
-    var stone : Stone? = nil
 
     var definitions: [String: Definition] = [:]
     var namedCells: [String: Cell] = [:]
@@ -117,10 +107,7 @@ func parseGame(specification: String) -> Game? {
             print("[\(y)][\(x)] \(String(char)) = \(cell)")
             namedCells[String(char)]=cell
             grid[y].append(cell)
-            if String(char) == startName {
-                stone = Stone(x:x, y:y, orientation: vertical)
-            }
-        }
+         }
         for x in grid[y].count..<width {
             grid[y].append(EmptyCell(x:x, y:y))
         }
@@ -164,21 +151,17 @@ func parseGame(specification: String) -> Game? {
         }
     }
 
-    if let stone = stone {
-        let game = Game(stone: stone, cells: grid)
-        game.title = title
-        game.description = description
-        return game
-    }
-    return nil
+    var level = Level(title:title, description:description, cells:grid)
+    level.definitions = definitions
+    level.namedCells = namedCells
+    return level
 }
 
 func createCell(from cellName: String, x: Int, y: Int, definitions: [String: Definition]) -> Cell {
     if let definition = definitions[cellName] {
         switch definition.link {
         case .red:
-            return RedButtonCell(x:x, y:y
-            )
+            return RedButtonCell(x:x, y:y)
         case .blue:
             return BlueButtonCell(x:x, y:y)
         case .pathway:
@@ -188,8 +171,10 @@ func createCell(from cellName: String, x: Int, y: Int, definitions: [String: Def
     switch cellName {
     case emptyName, emptyName2:
         return EmptyCell(x: x, y: y)
-    case startName, solidName:
+    case solidName:
         return SolidCell(x: x, y: y)
+    case startName:
+        return StartCell(x: x, y: y)
     case targetName:
         return TargetCell(x: x, y: y)
     case iceName:

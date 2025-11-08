@@ -21,12 +21,13 @@
 		2A0F6F3E2CA06CC700BF22F4 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F332CA06CC700BF22F4 /* Levels.swift */; };
 		2A0F6F3F2CA06CC700BF22F4 /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F342CA06CC700BF22F4 /* UserView.swift */; };
 		2A0F6F402CA06CC700BF22F4 /* ViewGlobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F352CA06CC700BF22F4 /* ViewGlobals.swift */; };
-		2A0F6F412CA06CC700BF22F4 /* GameParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F362CA06CC700BF22F4 /* GameParser.swift */; };
+		2A0F6F412CA06CC700BF22F4 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F362CA06CC700BF22F4 /* Parser.swift */; };
 		2A0F6F422CA06CC700BF22F4 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F372CA06CC700BF22F4 /* Cell.swift */; };
 		2A0F6F432CA06CC700BF22F4 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F382CA06CC700BF22F4 /* BoardView.swift */; };
 		2A0F6F442CA06CC700BF22F4 /* Stone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F392CA06CC700BF22F4 /* Stone.swift */; };
 		2A0F6F452CA06CC700BF22F4 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F3A2CA06CC700BF22F4 /* User.swift */; };
 		2A0F6F462CA06CC700BF22F4 /* StoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6F3B2CA06CC700BF22F4 /* StoneView.swift */; };
+		2A53F6FF2EABC4E000212FD6 /* Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6FE2EABC4DA00212FD6 /* Level.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,12 +66,13 @@
 		2A0F6F332CA06CC700BF22F4 /* Levels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Levels.swift; path = ../../sources/Levels.swift; sourceTree = "<group>"; };
 		2A0F6F342CA06CC700BF22F4 /* UserView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserView.swift; path = ../../sources/UserView.swift; sourceTree = "<group>"; };
 		2A0F6F352CA06CC700BF22F4 /* ViewGlobals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewGlobals.swift; path = ../../sources/ViewGlobals.swift; sourceTree = "<group>"; };
-		2A0F6F362CA06CC700BF22F4 /* GameParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameParser.swift; path = ../../sources/GameParser.swift; sourceTree = "<group>"; };
+		2A0F6F362CA06CC700BF22F4 /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Parser.swift; path = ../../sources/Parser.swift; sourceTree = "<group>"; };
 		2A0F6F372CA06CC700BF22F4 /* Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Cell.swift; path = ../../sources/Cell.swift; sourceTree = "<group>"; };
 		2A0F6F382CA06CC700BF22F4 /* BoardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BoardView.swift; path = ../../sources/BoardView.swift; sourceTree = "<group>"; };
 		2A0F6F392CA06CC700BF22F4 /* Stone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Stone.swift; path = ../../sources/Stone.swift; sourceTree = "<group>"; };
 		2A0F6F3A2CA06CC700BF22F4 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = ../../sources/User.swift; sourceTree = "<group>"; };
 		2A0F6F3B2CA06CC700BF22F4 /* StoneView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StoneView.swift; path = ../../sources/StoneView.swift; sourceTree = "<group>"; };
+		2A53F6FE2EABC4DA00212FD6 /* Level.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Level.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,8 +165,9 @@
 			children = (
 				2A0F6F382CA06CC700BF22F4 /* BoardView.swift */,
 				2A0F6F372CA06CC700BF22F4 /* Cell.swift */,
+				2A53F6FE2EABC4DA00212FD6 /* Level.swift */,
 				2A0F6F312CA06CC700BF22F4 /* Game.swift */,
-				2A0F6F362CA06CC700BF22F4 /* GameParser.swift */,
+				2A0F6F362CA06CC700BF22F4 /* Parser.swift */,
 				2A0F6F332CA06CC700BF22F4 /* Levels.swift */,
 				2A0F6F392CA06CC700BF22F4 /* Stone.swift */,
 				2A0F6F322CA06CC700BF22F4 /* StonedgeGameView.swift */,
@@ -240,7 +243,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					2A0F6E7F2CA00FDB00BF22F4 = {
 						CreatedOnToolsVersion = 15.4;
@@ -310,12 +313,13 @@
 				2A0F6F452CA06CC700BF22F4 /* User.swift in Sources */,
 				2A0F6F432CA06CC700BF22F4 /* BoardView.swift in Sources */,
 				2A0F6F3E2CA06CC700BF22F4 /* Levels.swift in Sources */,
+				2A53F6FF2EABC4E000212FD6 /* Level.swift in Sources */,
 				2A0F6EE72CA0655800BF22F4 /* KeyEventHandlingView.swift in Sources */,
 				2A0F6F462CA06CC700BF22F4 /* StoneView.swift in Sources */,
 				2A0F6F442CA06CC700BF22F4 /* Stone.swift in Sources */,
 				2A0F6E862CA00FDB00BF22F4 /* ContentView.swift in Sources */,
 				2A0F6F402CA06CC700BF22F4 /* ViewGlobals.swift in Sources */,
-				2A0F6F412CA06CC700BF22F4 /* GameParser.swift in Sources */,
+				2A0F6F412CA06CC700BF22F4 /* Parser.swift in Sources */,
 				2A0F6E842CA00FDB00BF22F4 /* ios_stonedge_appApp.swift in Sources */,
 				2A0F6F3D2CA06CC700BF22F4 /* StonedgeGameView.swift in Sources */,
 				2A0F6F422CA06CC700BF22F4 /* Cell.swift in Sources */,
@@ -392,6 +396,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = EKM4K54R7P;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -415,6 +420,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -455,6 +461,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = EKM4K54R7P;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -471,6 +478,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -484,7 +492,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ios-stonedge-app/Preview Content\"";
-				DEVELOPMENT_TEAM = EKM4K54R7P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -513,7 +520,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ios-stonedge-app/Preview Content\"";
-				DEVELOPMENT_TEAM = EKM4K54R7P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -537,11 +543,9 @@
 		2A0F6EA82CA00FDC00BF22F4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = EKM4K54R7P;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				MARKETING_VERSION = 1.0;
@@ -557,11 +561,9 @@
 		2A0F6EA92CA00FDC00BF22F4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = EKM4K54R7P;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				MARKETING_VERSION = 1.0;
@@ -577,10 +579,8 @@
 		2A0F6EAB2CA00FDC00BF22F4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = EKM4K54R7P;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ogamita.games.ios-stonedge-appUITests";
@@ -595,10 +595,8 @@
 		2A0F6EAC2CA00FDC00BF22F4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = EKM4K54R7P;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ogamita.games.ios-stonedge-appUITests";

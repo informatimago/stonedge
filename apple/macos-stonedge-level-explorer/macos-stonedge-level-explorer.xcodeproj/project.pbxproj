@@ -8,12 +8,54 @@
 
 /* Begin PBXBuildFile section */
 		2A0F6EBA2CA0102A00BF22F4 /* macos_stonedge_level_explorerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6EB92CA0102A00BF22F4 /* macos_stonedge_level_explorerApp.swift */; };
-		2A0F6EBC2CA0102A00BF22F4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6EBB2CA0102A00BF22F4 /* ContentView.swift */; };
+		2A0F6EBC2CA0102A00BF22F4 /* ExpContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6EBB2CA0102A00BF22F4 /* ExpContentView.swift */; };
 		2A0F6EBE2CA0102A00BF22F4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A0F6EBD2CA0102A00BF22F4 /* Assets.xcassets */; };
 		2A0F6EC12CA0102A00BF22F4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2A0F6EC02CA0102A00BF22F4 /* Preview Assets.xcassets */; };
 		2A0F6ECC2CA0102B00BF22F4 /* macos_stonedge_level_explorerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6ECB2CA0102B00BF22F4 /* macos_stonedge_level_explorerTests.swift */; };
 		2A0F6ED62CA0102B00BF22F4 /* macos_stonedge_level_explorerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6ED52CA0102B00BF22F4 /* macos_stonedge_level_explorerUITests.swift */; };
 		2A0F6ED82CA0102B00BF22F4 /* macos_stonedge_level_explorerUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0F6ED72CA0102B00BF22F4 /* macos_stonedge_level_explorerUITestsLaunchTests.swift */; };
+		2A53F6D22EAB894100212FD6 /* NewLevels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6CA2EAB894100212FD6 /* NewLevels.swift */; };
+		2A53F6D32EAB894100212FD6 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6C72EAB894100212FD6 /* Game.swift */; };
+		2A53F6D42EAB894100212FD6 /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6D02EAB894100212FD6 /* UserView.swift */; };
+		2A53F6D52EAB894100212FD6 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6C52EAB894100212FD6 /* BoardView.swift */; };
+		2A53F6D62EAB894100212FD6 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6C92EAB894100212FD6 /* Levels.swift */; };
+		2A53F6D72EAB894100212FD6 /* StoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6CE2EAB894100212FD6 /* StoneView.swift */; };
+		2A53F6D82EAB894100212FD6 /* ViewGlobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6D12EAB894100212FD6 /* ViewGlobals.swift */; };
+		2A53F6D92EAB894100212FD6 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6CF2EAB894100212FD6 /* User.swift */; };
+		2A53F6DA2EAB894100212FD6 /* StonedgeGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6CD2EAB894100212FD6 /* StonedgeGameView.swift */; };
+		2A53F6DB2EAB894100212FD6 /* GameParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6C82EAB894100212FD6 /* GameParser.swift */; };
+		2A53F6DC2EAB894100212FD6 /* Stone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6CB2EAB894100212FD6 /* Stone.swift */; };
+		2A53F6DD2EAB894100212FD6 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6C62EAB894100212FD6 /* Cell.swift */; };
+		2A53F6DE2EAB894100212FD6 /* NewLevels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6CA2EAB894100212FD6 /* NewLevels.swift */; };
+		2A53F6DF2EAB894100212FD6 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6C72EAB894100212FD6 /* Game.swift */; };
+		2A53F6E02EAB894100212FD6 /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6D02EAB894100212FD6 /* UserView.swift */; };
+		2A53F6E12EAB894100212FD6 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6C52EAB894100212FD6 /* BoardView.swift */; };
+		2A53F6E22EAB894100212FD6 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6C92EAB894100212FD6 /* Levels.swift */; };
+		2A53F6E32EAB894100212FD6 /* StoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6CE2EAB894100212FD6 /* StoneView.swift */; };
+		2A53F6E42EAB894100212FD6 /* ViewGlobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6D12EAB894100212FD6 /* ViewGlobals.swift */; };
+		2A53F6E52EAB894100212FD6 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6CF2EAB894100212FD6 /* User.swift */; };
+		2A53F6E62EAB894100212FD6 /* StonedgeGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6CD2EAB894100212FD6 /* StonedgeGameView.swift */; };
+		2A53F6E72EAB894100212FD6 /* GameParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6C82EAB894100212FD6 /* GameParser.swift */; };
+		2A53F6E82EAB894100212FD6 /* Stone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6CB2EAB894100212FD6 /* Stone.swift */; };
+		2A53F6E92EAB894100212FD6 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6C62EAB894100212FD6 /* Cell.swift */; };
+		2A53F6EA2EAB894100212FD6 /* NewLevels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6CA2EAB894100212FD6 /* NewLevels.swift */; };
+		2A53F6EB2EAB894100212FD6 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6C72EAB894100212FD6 /* Game.swift */; };
+		2A53F6EC2EAB894100212FD6 /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6D02EAB894100212FD6 /* UserView.swift */; };
+		2A53F6ED2EAB894100212FD6 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6C52EAB894100212FD6 /* BoardView.swift */; };
+		2A53F6EE2EAB894100212FD6 /* Levels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6C92EAB894100212FD6 /* Levels.swift */; };
+		2A53F6EF2EAB894100212FD6 /* StoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6CE2EAB894100212FD6 /* StoneView.swift */; };
+		2A53F6F02EAB894100212FD6 /* ViewGlobals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6D12EAB894100212FD6 /* ViewGlobals.swift */; };
+		2A53F6F12EAB894100212FD6 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6CF2EAB894100212FD6 /* User.swift */; };
+		2A53F6F22EAB894100212FD6 /* StonedgeGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6CD2EAB894100212FD6 /* StonedgeGameView.swift */; };
+		2A53F6F32EAB894100212FD6 /* GameParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6C82EAB894100212FD6 /* GameParser.swift */; };
+		2A53F6F42EAB894100212FD6 /* Stone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6CB2EAB894100212FD6 /* Stone.swift */; };
+		2A53F6F52EAB894100212FD6 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6C62EAB894100212FD6 /* Cell.swift */; };
+		2A53F6F72EAB89AF00212FD6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6F62EAB89AF00212FD6 /* ContentView.swift */; };
+		2A53F6F82EAB89AF00212FD6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6F62EAB89AF00212FD6 /* ContentView.swift */; };
+		2A53F6F92EAB89AF00212FD6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6F62EAB89AF00212FD6 /* ContentView.swift */; };
+		2A53F6FB2EAB8A1B00212FD6 /* KeyEventHandlingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6FA2EAB8A1B00212FD6 /* KeyEventHandlingView.swift */; };
+		2A53F6FC2EAB8A1B00212FD6 /* KeyEventHandlingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6FA2EAB8A1B00212FD6 /* KeyEventHandlingView.swift */; };
+		2A53F6FD2EAB8A1B00212FD6 /* KeyEventHandlingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A53F6FA2EAB8A1B00212FD6 /* KeyEventHandlingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +78,7 @@
 /* Begin PBXFileReference section */
 		2A0F6EB62CA0102A00BF22F4 /* macos-stonedge-level-explorer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "macos-stonedge-level-explorer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A0F6EB92CA0102A00BF22F4 /* macos_stonedge_level_explorerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = macos_stonedge_level_explorerApp.swift; sourceTree = "<group>"; };
-		2A0F6EBB2CA0102A00BF22F4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		2A0F6EBB2CA0102A00BF22F4 /* ExpContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpContentView.swift; sourceTree = "<group>"; };
 		2A0F6EBD2CA0102A00BF22F4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2A0F6EC02CA0102A00BF22F4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2A0F6EC22CA0102A00BF22F4 /* macos_stonedge_level_explorer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macos_stonedge_level_explorer.entitlements; sourceTree = "<group>"; };
@@ -45,6 +87,21 @@
 		2A0F6ED12CA0102B00BF22F4 /* macos-stonedge-level-explorerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "macos-stonedge-level-explorerUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A0F6ED52CA0102B00BF22F4 /* macos_stonedge_level_explorerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = macos_stonedge_level_explorerUITests.swift; sourceTree = "<group>"; };
 		2A0F6ED72CA0102B00BF22F4 /* macos_stonedge_level_explorerUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = macos_stonedge_level_explorerUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		2A53F6C52EAB894100212FD6 /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BoardView.swift; path = ../sources/BoardView.swift; sourceTree = SOURCE_ROOT; };
+		2A53F6C62EAB894100212FD6 /* Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Cell.swift; path = ../sources/Cell.swift; sourceTree = SOURCE_ROOT; };
+		2A53F6C72EAB894100212FD6 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Game.swift; path = ../sources/Game.swift; sourceTree = SOURCE_ROOT; };
+		2A53F6C82EAB894100212FD6 /* GameParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GameParser.swift; path = ../sources/GameParser.swift; sourceTree = SOURCE_ROOT; };
+		2A53F6C92EAB894100212FD6 /* Levels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Levels.swift; path = ../sources/Levels.swift; sourceTree = SOURCE_ROOT; };
+		2A53F6CA2EAB894100212FD6 /* NewLevels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NewLevels.swift; path = ../sources/NewLevels.swift; sourceTree = SOURCE_ROOT; };
+		2A53F6CB2EAB894100212FD6 /* Stone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Stone.swift; path = ../sources/Stone.swift; sourceTree = SOURCE_ROOT; };
+		2A53F6CC2EAB894100212FD6 /* stonedge.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = stonedge.entitlements; path = ../sources/stonedge.entitlements; sourceTree = SOURCE_ROOT; };
+		2A53F6CD2EAB894100212FD6 /* StonedgeGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StonedgeGameView.swift; path = ../sources/StonedgeGameView.swift; sourceTree = SOURCE_ROOT; };
+		2A53F6CE2EAB894100212FD6 /* StoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StoneView.swift; path = ../sources/StoneView.swift; sourceTree = SOURCE_ROOT; };
+		2A53F6CF2EAB894100212FD6 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = User.swift; path = ../sources/User.swift; sourceTree = SOURCE_ROOT; };
+		2A53F6D02EAB894100212FD6 /* UserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserView.swift; path = ../sources/UserView.swift; sourceTree = SOURCE_ROOT; };
+		2A53F6D12EAB894100212FD6 /* ViewGlobals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewGlobals.swift; path = ../sources/ViewGlobals.swift; sourceTree = SOURCE_ROOT; };
+		2A53F6F62EAB89AF00212FD6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = "../macos-stonedge-app/macos-stonedge-app/ContentView.swift"; sourceTree = SOURCE_ROOT; };
+		2A53F6FA2EAB8A1B00212FD6 /* KeyEventHandlingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KeyEventHandlingView.swift; path = "../macos-stonedge-app/macos-stonedge-app/KeyEventHandlingView.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,8 +152,11 @@
 		2A0F6EB82CA0102A00BF22F4 /* macos-stonedge-level-explorer */ = {
 			isa = PBXGroup;
 			children = (
+				2A53F6FA2EAB8A1B00212FD6 /* KeyEventHandlingView.swift */,
+				2A53F6F62EAB89AF00212FD6 /* ContentView.swift */,
+				2A53F6C42EAB890D00212FD6 /* Sources */,
 				2A0F6EB92CA0102A00BF22F4 /* macos_stonedge_level_explorerApp.swift */,
-				2A0F6EBB2CA0102A00BF22F4 /* ContentView.swift */,
+				2A0F6EBB2CA0102A00BF22F4 /* ExpContentView.swift */,
 				2A0F6EBD2CA0102A00BF22F4 /* Assets.xcassets */,
 				2A0F6EC22CA0102A00BF22F4 /* macos_stonedge_level_explorer.entitlements */,
 				2A0F6EBF2CA0102A00BF22F4 /* Preview Content */,
@@ -127,6 +187,26 @@
 				2A0F6ED72CA0102B00BF22F4 /* macos_stonedge_level_explorerUITestsLaunchTests.swift */,
 			);
 			path = "macos-stonedge-level-explorerUITests";
+			sourceTree = "<group>";
+		};
+		2A53F6C42EAB890D00212FD6 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				2A53F6C52EAB894100212FD6 /* BoardView.swift */,
+				2A53F6C62EAB894100212FD6 /* Cell.swift */,
+				2A53F6C72EAB894100212FD6 /* Game.swift */,
+				2A53F6C82EAB894100212FD6 /* GameParser.swift */,
+				2A53F6C92EAB894100212FD6 /* Levels.swift */,
+				2A53F6CA2EAB894100212FD6 /* NewLevels.swift */,
+				2A53F6CB2EAB894100212FD6 /* Stone.swift */,
+				2A53F6CC2EAB894100212FD6 /* stonedge.entitlements */,
+				2A53F6CD2EAB894100212FD6 /* StonedgeGameView.swift */,
+				2A53F6CE2EAB894100212FD6 /* StoneView.swift */,
+				2A53F6CF2EAB894100212FD6 /* User.swift */,
+				2A53F6D02EAB894100212FD6 /* UserView.swift */,
+				2A53F6D12EAB894100212FD6 /* ViewGlobals.swift */,
+			);
+			path = Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -193,7 +273,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					2A0F6EB52CA0102A00BF22F4 = {
 						CreatedOnToolsVersion = 15.4;
@@ -259,8 +339,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A0F6EBC2CA0102A00BF22F4 /* ContentView.swift in Sources */,
+				2A53F6FB2EAB8A1B00212FD6 /* KeyEventHandlingView.swift in Sources */,
+				2A0F6EBC2CA0102A00BF22F4 /* ExpContentView.swift in Sources */,
 				2A0F6EBA2CA0102A00BF22F4 /* macos_stonedge_level_explorerApp.swift in Sources */,
+				2A53F6EA2EAB894100212FD6 /* NewLevels.swift in Sources */,
+				2A53F6EB2EAB894100212FD6 /* Game.swift in Sources */,
+				2A53F6EC2EAB894100212FD6 /* UserView.swift in Sources */,
+				2A53F6ED2EAB894100212FD6 /* BoardView.swift in Sources */,
+				2A53F6EE2EAB894100212FD6 /* Levels.swift in Sources */,
+				2A53F6EF2EAB894100212FD6 /* StoneView.swift in Sources */,
+				2A53F6F02EAB894100212FD6 /* ViewGlobals.swift in Sources */,
+				2A53F6F12EAB894100212FD6 /* User.swift in Sources */,
+				2A53F6F22EAB894100212FD6 /* StonedgeGameView.swift in Sources */,
+				2A53F6F72EAB89AF00212FD6 /* ContentView.swift in Sources */,
+				2A53F6F32EAB894100212FD6 /* GameParser.swift in Sources */,
+				2A53F6F42EAB894100212FD6 /* Stone.swift in Sources */,
+				2A53F6F52EAB894100212FD6 /* Cell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,6 +362,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A53F6FC2EAB8A1B00212FD6 /* KeyEventHandlingView.swift in Sources */,
+				2A53F6DE2EAB894100212FD6 /* NewLevels.swift in Sources */,
+				2A53F6DF2EAB894100212FD6 /* Game.swift in Sources */,
+				2A53F6F82EAB89AF00212FD6 /* ContentView.swift in Sources */,
+				2A53F6E02EAB894100212FD6 /* UserView.swift in Sources */,
+				2A53F6E12EAB894100212FD6 /* BoardView.swift in Sources */,
+				2A53F6E22EAB894100212FD6 /* Levels.swift in Sources */,
+				2A53F6E32EAB894100212FD6 /* StoneView.swift in Sources */,
+				2A53F6E42EAB894100212FD6 /* ViewGlobals.swift in Sources */,
+				2A53F6E52EAB894100212FD6 /* User.swift in Sources */,
+				2A53F6E62EAB894100212FD6 /* StonedgeGameView.swift in Sources */,
+				2A53F6E72EAB894100212FD6 /* GameParser.swift in Sources */,
+				2A53F6E82EAB894100212FD6 /* Stone.swift in Sources */,
+				2A53F6E92EAB894100212FD6 /* Cell.swift in Sources */,
 				2A0F6ECC2CA0102B00BF22F4 /* macos_stonedge_level_explorerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -276,8 +384,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A53F6FD2EAB8A1B00212FD6 /* KeyEventHandlingView.swift in Sources */,
 				2A0F6ED62CA0102B00BF22F4 /* macos_stonedge_level_explorerUITests.swift in Sources */,
 				2A0F6ED82CA0102B00BF22F4 /* macos_stonedge_level_explorerUITestsLaunchTests.swift in Sources */,
+				2A53F6D22EAB894100212FD6 /* NewLevels.swift in Sources */,
+				2A53F6D32EAB894100212FD6 /* Game.swift in Sources */,
+				2A53F6D42EAB894100212FD6 /* UserView.swift in Sources */,
+				2A53F6D52EAB894100212FD6 /* BoardView.swift in Sources */,
+				2A53F6D62EAB894100212FD6 /* Levels.swift in Sources */,
+				2A53F6D72EAB894100212FD6 /* StoneView.swift in Sources */,
+				2A53F6D82EAB894100212FD6 /* ViewGlobals.swift in Sources */,
+				2A53F6D92EAB894100212FD6 /* User.swift in Sources */,
+				2A53F6DA2EAB894100212FD6 /* StonedgeGameView.swift in Sources */,
+				2A53F6F92EAB89AF00212FD6 /* ContentView.swift in Sources */,
+				2A53F6DB2EAB894100212FD6 /* GameParser.swift in Sources */,
+				2A53F6DC2EAB894100212FD6 /* Stone.swift in Sources */,
+				2A53F6DD2EAB894100212FD6 /* Cell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -331,7 +453,9 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = EKM4K54R7P;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -355,6 +479,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -394,7 +519,9 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = EKM4K54R7P;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -411,6 +538,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
@@ -424,10 +552,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"macos-stonedge-level-explorer/Preview Content\"";
-				DEVELOPMENT_TEAM = EKM4K54R7P;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -451,10 +581,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"macos-stonedge-level-explorer/Preview Content\"";
-				DEVELOPMENT_TEAM = EKM4K54R7P;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -472,11 +604,10 @@
 		2A0F6EDF2CA0102B00BF22F4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = EKM4K54R7P;
+				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.5;
 				MARKETING_VERSION = 1.0;
@@ -491,11 +622,10 @@
 		2A0F6EE02CA0102B00BF22F4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = EKM4K54R7P;
+				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.5;
 				MARKETING_VERSION = 1.0;
@@ -510,10 +640,9 @@
 		2A0F6EE22CA0102B00BF22F4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = EKM4K54R7P;
+				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ogamita.games.macos-stonedge-level-explorerUITests";
@@ -527,10 +656,9 @@
 		2A0F6EE32CA0102B00BF22F4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = EKM4K54R7P;
+				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ogamita.games.macos-stonedge-level-explorerUITests";

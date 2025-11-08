@@ -302,13 +302,18 @@ DIRECTION: (member :left :right :front :back)
 (defclass cell ()
   ((x :initform 0
       :initarg :x
-      :reader cell-x
+      :accessor cell-x
       :documentation "Lateral coordinate.")
    (y :initform 0
       :initarg :y
-      :reader cell-y
+      :accessor cell-y
       :documentation "Front coordinate."))
   (:documentation "This is an abstract cell. Cells are square, and all of the same size."))
+
+(defmethod print-object ((cell cell) stream)
+  (print-unreadable-object (cell stream :identity t :type t)
+    (format stream ":x ~A :y ~A" (cell-x cell) (cell-y cell)))
+  cell)
 
 (define-condition game-won  () ())
 (define-condition game-lost () ())
@@ -450,6 +455,14 @@ Button cells may switch the state of pathway-cells."))
     self))
 
 
+(defmethod print-object ((cell button-cell) stream)
+  (print-unreadable-object (cell stream :identity t :type t)
+    (format stream ":x ~A :y ~A :name ~S :button-cell-switches ~{~A~^ ~}"
+            (cell-x cell) (cell-y cell)
+            (cell-name cell)
+            (mapcar (function cell-name) (button-cell-switches cell))))
+  cell)
+
 
 (defclass red-button-cell (button-cell)
   ()
@@ -459,7 +472,6 @@ as soon as the stone is over it."))
 (defmethod stone-moved-over-cell ((s stone) (cell red-button-cell))
   (declare (ignorable s))
   (switch-pathway-cells cell))
-
 
 
 (defclass blue-button-cell (button-cell)
@@ -472,7 +484,6 @@ only when the stone is over it in vertical position."))
     (switch-pathway-cells cell)))
 
 
-
 (defclass pathway-cell (named-cell)
   ((state :initform :closed
           :initarg :state
@@ -482,6 +493,14 @@ only when the stone is over it in vertical position."))
   (:documentation "When a pathway cell is :open, it supports a stone;
 when it's :closed the stone falls down and
 the game is lost."))
+
+(defmethod print-object ((cell pathway-cell) stream)
+  (print-unreadable-object (cell stream :identity t :type t)
+    (format stream ":x ~A :y ~A :name ~S :state ~A"
+            (cell-x cell) (cell-y cell)
+            (cell-name cell)
+            (pathway-cell-state cell)))
+  cell)
 
 (defmethod stone-moved-over-cell ((s stone) (cell pathway-cell))
   (declare (ignorable s))
@@ -539,19 +558,28 @@ the game is lost."))
                 :documentation "The description of the level (multiline).")
    (cells       :initarg :cells
                 :initform #2a()
-                :reader level-cells
+                :accessor level-cells
                 :documentation "The cells.")
    (named-cells :initarg :named-cells
                 :initform (make-hash-table :test (function equal))
+                :documentation "Maps cell names (1-char string, case insensitive) to a cell instance."
                 :reader level-named-cells
-                :type hash-table
-                :documentation "A map from cell names (strings) to cells.")
+                :type hash-table)
    (definitions :initarg :definitions
                 :initform (make-hash-table :test (function equal))
+                :documentation "Maps cell names (1-char string, case insensitive) to cell definitions."
                 :reader level-definitions
-                :type hash-table
-                :documentation "A map from cell names (string) to cell definition.")))
+                :type hash-table)))
 
+(defun pathway-cell-p (cell)
+  (typep cell 'pathway-cell))
+
+(defmethod level-pathway-cells ((level level))
+  (let ((cells (level-cells level)))
+    (coerce (remove-if-not (function pathway-cell-p)
+                           (make-array (array-total-size cells)
+                                       :displaced-to cells))
+            'list)))
 
 (defmethod level-start-cell ((level level))
   (let ((cells (level-cells level)))
@@ -599,6 +627,7 @@ the game is lost."))
 
 (defmethod make-game-from-level ((level level))
   (multiple-value-bind (start-cell x y) (level-start-cell level)
+    (declare (ignore start-cell))
     (make-instance 'game
                    :stone (make-instance 'stone :x x :y y :direction #(0 0 1))
                    :level-title (level-title level)

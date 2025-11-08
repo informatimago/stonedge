@@ -18,7 +18,9 @@
    #:query-integer
    #:query-string
    #:query-multi-line-string
-   #:edit-level))
+   #:edit-level
+   #:size-to-fit
+   #:extend-level-cells))
 
 (in-package :com.informatimago.games.stonedge.level-manager)
 
@@ -177,8 +179,20 @@
             (format *error-output* "~%~A~%" err)
             (finish-output  *error-output*)))))
 
+(defgeneric editor-text-icon (cell)
+  (:documentation "Returns a three-character strings denoting graphically the cell.")
+  (:method ((cell cell)) (text-icon cell))
+  (:method ((cell red-button-cell))
+    (format nil "~A[R" (cell-name cell)))
+  (:method ((cell blue-button-cell))
+    (format nil "~A[B" (cell-name cell)))
+  (:method ((cell pathway-cell))
+    (format nil (if (eql :open (pathway-cell-state cell))
+                    "~A--"
+                    "~A/\\")
+            (cell-name cell))))
 
-(defun display-cells (cells stream selected-x selected-y)
+(defun editor-display-cells (cells stream selected-x selected-y)
   "
 Prints an ASCII-art representation of the cells onto the STREAM.
 The cell at selected-x selected-y coordinates is highlighed.
@@ -202,7 +216,7 @@ The cell at selected-x selected-y coordinates is highlighed.
       :do (loop
             :for i :below (array-dimension cells 1)
             :initially (princ "|" stream)
-            :do (princ (text-icon (aref cells j i)) stream)
+            :do (princ (editor-text-icon (aref cells j i)) stream)
                 (if (= j selected-y)
                     (cond
                       ((= (1+ i) selected-x) (princ "*" stream))
@@ -214,92 +228,372 @@ The cell at selected-x selected-y coordinates is highlighed.
                        (print-line j)
                        (terpri stream))))))
 
+(defun move-cells (src dst dx dy)
+  (loop :for y :below (array-dimension src 0)
+        :do (loop :for x :below (array-dimension src 1)
+                  :for cell := (aref src y x)
+                  :do (setf (cell-x cell) (+ x dx)
+                            (cell-y cell) (+ y dy))
+                      (setf (aref dst (+ y dy) (+ x dx)) cell))))
+
+(defmethod size-to-fit ((level level))
+  (let* ((grid (level-cells level))
+         (minx (array-dimension grid 1))
+         (miny (array-dimension grid 0))
+         (maxx 0)
+         (maxy 0))
+    (loop :for j :below (array-dimension grid 0)
+          :do (loop :for i :below (array-dimension grid 1)
+                    :do (unless (typep (aref grid j i) 'empty-cell)
+                          (setf minx (min i minx)
+                                miny (min j miny)
+                                maxx (max i maxx)
+                                maxy (max j maxy)))))
+    (unless (and (= (+ 4 (- maxx minx -1)) (array-dimension grid 1))
+                 (= (+ 4 (- maxy miny -1)) (array-dimension grid 0)))
+      (let ((ngrid (make-array (list (+ 4 (- maxy miny -1))
+                                     (+ 4 (- maxx minx -1))))))
+        (loop :with top  := (- miny 2)
+              :with left := (- minx 2)
+              :for j :from top :to (+ maxy 2)
+              :do (loop :for i :from left :to (+ maxx 2)
+                        :for cell := (aref grid j i)
+                        :do (setf (cell-x cell) i
+                                  (cell-y cell) j)
+                            (setf (aref ngrid (- j top) (- i left)) cell)))
+        (setf (level-cells level) ngrid))))
+  level)
+
+(defmethod extend-level-cells ((level level) side)
+  (let* ((grid (level-cells level))
+         (ngrid (ecase side 
+                  ((:left :right) (make-array (list (array-dimension grid 0)
+                                                    (1+ (array-dimension grid 1)))))
+                  ((:top :bottom) (make-array (list (1+ (array-dimension grid 0))
+                                                    (array-dimension grid 1)))))))
+    (move-cells grid ngrid
+                (if (eq side :left) 1 0)
+                (if (eq side :top)  1 0))
+    (case side
+      (:right  (loop :with x := (- (array-dimension ngrid 1) 1)
+                     :for y :below (array-dimension ngrid 0)
+                     :do (setf (aref ngrid y x) (make-instance 'empty-cell :x x :y y))))
+      (:left   (loop :with x := 0
+                     :for y :below (array-dimension ngrid 0)
+                     :do (setf (aref ngrid y x) (make-instance 'empty-cell :x x :y y))))
+      (:bottom (loop :with y := (- (array-dimension ngrid 0) 1)
+                     :for x :below (array-dimension ngrid 1)
+                     :do (setf (aref ngrid y x) (make-instance 'empty-cell :x x :y y))))
+      (:top    (loop :with y := 0
+                     :for x :below (array-dimension ngrid 1)
+                     :do (setf (aref ngrid y x) (make-instance 'empty-cell :x x :y y)))))
+    (setf (level-cells level) ngrid))
+  level)
+
+(defun move-left (level x y)
+  (if (< x 3)
+      (progn
+        (extend-level-cells level :left)
+        (values x y))
+      (values (- x 1) y)))
+
+(defun move-top (level x y)
+  (if (< y 3)
+      (progn
+        (extend-level-cells level :top)
+        (values x y))
+      (values x (- y 1))))
+
+(defun move-right (level x y)
+  (if (< x (- (array-dimension (level-cells level) 1) 3))
+      (values (+ x 1) y)
+      (progn
+        (extend-level-cells level :right)
+        (values (+ x 1) y))))
+
+(defun move-bottom (level x y)
+  (if (< y (- (array-dimension (level-cells level) 0) 3))
+      (values x (+ y 1))
+      (progn
+        (extend-level-cells level :bottom)
+        (values x (+ y 1)))))
+
+(defvar *editor-commands*
+  '(("." "Change to an empty cell")
+    ("o" "Change to a solid cell")
+    ("z" "Set the start cell")
+    ("t" "Change to a target cell")
+    ("i" "Change to an ice cell")
+    ("c" "Change to a crumble cell")
+    ("b" "Change to a blue button cell")
+    ("r" "Change to a red button cell")
+    ("p" "Change to a pathway cell")
+    ("k" "Connect the button to pathway cells")
+    ("Y" "Swap open/close on pathway cell")
+    ("a" "Move the cursor left")
+    ("s" "Move the cursor down")
+    ("d" "Move the cursor right")
+    ("w" "Move the cursor up")
+    ("f" "Size to fit the level.")
+    ("n" "Display the named cells (buttons and pathways)")
+    ("h" "Display this help")
+    ("x" "Exit from the level editor")))
+
+;; (defparameter *button-cell-names* "ABDEFGHJKLMNPQRUVW")
+;; (defparameter *pathway-cell-names* "0123456789!@#$%^&*()_+-={}[]")
+
+(defmethod find-available-name ((level level) valid-names)
+  (loop :with named-cells := (level-named-cells level)
+        :for name :across valid-names
+        :for cell := (gethash (string name) named-cells)
+        :while cell
+        :finally (return (if cell nil (string-upcase name)))))
+
+(defun validate-cell-name (cell expected-cell-kind valid-names named-cells)
+  (unless (= 1 (length (cell-name cell)))
+    (error "~S has an invalid-length name ~S (expected 1 character)"
+           cell (cell-name cell)))
+  (when (find (character (cell-name cell)) *reserved-names* :test (function equalp))
+    (error "~S has a reserved named ~S" cell (cell-name cell)))
+  (let ((other-cell (gethash (cell-name cell) named-cells)))
+    (unless (or (null other-cell) (eql other-cell cell))
+        (error "~S has a duplicate name ~S with ~S"
+               cell (cell-name cell) (gethash (cell-name cell) named-cells))))
+  (unless (find (character (cell-name cell)) valid-names :test (function equalp))
+    (error "~S has a non-~A name ~S"
+           cell expected-cell-kind (cell-name cell))))
+
+(defgeneric update-definitions (level)
+  (:documentation "Update the definitions and named-cells slots of the level from the cells in the grid.")
+  (:method ((level level))
+    (let ((cells       (level-cells level))
+          (named-cells (make-hash-table :test 'equal))
+          (definitions (make-hash-table :test 'equal)))
+      (flet ((connected-cell-names (cell)
+               (map 'list
+                    (lambda (name) (string name))
+                    (sort (with-output-to-string (out)
+                            (dolist (pathway (button-cell-switches cell))
+                              (unless (typep pathway 'pathway-cell)
+                                (error "Button cell ~S is connected to a non-pathway cell ~S"
+                                       cell pathway))
+                              (princ (cell-name pathway) out)))
+                          (function char<)))))
+        (loop
+          :for cell :across (make-array (array-total-size cells)
+                                        :displaced-to cells)
+          :do (typecase cell
+                (blue-button-cell
+                 (validate-cell-name cell "blue button cell" *button-cell-names* named-cells)
+                 (setf (gethash (string-upcase (cell-name cell)) named-cells) cell
+                       (gethash (string-upcase (cell-name cell)) definitions)
+                       (make-instance 'definition
+                                      :name (string-upcase (cell-name cell))
+                                      :link :blue
+                                      :connected (connected-cell-names cell))))
+                (red-button-cell
+                 (validate-cell-name cell "red button cell" *button-cell-names* named-cells)
+                 (setf (gethash (string-upcase (cell-name cell)) named-cells) cell
+                       (gethash (string-upcase (cell-name cell)) definitions)
+                       (make-instance 'definition
+                                      :name (string-upcase (cell-name cell))
+                                      :link :red
+                                      :connected (connected-cell-names cell))))
+                (pathway-cell
+                 (validate-cell-name cell "pathway cell" *pathway-cell-names* named-cells)
+                 (setf (gethash (string-upcase (cell-name cell)) named-cells) cell
+                       (gethash (string-upcase (cell-name cell)) definitions)
+                       (make-instance 'definition
+                                      :name (string-upcase (cell-name cell))
+                                      :link :pathway
+                                      :state (pathway-cell-state cell)))))))
+      (setf (slot-value level 'com.informatimago.games.stonedge::named-cells) named-cells
+            (slot-value level 'com.informatimago.games.stonedge::definitions) definitions)
+      level)))
+
+;; (update-definitions (first (levels *level-list*)))
+;; (find-available-name (first (levels *level-list*)) *button-cell-names*)
+
+(defun pathway-cell-names (level)
+  (sort (string-upcase (with-output-to-string (out)
+                         (dolist (pathway (level-pathway-cells level))
+                           (princ (cell-name pathway) out))))
+        (function char<)))
+
+(defun display-available-pathway-cells (level)
+  (format t "~&Available pathway cells: ~A~%" (pathway-cell-names level)))
+
+(defmethod unregister-cell ((level level) (cell cell))
+  cell)
+
+(defmethod unregister-cell ((level level) (cell named-cell))
+  (remhash (string-upcase (cell-name cell)) (level-named-cells level))
+  (update-definitions level)
+  cell)
+
+(defmethod register-cell ((level level) (cell cell))
+  cell)
+
+(defmethod register-cell ((level level) (cell named-cell))
+  (setf (gethash (string-upcase (cell-name cell)) (level-named-cells level)) cell)
+  (update-definitions level)
+  cell)
+
+(defun interpret-command (cmd level selected-x selected-y)
+  (let ((cells (level-cells level)))
+    (let ((entry (find (string cmd) *editor-commands* :key (function first) :test (function string-equal))))
+      (when entry
+        (format t "~&~A~%" (second entry))))
+    (case cmd
+      ((#\.)
+       (unregister-cell level (aref cells selected-y selected-x))
+       (setf (aref cells selected-y selected-x)
+             (make-instance 'empty-cell
+                            :x selected-x
+                            :y selected-y)))
+      ((#\o #\O)
+       (unregister-cell level (aref cells selected-y selected-x))
+       (setf (aref cells selected-y selected-x)
+             (make-instance 'solid-cell
+                            :x selected-x
+                            :y selected-y)))
+      ((#\z #\Z)
+       (multiple-value-bind (old-cell old-y old-x)
+           (level-start-cell level)
+         (declare (ignore old-cell))
+         (setf (aref cells old-y old-x)
+               (make-instance 'solid-cell
+                              :x selected-x
+                              :y selected-y)
+               (aref cells selected-y selected-x)
+               (make-instance 'start-cell
+                              :x selected-x
+                              :y selected-y))))
+      ((#\t #\T)
+       (unregister-cell level (aref cells selected-y selected-x))
+       (setf (aref cells selected-y selected-x)
+             (make-instance 'target-cell
+                            :x selected-x
+                            :y selected-y)))
+      ((#\i #\I)
+       (unregister-cell level (aref cells selected-y selected-x))
+       (setf (aref cells selected-y selected-x)
+             (make-instance 'ice-cell
+                            :x selected-x
+                            :y selected-y)))
+      ((#\c #\C)
+       (unregister-cell level (aref cells selected-y selected-x))
+       (setf (aref cells selected-y selected-x)
+             (make-instance 'crumble-cell
+                            :x selected-x
+                            :y selected-y)))
+      ((#\b #\B)
+       (unregister-cell level (aref cells selected-y selected-x))
+       (setf (aref cells selected-y selected-x)
+             (make-instance 'blue-button-cell
+                            :x selected-x
+                            :y selected-y
+                            :name (find-available-name level *button-cell-names*)))
+       (register-cell level (aref cells selected-y selected-x)))
+      ((#\r #\R)
+       (unregister-cell level (aref cells selected-y selected-x))
+       (setf (aref cells selected-y selected-x)
+             (make-instance 'red-button-cell
+                            :x selected-x
+                            :y selected-y
+                            :name (find-available-name level *button-cell-names*)))
+       (register-cell level (aref cells selected-y selected-x)))
+      ((#\p #\P)
+       (unregister-cell level (aref cells selected-y selected-x))
+       (setf (aref cells selected-y selected-x)
+             (make-instance 'pathway-cell
+                            :x selected-x
+                            :y selected-y
+                            :name (find-available-name level *pathway-cell-names*)))
+       (register-cell level (aref cells selected-y selected-x)))
+
+      ((#\k #\K)
+       ;; connect button cell to pathway-cell(s)
+       (let ((button (aref cells selected-y selected-x)))
+         (when (typep button 'button-cell)
+           (display-available-pathway-cells level)
+           (format *query-io* "Enter list of connected pathways: ")
+           (finish-output *query-io*)
+           (let* ((new-connected (coerce (string-upcase
+                                          (remove-if (lambda (ch) (find ch #(#\space #\tab)))
+                                                     (read-line *query-io*)))
+                                         'list))
+                  (invalid (set-difference
+                            new-connected
+                            (coerce (pathway-cell-names level) 'list))))
+             (when invalid
+               (error "You specified invalid pathway cell names: ~A" invalid))
+             (setf (button-cell-switches button)
+                   (mapcar (lambda (name)
+                             (print (list '(setf button-cell-switches) (string-upcase name)
+                                          (gethash (string-upcase name) (level-named-cells level))))
+                             (gethash (string-upcase name) (level-named-cells level)))
+                           new-connected))
+             (update-definitions level)))))
+
+      ((#\y #\Y)
+       ;; swap open/close on pathway-cell
+       (let ((cell (aref cells selected-y selected-x)))
+         (when (typep cell 'pathway-cell)
+           (switch-cell cell))))
+
+      ;; TODO: editor-display-cell and s/d directions seem to be opposite.
+      ;; TODO: check also the consistency of the axis orientation between editor-display-cell and the display-level for the player, and in swift code. This is a mess.
+      ((#\a #\A) (multiple-value-setq (selected-x selected-y)
+                   (move-left level selected-x selected-y)))
+      ((#\s #\S) (multiple-value-setq (selected-x selected-y)
+                   (move-top level selected-x selected-y)))
+      ((#\d #\D) (multiple-value-setq (selected-x selected-y)
+                   (move-right level selected-x selected-y)))
+      ((#\w #\W) (multiple-value-setq (selected-x selected-y)
+                   (move-bottom level selected-x selected-y)))
+
+      ((#\f #\F)
+       (level-cells (size-to-fit level))
+       (setf selected-x (max 2 (min selected-x (array-dimension cells 1)))
+             selected-y (max 2 (min selected-y (array-dimension cells 0)))))
+      ((#\n #\N) ;; display named cells
+       (maphash (lambda (name cell)
+                  (format t "~&~A: ~A~%" name cell))
+                (level-named-cells level)))
+      ((#\h #\H)
+       (format t "~&Help:~%~:{  ~A  ~A~%~}~%" *editor-commands*))
+      ((#\x #\X) (throw 'petites-gazongues level)))
+    (values selected-x selected-y)))
 
 (defmethod edit-level ((level level))
-  (let ((selected-x 2)
-        (selected-y 2)
-        (cells (level-cells level)))
-    (loop
-     (display-cells (level-cells level) t selected-x selected-y)
-     (format *query-io* "~& .ozticbrp ky asdw x > ")
-     (finish-output *query-io*)
-     (let ((input (read-line *query-io*)))
-       (loop :for cmd :across input
-             :do (case cmd
-                   ((#\.)
-                    (setf (aref cells selected-y selected-x)
-                          (make-instance 'empty-cell
-                                         :x selected-x
-                                         :y selected-y)))
-                   ((#\o #\O)
-                    (setf (aref cells selected-y selected-x)
-                          (make-instance 'solid-cell
-                                         :x selected-x
-                                         :y selected-y)))
-                   ((#\z #\Z)
-                    (multiple-value-bind (old-cell old-y old-x)
-                        (level-start-cell level)
-                      (declare (ignore old-cell))
-                      (setf (aref cells old-y old-x)
-                            (make-instance 'solid-cell
-                                           :x selected-x
-                                           :y selected-y)
-                            (aref cells selected-y selected-x)
-                            (make-instance 'start-cell
-                                           :x selected-x
-                                           :y selected-y))))
-                   ((#\t #\T)
-                    (setf (aref cells selected-y selected-x)
-                          (make-instance 'target-cell
-                                         :x selected-x
-                                         :y selected-y)))
-                   ((#\i #\I)
-                    (setf (aref cells selected-y selected-x)
-                          (make-instance 'ice-cell
-                                         :x selected-x
-                                         :y selected-y)))
-                   ((#\c #\C)
-                    (setf (aref cells selected-y selected-x)
-                          (make-instance 'crumble-cell
-                                         :x selected-x
-                                         :y selected-y)))
-                   ((#\b #\B)
-                    (setf (aref cells selected-y selected-x)
-                          (make-instance 'blue-button-cell
-                                         :x selected-x
-                                         :y selected-y)))
-                   ((#\r #\R)
-                    (setf (aref cells selected-y selected-x)
-                          (make-instance 'red-button-cell
-                                         :x selected-x
-                                         :y selected-y)))
-                   ((#\p #\P)
-                    (setf (aref cells selected-y selected-x)
-                          (make-instance 'pathway-cell
-                                         :x selected-x
-                                         :y selected-y)))
-                   
-                   ((#\y #\Y)
-                    ;; swap open/close on pathway-cell
-                    )
-                   ((#\k #\K)
-                    ;; connect button cell to pathway-cell(s)
-                    )
-
-                   ((#\a #\A) (setf selected-x (max 2 (- selected-x 1))))
-                   ((#\s #\S) (setf selected-y (max 2 (- selected-y 1))))
-                   ((#\d #\D) (setf selected-x (min (- (array-dimension cells 1) 2)
-                                                    (+ selected-x 1))))
-                   ((#\w #\W) (setf selected-y (min (- (array-dimension cells 0) 2)
-                                                    (+ selected-y 1))))
-                   ((#\x #\X) (return-from edit-level level))))))
-    level))
+  (catch 'petites-gazongues
+    (let ((selected-x 2)
+          (selected-y 2))
+      (loop
+       (with-simple-restart (continue-edit "Continue editing")
+         (editor-display-cells (level-cells level) t selected-x selected-y)
+         (let ((cell (aref (level-cells level) selected-y selected-x)))
+           (typecase cell
+             (button-cell
+              (format t "~&Button connected to pathway cells: ~{~A~}~%"
+                      (definition-connected (gethash (cell-name cell) (level-definitions level))))
+              (display-available-pathway-cells level))))
+         (format *query-io* "~& .ozticbrp ky asdw fnh x > ")
+         (finish-output *query-io*)
+         (let ((input (read-line *query-io*)))
+           (loop :for cmd :across input
+                 :do (multiple-value-setq (selected-x selected-y)
+                       (interpret-command cmd level selected-x selected-y))))))
+      level)))
 
 (defun cmd-load ()
   (unless (and *unsaved*
                (not (y-or-n-p "~&Changes are unsaved, confirm overriding them? ")))
     (let* ((filename     (query-filename "Level file: "))
-           (descriptions (sexp-file-contents filename)))
+           (descriptions (let ((*default-pathname-defaults*
+                                 (merge-pathnames #P".sexp" *default-pathname-defaults*)))
+                           (sexp-file-contents filename))))
       (setf (slot-value *level-list* 'levels)
             (mapcar (function parse-level) descriptions))
       (setf *unsaved* nil))))
@@ -308,7 +602,9 @@ The cell at selected-x selected-y coordinates is highlighed.
   (unless (and *unsaved*
                (not (y-or-n-p "~&Changes are unsaved, confirm overriding them? ")))
     (let* ((filename     (query-filename "Level file: "))
-           (descriptions (sexp-file-contents filename)))
+           (descriptions (let ((*default-pathname-defaults*
+                                 (merge-pathnames #P".sexp" *default-pathname-defaults*)))
+                           (sexp-file-contents filename))))
       (setf (slot-value *level-list* 'levels)
             (nconc (slot-value *level-list* 'levels)
                    (mapcar (function parse-level) descriptions)))
@@ -316,19 +612,38 @@ The cell at selected-x selected-y coordinates is highlighed.
 
 (defun cmd-save ()
   (let* ((filename     (query-filename "Level file: ")))
-    (setf (sexp-file-contents
-           filename
-           :if-exists (if (and (probe-file filename)
-                               (y-or-n-p "File exist, should we override it? "))
-                          :supersede
-                          :error)
-           :if-does-not-exist :create)
-          (mapcar (function unparse-level) (levels *level-list*)))
+    (let ((*default-pathname-defaults*
+            (merge-pathnames #P".sexp" *default-pathname-defaults*)))
+      (setf (sexp-file-contents
+             filename
+             :if-exists (if (and (probe-file filename)
+                                 (y-or-n-p "File exist, should we override it? "))
+                            :supersede
+                            :error)
+             :if-does-not-exist :create)
+            (mapcar (function unparse-level) (levels *level-list*))))
     (setf *unsaved* nil)))
 
 (defun cmd-select ()
-  (let ((index (query-integer "Level index: ")))
-    (select-level *level-list* index)))
+  (when (levels *level-list*)
+    (let ((index (query-integer "Level index: ")))
+      (select-level *level-list* index))))
+
+(defun cmd-select-next ()
+  (when (levels *level-list*)
+    (select-level *level-list*
+                  (if (selected-level *level-list*)
+                      (1+ (mod (1+ (1- (selected-level-index *level-list*)))
+                               (length (levels *level-list*))))
+                      1))))
+
+(defun cmd-select-previous ()
+  (when (levels *level-list*)
+    (select-level *level-list*
+                  (if (selected-level *level-list*)
+                      (1+ (mod (1- (1- (selected-level-index *level-list*)))
+                               (length (levels *level-list*))))
+                      (length (levels *level-list*))))))
 
 (defun cmd-delete ()
   (when (levels *level-list*)
@@ -407,35 +722,70 @@ The cell at selected-x selected-y coordinates is highlighed.
         (select-level *level-list* index)))
     (solve-level (selected-level *level-list*))))
 
+
+(defvar *manage-commands*
+  '((load    "Parse and Load a level file, replacing the current level list.")
+    (append  "Parse and Load a level file, appending it to the current level list.")
+    (save    "Unparse and save the current level list into a level file.")
+    (select  "Select a level (by index).")
+    (next    "Select the next level.")
+    (prev    "select the previous level.")
+    (delete  "Delete a level.")
+    (move    "Move the selected level before the destination index.")
+    (new     "Create a new level.")
+    (edit    "Edit the current level.")
+    (play    "Play the current level.")
+    (solve   "Solve the current level")
+    (help    "Display this help.")
+    (quit    "Quit the level manager.")))
+
+(defun cmd-help ()
+  (format t "~&Level Manager Help:~%~:{  ~10A  ~A~%~}~%"
+          *manage-commands*))
+
+(defvar *debug* nil
+  "When an error occurs in the level manager, if true then invoke the debugger else display an error message and continue.")
+(setf *debug* t)
+
+  
 (defun manage-levels ()
   (let ((*level-list*  (make-instance 'level-list))
         (*unsaved*     t))
-    (loop
-      :do (format t "~%Levels:")
-          (display *level-list* t)
-          (format t "~{~A~^ ~}?~%"
-                  '(load append save select delete move new edit play solve quit))
-          (handler-case
-              (let ((command (let ((*package* (find-package #.(package-name *package*))))
-                                (read))))
-                (case command
-                  ((load)   (cmd-load))
-                  ((append) (cmd-append))
-                  ((save)   (cmd-save))
-                  ((select) (cmd-select))
-                  ((delete) (cmd-delete))
-                  ((move)   (cmd-move))
-                  ((new)    (cmd-new))
-                  ((edit)   (cmd-edit))
-                  ((play)   (cmd-play))
-                  ((solve)  (cmd-solve))
-                  ((quit)
-                   (if *unsaved*
-                       (when (y-or-n-p "~&Changes are unsaved, confirm quit without saving? ")
-                         (return-from manage-levels))
-                       (return-from manage-levels)))))
-            (error (err)
-              (format t "~&~A~%" err))))))
+    (with-simple-restart (abort-manage "Abort managing levels")
+      (loop
+       (with-simple-restart (continue-manage "Continue managing levels")
+         (format t "~%Levels:")
+         (display *level-list* t)
+         (format t "~{~A~^ ~}?~%"
+                 (mapcar (function first) *manage-commands*))
+         (handler-bind
+             ((error (lambda (condi)
+                       (if *debug*
+                           (invoke-debugger condi)
+                           (progn
+                             (format t "~&~A~%" condi)
+                             nil)))))
+           (let ((command (let ((*package* (find-package #.(package-name *package*))))
+                            (read))))
+             (case command
+               ((load)          (cmd-load))
+               ((append)        (cmd-append))
+               ((save)          (cmd-save))
+               ((select)        (cmd-select))
+               ((next)          (cmd-select-next))
+               ((prev previous) (cmd-select-previous))
+               ((delete)        (cmd-delete))
+               ((move)          (cmd-move))
+               ((new)           (cmd-new))
+               ((edit)          (cmd-edit))
+               ((play)          (cmd-play))
+               ((solve)         (cmd-solve))
+               ((help)          (cmd-help))
+               ((quit)
+                (if *unsaved*
+                    (when (y-or-n-p "~&Changes are unsaved, confirm quit without saving? ")
+                      (return-from manage-levels))
+                    (return-from manage-levels)))))))))))
 
 
 

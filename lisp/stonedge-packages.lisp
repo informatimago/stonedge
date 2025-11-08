@@ -57,6 +57,7 @@
    #:blue-button-cell
    #:pathway-cell
    #:pathway-cell-state
+   #:switch-cell
    #:crumble-cell
    #:crumble-cell-state
    #:ice-cell

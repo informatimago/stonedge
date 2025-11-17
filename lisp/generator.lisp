@@ -322,7 +322,7 @@
             (= (stone-maxx x y orientation)
                (stone-maxx (node-x node) (node-y node) (node-orientation node)))
             (= (stone-maxy x y orientation)
-               (stone-maxy (node-x node) (node-y node) (node-orientation node))))))))
+               (stone-maxy (node-x node) (node-y node) (node-orientation node))))))))
 
 
  "

@@ -1,0 +1,13 @@
+* Ideas for next version
+
+** Portail cells.
+
+A pair of portail cells let the menhir be teleported from one to the other.
+This would allow to skip to discontinued grids.
+
+** 3D levels
+
+A level could have several boards one above the other.
+We could pass from one board to the other thru an elevator cell. (A kind of portail cell).
+
+If the block falls down only one floor, it could survive on the board below.

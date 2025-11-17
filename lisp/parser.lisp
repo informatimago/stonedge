@@ -240,22 +240,23 @@ Follows the same steps as the Swift version."
                                           (search "BLUE" ln)))))
                               (length ulines)))
            (grid-lines   (if first-grid-idx
-                             (let ((grid-lines (subseq ulines first-grid-idx first-def-idx)))
-                               ;; Remove the last grid line if it's
-                               ;; empty and the two previous only
-                               ;; contain empty cells.
-                               (if (and (< 5 (length grid-lines))
-                                        (string= "" (elt grid-lines (1- (length grid-lines))))
-                                        (every (lambda (ch)
-                                                 (or (char= ch #\.)
-                                                     (char= ch #\space)))
-                                               (elt grid-lines (- (length grid-lines) 2)))
-                                        (every (lambda (ch)
-                                                 (or (char= ch #\.)
-                                                     (char= ch #\space)))
-                                               (elt grid-lines (- (length grid-lines) 3))))
-                                   (subseq grid-lines 0 (1- (length grid-lines)))
-                                   grid-lines))
+                             (nreverse
+                              (let ((grid-lines (subseq ulines first-grid-idx first-def-idx)))
+                                ;; Remove the last grid line if it's
+                                ;; empty and the two previous only
+                                ;; contain empty cells.
+                                (if (and (< 5 (length grid-lines))
+                                         (string= "" (elt grid-lines (1- (length grid-lines))))
+                                         (every (lambda (ch)
+                                                  (or (char= ch #\.)
+                                                      (char= ch #\space)))
+                                                (elt grid-lines (- (length grid-lines) 2)))
+                                         (every (lambda (ch)
+                                                  (or (char= ch #\.)
+                                                      (char= ch #\space)))
+                                                (elt grid-lines (- (length grid-lines) 3))))
+                                    (subseq grid-lines 0 (1- (length grid-lines)))
+                                    grid-lines)))
                              '()))
            (cell-defines (subseq ulines first-def-idx))
            (height       (length grid-lines))
@@ -351,7 +352,7 @@ Follows the same steps as the Swift version."
     (write-line (level-title level))
     (format t "~{| ~A~^~%~}~%"
             (list-trim '("") (level-description level) :test (function string=)))
-    (loop :for y :below (array-dimension (level-cells level) 0)
+    (loop :for y :from (1- (array-dimension (level-cells level) 0)) :downto 0
           :do (terpri)
               (loop :for x :below (array-dimension (level-cells level) 1)
                     :do (write-string (cell-name (aref (level-cells level) y x)))))

@@ -40,7 +40,7 @@
     :do (format stream "~A~3D: ~A~%"
                 (if (eql e (selected-level level-list))
                     "*" " ")
-                i 
+                i
                 (level-title e))
     :finally (terpri stream)))
 
@@ -266,7 +266,7 @@ The cell at selected-x selected-y coordinates is highlighed.
 
 (defmethod extend-level-cells ((level level) side)
   (let* ((grid (level-cells level))
-         (ngrid (ecase side 
+         (ngrid (ecase side
                   ((:left :right) (make-array (list (array-dimension grid 0)
                                                     (1+ (array-dimension grid 1)))))
                   ((:top :bottom) (make-array (list (1+ (array-dimension grid 0))
@@ -318,6 +318,77 @@ The cell at selected-x selected-y coordinates is highlighed.
         (extend-level-cells level :bottom)
         (values x (+ y 1)))))
 
+
+(defun mirror-vertically (level selected-x selected-y)
+  (let* ((cells  (level-cells level))
+         (height (array-dimension cells 0))
+         (width  (array-dimension cells 1))
+         (new    (make-array (list height width))))
+    (loop
+      :for y :below height
+      :do (loop :for x :below width
+                :do (setf (aref new y x) (aref cells (- height y 1) x)
+                          (cell-y (aref new y x)) y)))
+    (setf (level-cells level) new)
+    (values selected-x (- height selected-y 1))))
+
+(defun mirror-horizontally (level selected-x selected-y)
+  (let* ((cells  (level-cells level))
+         (height (array-dimension cells 0))
+         (width  (array-dimension cells 1))
+         (new    (make-array (list height width))))
+    (loop
+      :for y :below height
+      :do (loop :for x :below width
+                :do (setf (aref new y x) (aref cells y (- width x 1))
+                          (cell-x (aref new y x)) x)))
+    (setf (level-cells level) new)
+    (values (- width selected-x 1) selected-y)))
+
+(defun rotate-clockwise (level selected-x selected-y)
+  ;; (((0 0)  (0 1) (0 2))
+  ;;  ((1 0)  (1 1) (1 2)))
+  ;; -->
+  ;; (((0 2)  (1 2))
+  ;;  ((0 1)  (1 1))
+  ;;  ((0 0)  (1 0)))
+  (let* ((cells  (level-cells level))
+         (height (array-dimension cells 0))
+         (width  (array-dimension cells 1))
+         (new    (make-array (list width height))))
+    (loop
+      :for y :below height
+      :do (loop :for x :below width
+                :for new-y := (- width x 1)
+                :for new-x := y
+                :do (setf (aref new new-y new-x) (aref cells y x)
+                          (cell-x (aref new new-y new-x)) new-x
+                          (cell-y (aref new new-y new-x)) new-y)))
+    (setf (level-cells level) new)
+    (values selected-y (- width selected-x 1))))
+
+(defun rotate-counter-clockwise (level selected-x selected-y)
+  ;; (((0 0)  (0 1) (0 2))
+  ;;  ((1 0)  (1 1) (1 2)))
+  ;; -->
+  ;; (((1 0)  (0 0))
+  ;;  ((1 1)  (0 1))
+  ;;  ((1 2)  (0 2)))
+  (let* ((cells  (level-cells level))
+         (height (array-dimension cells 0))
+         (width  (array-dimension cells 1))
+         (new    (make-array (list width height))))
+    (loop
+      :for y :below height
+      :do (loop :for x :below width
+                :for new-y := x
+                :for new-x := (- height y 1)
+                :do (setf (aref new new-y new-x) (aref cells y x)
+                          (cell-x (aref new new-y new-x)) new-x
+                          (cell-y (aref new new-y new-x)) new-y)))
+    (setf (level-cells level) new)
+    (values (- height selected-y 1) selected-x)))
+
 (defvar *editor-commands*
   '(("." "Change to an empty cell")
     ("o" "Change to a solid cell")
@@ -330,6 +401,10 @@ The cell at selected-x selected-y coordinates is highlighed.
     ("p" "Change to a pathway cell")
     ("k" "Connect the button to pathway cells")
     ("Y" "Swap open/close on pathway cell")
+    ("-" "Mirror the board vertically")
+    ("|" "Mirror the board horizontally")
+    (">" "Rotate the board clockwise")
+    ("<" "Rotate the board counter-clockwise")
     ("a" "Move the cursor left")
     ("s" "Move the cursor down")
     ("d" "Move the cursor right")
@@ -542,6 +617,15 @@ The cell at selected-x selected-y coordinates is highlighed.
          (when (typep cell 'pathway-cell)
            (switch-cell cell))))
 
+      ((#\-)   (multiple-value-setq (selected-x selected-y)
+                 (mirror-vertically level selected-x selected-y)))
+      ((#\|)   (multiple-value-setq (selected-x selected-y)
+                 (mirror-horizontally level selected-x selected-y)))
+      ((#\<)   (multiple-value-setq (selected-x selected-y)
+                 (rotate-counter-clockwise level selected-x selected-y)))
+      ((#\>)   (multiple-value-setq (selected-x selected-y)
+                 (rotate-clockwise level selected-x selected-y)))
+
       ;; TODO: editor-display-cell and s/d directions seem to be opposite.
       ;; TODO: check also the consistency of the axis orientation between editor-display-cell and the display-level for the player, and in swift code. This is a mess.
       ((#\a #\A) (multiple-value-setq (selected-x selected-y)
@@ -579,7 +663,7 @@ The cell at selected-x selected-y coordinates is highlighed.
               (format t "~&Button connected to pathway cells: ~{~A~}~%"
                       (definition-connected (gethash (cell-name cell) (level-definitions level))))
               (display-available-pathway-cells level))))
-         (format *query-io* "~& .ozticbrp ky asdw fnh x > ")
+         (format *query-io* "~& .ozticbrp ky -|<> asdw fnh x : ")
          (finish-output *query-io*)
          (let ((input (read-line *query-io*)))
            (loop :for cmd :across input
@@ -693,6 +777,58 @@ The cell at selected-x selected-y coordinates is highlighed.
     (select-level *level-list* new)
     (setf *unsaved* t)))
 
+(defgeneric copy-cell (cell)
+  (:method ((cell empty-cell))       (make-instance 'empty-cell       :x (cell-x cell) :y (cell-y cell)))
+  (:method ((cell solid-cell))       (make-instance 'solid-cell       :x (cell-x cell) :y (cell-y cell)))
+  (:method ((cell start-cell))       (make-instance 'start-cell       :x (cell-x cell) :y (cell-y cell)))
+  (:method ((cell target-cell))      (make-instance 'target-cell      :x (cell-x cell) :y (cell-y cell)))
+  (:method ((cell ice-cell))         (make-instance 'ice-cell         :x (cell-x cell) :y (cell-y cell)))
+  (:method ((cell crumble-cell))     (make-instance 'crumble-cell     :x (cell-x cell) :y (cell-y cell) :state (crumble-cell-state cell)))
+  (:method ((cell pathway-cell))     (make-instance 'pathway-cell     :x (cell-x cell) :y (cell-y cell) :name (cell-name cell) :state (pathway-cell-state cell)))
+  (:method ((cell red-button-cell))  (make-instance 'red-button-cell  :x (cell-x cell) :y (cell-y cell) :name (cell-name cell)))
+  (:method ((cell blue-button-cell)) (make-instance 'blue-button-cell :x (cell-x cell) :y (cell-y cell) :name (cell-name cell))))
+
+(defun copy-cells (original)
+  (let* ((height (array-dimension original 0))
+         (width  (array-dimension original 1))
+         (cells  (make-array (list height width))))
+    (loop :for y :below height
+          :do (loop :for x :below width
+                    :do (setf (aref cells y x)
+                              (copy-cell (aref original y x)))))
+    ;; Update the buttons switches links:
+    (loop :for y :below height
+          :do (loop :for x :below width
+                    :with old := (aref original y x)
+                    :with new := (aref cells y x)
+                    :do (typecase new
+                          (button-cell
+                           (setf (button-cell-switches new)
+                                 (mapcar (lambda (old-pathway)
+                                           (aref cells (cell-y old-pathway) (cell-x old-pathway)))
+                                         (button-cell-switches old)))))))
+    cells))
+
+(defun cmd-duplicate ()
+  (when (levels *level-list*)
+    (unless (selected-level *level-list*)
+      (let ((index (query-integer "Level index: ")))
+        (select-level *level-list* index)))
+    (let ((original (selected-level *level-list*)))
+      (format *query-io* "~&Old Title: ~A~%" (level-title original))
+      (let* ((title       (query-string "New Title: "))
+             (new         (make-instance
+                           'level
+                           :title title
+                           :description (level-description original)
+                           :cells (copy-cells (level-cells original)))))
+        (update-definitions new)
+        (insert-level-before *level-list* new
+                              (1+ (selected-level-index *level-list*)))
+        (select-level *level-list* new)
+        (setf *unsaved* t)))))
+
+
 (defun cmd-edit ()
   (when (levels *level-list*)
     (unless (selected-level *level-list*)
@@ -723,21 +859,22 @@ The cell at selected-x selected-y coordinates is highlighed.
 
 
 (defvar *manage-commands*
-  '((load    "Parse and Load a level file, replacing the current level list.")
-    (append  "Parse and Load a level file, appending it to the current level list.")
-    (save    "Unparse and save the current level list into a level file.")
-    (select  "Select a level (by index).")
-    (next    "Select the next level.")
-    (prev    "select the previous level.")
-    (delete  "Delete a level.")
-    (move    "Move the selected level before the destination index.")
-    (new     "Create a new level.")
-    (edit    "Edit the current level.")
-    (play    "Play the current level.")
-    (solve   "Solve the current level")
-    (help    "Display this help.")
-    (debug   "Toggle debugging.")
-    (quit    "Quit the level manager.")))
+  '((load       "Parse and Load a level file, replacing the current level list.")
+    (append     "Parse and Load a level file, appending it to the current level list.")
+    (save       "Unparse and save the current level list into a level file.")
+    (select     "Select a level (by index).")
+    (next       "Select the next level.")
+    (prev       "select the previous level.")
+    (new        "Create a new level.")
+    (duplicate  "Duplicate a level.")
+    (delete     "Delete a level.")
+    (move       "Move the selected level before the destination index.")
+    (edit       "Edit the current level.")
+    (play       "Play the current level.")
+    (solve      "Solve the current level")
+    (help       "Display this help.")
+    (debug      "Toggle debugging.")
+    (quit       "Quit the level manager.")))
 
 (defun cmd-help ()
   (format t "~&Level Manager Help:~%~:{  ~10A  ~A~%~}~%"
@@ -747,7 +884,7 @@ The cell at selected-x selected-y coordinates is highlighed.
   "When an error occurs in the level manager, if true then invoke the debugger else display an error message and continue.")
 (setf *debug* t)
 
-  
+
 (defun manage-levels ()
   (let ((*level-list*  (make-instance 'level-list))
         (*unsaved*     t))
@@ -774,9 +911,10 @@ The cell at selected-x selected-y coordinates is highlighed.
                ((select)        (cmd-select))
                ((next)          (cmd-select-next))
                ((prev previous) (cmd-select-previous))
+               ((new)           (cmd-new))
+               ((duplicate)     (cmd-duplicate))
                ((delete)        (cmd-delete))
                ((move)          (cmd-move))
-               ((new)           (cmd-new))
                ((edit)          (cmd-edit))
                ((play)          (cmd-play))
                ((solve)         (cmd-solve))
@@ -812,5 +950,5 @@ The cell at selected-x selected-y coordinates is highlighed.
 ;; 8  : Level 38 of the original Playtomo Stonedge Game
 ;; 9  : Level 39 of the original Playtomo Stonedge Game
 ;; 10 : Level 52 of the original Playtomo Stonedge Game
-;; 
+;;
 ;; nil

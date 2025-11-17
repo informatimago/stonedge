@@ -4,7 +4,8 @@
 
 (defpackage :com.informatimago.games.stonedge.parser
   (:use :cl
-        :com.informatimago.games.stonedge)
+        :com.informatimago.games.stonedge
+        :com.informatimago.common-lisp.cesarum.list)
   (:export
    #:parse-level
    #:create-cell
@@ -45,7 +46,7 @@
                                        :initial-contents cells))
                           ((not (arrayp cells))
                            (error "~S: cells must be an array" 'make-level))
-                          (t (ecase (array-rank cells) 
+                          (t (ecase (array-rank cells)
                                ((2) cells)
                                ((1) (make-array (list (length cells) (length (aref cells 0)))
                                                 :initial-contents cells)))))
@@ -137,6 +138,9 @@
       ;; Swift did: components = line.split(" ")
       (let* ((components (remove "" (uiop:split-string line :separator " ") :test #'string=)))
         (when (and components (second components))
+          (unless (= 1 (length (first components)))
+            (warn "Invalid cell name ~S, expected a single-character name"
+                  (first components)))
           (let* ((cell-name-first (aref (first components) 0))
                  (name (string cell-name-first))
                  (directive (second components))
@@ -241,7 +245,7 @@ Follows the same steps as the Swift version."
                                ;; empty and the two previous only
                                ;; contain empty cells.
                                (if (and (< 5 (length grid-lines))
-                                        (string= "" (elt grid-lines (1- (length grid-lines)))) 
+                                        (string= "" (elt grid-lines (1- (length grid-lines))))
                                         (every (lambda (ch)
                                                  (or (char= ch #\.)
                                                      (char= ch #\space)))
@@ -345,7 +349,8 @@ Follows the same steps as the Swift version."
   (with-output-to-string (*standard-output*)
     (terpri)
     (write-line (level-title level))
-    (format t "~{| ~A~^~%~}~%" (level-description level))
+    (format t "~{| ~A~^~%~}~%"
+            (list-trim '("") (level-description level) :test (function string=)))
     (loop :for y :below (array-dimension (level-cells level) 0)
           :do (terpri)
               (loop :for x :below (array-dimension (level-cells level) 1)
@@ -357,13 +362,13 @@ Follows the same steps as the Swift version."
                (ecase (definition-link def)
                  ((:red :blue)
                   (format t "~A ~A ~{~A~^ ~}~%"
-                          (definition-link def)
                           name
-                          (definition-connected def))) 
+                          (definition-link def)
+                          (definition-connected def)))
                  ((:pathway)
                   (format t "~A ~A ~:[CLOSED~;OPEN~]~%"
-                          (definition-link def)
                           name
+                          (definition-link def)
                           (eq (definition-state def) :open)))))
              (level-definitions level))))
 
